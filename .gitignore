@@ -1,0 +1,15 @@
+# 微信开发者工具
+project.private.config.json
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log*
+*.log
+
+# 微信支付商户配置（含 AppSecret、商户私钥等敏感信息，勿提交）
+server/config.json
+server/*.pem
+server/*.key
+server/*.p12
+server/*.pfx

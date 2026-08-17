@@ -1,0 +1,42 @@
+<view class="page">
+  <view class="profile">
+    <view class="avatar">{{user.emoji}}</view>
+    <view class="profile-info">
+      <view class="nickname">{{user.nickname}}</view>
+      <view class="user-id">{{user.id}}</view>
+    </view>
+    <view class="settings">⚙️</view>
+  </view>
+
+  <view class="order-entry">
+    <view class="order-entry-title">我的订单</view>
+    <view class="order-entry-row">
+      <view class="entry-item" bindtap="onOrderTap" data-tab="1">
+        <view class="entry-ico">💰<view class="badge" wx:if="{{orderCounts[0] > 0}}">{{orderCounts[0]}}</view></view>
+        <view class="entry-name">待付款</view>
+      </view>
+      <view class="entry-item" bindtap="onOrderTap" data-tab="2">
+        <view class="entry-ico">📦<view class="badge" wx:if="{{orderCounts[1] > 0}}">{{orderCounts[1]}}</view></view>
+        <view class="entry-name">待发货</view>
+      </view>
+      <view class="entry-item" bindtap="onOrderTap" data-tab="3">
+        <view class="entry-ico">🚚<view class="badge" wx:if="{{orderCounts[2] > 0}}">{{orderCounts[2]}}</view></view>
+        <view class="entry-name">待收货</view>
+      </view>
+      <view class="entry-item" bindtap="onOrderTap" data-tab="4">
+        <view class="entry-ico">✅<view class="badge" wx:if="{{orderCounts[3] > 0}}">{{orderCounts[3]}}</view></view>
+        <view class="entry-name">已完成</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu">
+    <view class="menu-item" bindtap="onAddressTap"><text class="menu-ico">📍</text><text>收货地址</text><text class="arrow">›</text></view>
+    <view class="menu-item" bindtap="onMenuTap" data-name="优惠券"><text class="menu-ico">🎫</text><text>优惠券</text><text class="arrow">›</text></view>
+    <view class="menu-item" bindtap="onMenuTap" data-name="我的收藏"><text class="menu-ico">⭐</text><text>我的收藏</text><text class="arrow">›</text></view>
+    <view class="menu-item" bindtap="onMenuTap" data-name="帮助与客服"><text class="menu-ico">💬</text><text>帮助与客服</text><text class="arrow">›</text></view>
+    <view class="menu-item" bindtap="onMenuTap" data-name="设置"><text class="menu-ico">⚙️</text><text>设置</text><text class="arrow">›</text></view>
+  </view>
+
+  <view class="version">微信商城 Demo v1.0.0</view>
+</view>

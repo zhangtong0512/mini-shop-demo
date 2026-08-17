@@ -1,0 +1,127 @@
+.profile {
+  display: flex;
+  align-items: center;
+  padding: 48rpx 32rpx;
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.6);
+}
+
+.profile-info {
+  flex: 1;
+  margin-left: 28rpx;
+}
+
+.nickname {
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.user-id {
+  margin-top: 8rpx;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 24rpx;
+}
+
+.settings {
+  font-size: 40rpx;
+}
+
+.order-entry {
+  margin: 20rpx 24rpx 0;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.order-entry-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.order-entry-row {
+  margin-top: 24rpx;
+  display: flex;
+}
+
+.entry-item {
+  flex: 1;
+  text-align: center;
+}
+
+.entry-ico {
+  position: relative;
+  font-size: 52rpx;
+  line-height: 1.2;
+}
+
+.badge {
+  position: absolute;
+  top: -10rpx;
+  right: 20rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  padding: 0 6rpx;
+  background: #ff5000;
+  color: #ffffff;
+  font-size: 20rpx;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+}
+
+.entry-name {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.menu {
+  margin: 20rpx 24rpx 0;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-ico {
+  margin-right: 20rpx;
+  font-size: 36rpx;
+}
+
+.arrow {
+  margin-left: auto;
+  color: #cccccc;
+  font-size: 36rpx;
+}
+
+.version {
+  margin-top: 60rpx;
+  text-align: center;
+  color: #bbbbbb;
+  font-size: 22rpx;
+}

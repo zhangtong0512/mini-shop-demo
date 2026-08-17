@@ -1,0 +1,71 @@
+.page {
+  padding: 80rpx 48rpx 60rpx;
+}
+
+.result {
+  text-align: center;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 64rpx 0 56rpx;
+}
+
+.icon {
+  font-size: 120rpx;
+}
+
+.title {
+  margin-top: 24rpx;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.amount {
+  margin-top: 16rpx;
+  font-size: 56rpx;
+  font-weight: 600;
+  color: #ff5000;
+}
+
+.order-no {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.tips {
+  margin-top: 24rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 24rpx;
+}
+
+.tips-item {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.8;
+}
+
+.btns {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 48rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 84rpx;
+  line-height: 84rpx;
+  text-align: center;
+  border: 1rpx solid #dddddd;
+  border-radius: 42rpx;
+  font-size: 30rpx;
+  color: #333333;
+  background: #ffffff;
+}
+
+.btn.primary {
+  background: linear-gradient(90deg, #ff5500, #ff3200);
+  border-color: transparent;
+  color: #ffffff;
+}

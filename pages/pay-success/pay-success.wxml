@@ -1,0 +1,18 @@
+<view class="page">
+  <view class="result">
+    <view class="icon">✅</view>
+    <view class="title">支付成功</view>
+    <view class="amount">¥{{amount}}</view>
+    <view class="order-no">订单号：{{orderNo}}</view>
+  </view>
+
+  <view class="tips">
+    <view class="tips-item">📦 商家将尽快为您发货，可在订单中心查看物流进度</view>
+    <view class="tips-item">↩️ 支持 7 天无理由退货，售后无忧</view>
+  </view>
+
+  <view class="btns">
+    <view class="btn primary" bindtap="onViewOrder">查看订单</view>
+    <view class="btn" bindtap="onBackHome">返回首页</view>
+  </view>
+</view>

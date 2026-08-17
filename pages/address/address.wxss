@@ -1,0 +1,106 @@
+.page {
+  padding: 20rpx 24rpx 160rpx;
+}
+
+.addr-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.addr-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.addr-line {
+  display: flex;
+  align-items: center;
+}
+
+.addr-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.addr-phone {
+  margin-left: 16rpx;
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.addr-tag {
+  margin-left: 16rpx;
+  padding: 2rpx 12rpx;
+  font-size: 20rpx;
+  color: #ff5000;
+  border: 1rpx solid #ff5000;
+  border-radius: 8rpx;
+}
+
+.addr-detail {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+.addr-ops {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.op-btn {
+  padding: 8rpx 28rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.op-btn.danger {
+  color: #ff5000;
+  border-color: #ffb59d;
+}
+
+.empty {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+}
+
+.empty-text {
+  margin-top: 24rpx;
+  color: #999999;
+  font-size: 28rpx;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.add-btn {
+  height: 84rpx;
+  line-height: 84rpx;
+  text-align: center;
+  background: linear-gradient(90deg, #ff5500, #ff3200);
+  color: #ffffff;
+  font-size: 30rpx;
+  border-radius: 42rpx;
+}

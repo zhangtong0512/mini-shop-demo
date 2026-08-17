@@ -1,0 +1,11 @@
+{
+  "appid": "wx59717e69847a9df3",
+  "appsecret": "你的小程序 AppSecret",
+  "mchid": "你的微信支付商户号",
+  "mchSerialNo": "商户 API 证书序列号",
+  "apiV3Key": "API v3 密钥（32 位）",
+  "privateKeyPath": "cert/apiclient_key.pem",
+  "platformCertPath": "cert/wxpay_platform_cert.pem",
+  "notifyUrl": "https://你的公网域名/api/pay/notify",
+  "port": 3000
+}

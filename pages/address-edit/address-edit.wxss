@@ -1,0 +1,75 @@
+.page {
+  padding: 20rpx 24rpx 60rpx;
+}
+
+.form-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  min-height: 100rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.form-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  width: 160rpx;
+  font-size: 28rpx;
+  color: #333333;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.input.region {
+  flex: 1;
+}
+
+.input.placeholder {
+  color: #999999;
+}
+
+.arrow {
+  color: #cccccc;
+  font-size: 36rpx;
+}
+
+.textarea-row {
+  align-items: flex-start;
+  padding: 24rpx 0;
+}
+
+.textarea {
+  flex: 1;
+  width: auto;
+  min-height: 80rpx;
+  font-size: 28rpx;
+  color: #333333;
+  line-height: 1.5;
+}
+
+.switch-row {
+  justify-content: space-between;
+}
+
+.save-btn {
+  margin-top: 40rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: linear-gradient(90deg, #ff5500, #ff3200);
+  color: #ffffff;
+  font-size: 30rpx;
+  border-radius: 44rpx;
+}

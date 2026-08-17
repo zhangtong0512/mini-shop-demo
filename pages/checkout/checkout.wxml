@@ -1,0 +1,74 @@
+<view class="page" wx:if="{{items.length > 0}}">
+  <!-- 收货地址 -->
+  <view class="addr-card" bindtap="onAddressTap">
+    <block wx:if="{{address}}">
+      <view class="addr-ico">📍</view>
+      <view class="addr-info">
+        <view class="addr-line">
+          <text class="addr-name">{{address.name}}</text>
+          <text class="addr-phone">{{address.phone}}</text>
+        </view>
+        <view class="addr-detail">{{address.regionText}} {{address.detail}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="addr-ico">📍</view>
+      <view class="addr-info">
+        <view class="addr-empty">请选择收货地址</view>
+      </view>
+    </block>
+    <view class="addr-arrow">›</view>
+  </view>
+
+  <!-- 商品清单 -->
+  <view class="goods-card">
+    <view class="goods-header">商品清单</view>
+    <view class="goods-item" wx:for="{{items}}" wx:key="id">
+      <view class="thumb">
+        <text class="thumb-emoji">{{item.emoji}}</text>
+        <image class="thumb-img" src="{{item.image}}" mode="aspectFill" />
+      </view>
+      <view class="goods-info">
+        <view class="goods-title">{{item.title}}</view>
+        <view class="goods-price">
+          <text class="price">¥{{item.price}}</text>
+          <text class="count">x{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 金额明细 -->
+  <view class="summary">
+    <view class="summary-row">
+      <text>商品金额</text>
+      <text class="value">¥{{goodsAmount}}</text>
+    </view>
+    <view class="summary-row">
+      <text>运费</text>
+      <text class="value {{freight == 0 ? 'free' : ''}}">{{freight == 0 ? '免运费' : '¥' + freight}}</text>
+    </view>
+    <view class="summary-row">
+      <text>配送方式</text>
+      <text class="value">普通快递 · 满{{freeShippingThreshold}}元包邮</text>
+    </view>
+    <view class="summary-row">
+      <text>支付方式</text>
+      <text class="value">在线支付</text>
+    </view>
+  </view>
+
+  <!-- 订单备注 -->
+  <view class="remark-card">
+    <view class="remark-label">订单备注</view>
+    <input class="remark-input" placeholder="选填，给卖家留言（限 50 字）" value="{{remark}}" bindinput="onRemark" maxlength="50" />
+  </view>
+
+  <view class="footer">
+    <view class="total">
+      <text class="total-label">应付：</text>
+      <text class="total-price">¥{{totalPrice}}</text>
+    </view>
+    <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">提交订单</view>
+  </view>
+</view>

@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.card-img {
+  position: relative;
+  width: 100%;
+  height: 320rpx;
+  background: linear-gradient(135deg, #fde2d9, #fff0ea);
+}
+
+.card-emoji {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 90rpx;
+  line-height: 1;
+}
+
+.card-img-src {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card-body {
+  padding: 16rpx 20rpx 20rpx;
+}
+
+.card-title {
+  font-size: 28rpx;
+  line-height: 1.4;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  min-height: 78rpx;
+}
+
+.card-sales {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.card-price {
+  margin-top: 10rpx;
+  display: flex;
+  align-items: baseline;
+  color: #ff5000;
+  font-weight: 600;
+}
+
+.card-price .symbol {
+  font-size: 24rpx;
+}
+
+.card-price .num {
+  font-size: 36rpx;
+}
+
+.card-price .origin {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: #bbbbbb;
+  font-weight: 400;
+  text-decoration: line-through;
+}

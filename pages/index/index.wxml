@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="search-bar">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索商品"
+        confirm-type="search"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <swiper class="banner" indicator-dots autoplay circular interval="3000" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#ffffff">
+    <swiper-item wx:for="{{banners}}" wx:key="*this">
+      <image class="banner-img" src="{{item}}" mode="aspectFill" />
+    </swiper-item>
+  </swiper>
+
+  <scroll-view class="category-nav" scroll-x>
+    <view
+      class="category-item {{activeCategory == item.id ? 'active' : ''}}"
+      wx:for="{{categories}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onCategoryTap"
+    >{{item.name}}</view>
+  </scroll-view>
+
+  <view class="goods-grid">
+    <goods-card
+      wx:for="{{goodsList}}"
+      wx:key="id"
+      goods="{{item}}"
+      bind:tapgoods="onTapGoods"
+    />
+  </view>
+
+  <view class="empty" wx:if="{{goodsList.length == 0}}">
+    <text>没有找到相关商品</text>
+  </view>
+</view>

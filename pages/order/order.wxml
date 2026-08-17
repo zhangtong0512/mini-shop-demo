@@ -1,0 +1,53 @@
+<view class="page">
+  <scroll-view class="tabs" scroll-x>
+    <view
+      class="tab-item {{activeTab == item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onTabTap"
+    >{{item.name}}</view>
+  </scroll-view>
+
+  <view class="order-list" wx:if="{{orders.length > 0}}">
+    <view class="order-card" wx:for="{{orders}}" wx:key="id" bindtap="onOrderTap" data-id="{{item.id}}">
+      <view class="order-head">
+        <text class="order-no">{{item.orderNo}}</text>
+        <view class="order-status-col">
+          <text class="order-status {{item.status == 1 ? 'wait-pay' : ''}}">{{item.statusText}}</text>
+          <text class="order-remain" wx:if="{{item.remainText}}">{{item.remainText}}</text>
+        </view>
+      </view>
+
+      <view class="order-items">
+        <view class="order-item" wx:for="{{item.items}}" wx:for-item="g" wx:key="id">
+          <view class="thumb">
+            <text class="thumb-emoji">{{g.emoji}}</text>
+            <image class="thumb-img" src="{{g.image}}" mode="aspectFill" />
+          </view>
+          <view class="g-info">
+            <view class="g-title">{{g.title}}</view>
+            <view class="g-count">x{{g.count}}</view>
+          </view>
+          <view class="g-price">¥{{g.price}}</view>
+        </view>
+      </view>
+
+      <view class="order-foot">
+        <text>共 {{item.totalCount}} 件 实付 <text class="price">¥{{item.totalPrice}}</text></text>
+      </view>
+
+      <view class="order-actions" wx:if="{{item.status == 1 || item.status == 3}}">
+        <view class="act-btn" wx:if="{{item.status == 1}}" catchtap="onCancel" data-id="{{item.id}}">取消订单</view>
+        <view class="act-btn primary" wx:if="{{item.status == 1}}" catchtap="onPay" data-id="{{item.id}}">去支付</view>
+        <view class="act-btn primary" wx:if="{{item.status == 3}}" catchtap="onConfirm" data-id="{{item.id}}">确认收货</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <view class="empty-icon">📦</view>
+    <view class="empty-text">暂无相关订单</view>
+    <view class="empty-btn" bindtap="onGoShopping">去逛逛</view>
+  </view>
+</view>

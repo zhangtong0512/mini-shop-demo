@@ -1,0 +1,10 @@
+{
+  "name": "mini-shop-pay-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "精选商城 · 微信支付 v3 JSAPI 示例后端（零依赖）",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

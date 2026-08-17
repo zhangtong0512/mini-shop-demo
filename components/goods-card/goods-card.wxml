@@ -1,0 +1,15 @@
+<view class="card" bindtap="onTap">
+  <view class="card-img">
+    <text class="card-emoji">{{goods.emoji}}</text>
+    <image class="card-img-src" src="{{goods.image}}" mode="aspectFill" lazy-load />
+  </view>
+  <view class="card-body">
+    <view class="card-title">{{goods.title}}</view>
+    <view class="card-sales">已售 {{goods.sales}}</view>
+    <view class="card-price">
+      <text class="symbol">¥</text>
+      <text class="num">{{goods.price}}</text>
+      <text class="origin">¥{{goods.originalPrice}}</text>
+    </view>
+  </view>
+</view>

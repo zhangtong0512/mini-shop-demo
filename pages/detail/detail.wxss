@@ -1,0 +1,261 @@
+.page {
+  padding-bottom: 140rpx;
+}
+
+.gallery {
+  position: relative;
+  width: 100%;
+  height: 700rpx;
+  background: linear-gradient(135deg, #fde2d9, #fff0ea);
+  overflow: hidden;
+}
+
+.gallery-emoji {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 240rpx;
+}
+
+.gallery-swiper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-count {
+  position: absolute;
+  right: 24rpx;
+  bottom: 24rpx;
+  z-index: 2;
+  padding: 6rpx 22rpx;
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  font-size: 24rpx;
+  border-radius: 24rpx;
+}
+
+.info {
+  background: #ffffff;
+  padding: 24rpx 28rpx;
+  margin-top: 16rpx;
+}
+
+.price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.price {
+  color: #ff5000;
+  font-weight: 600;
+}
+
+.price .symbol {
+  font-size: 28rpx;
+}
+
+.price .num {
+  font-size: 52rpx;
+}
+
+.price .origin {
+  margin-left: 12rpx;
+  font-size: 24rpx;
+  color: #bbbbbb;
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+.sales {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.title {
+  margin-top: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.desc {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+.meta {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 40rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.qty {
+  margin-top: 16rpx;
+  background: #ffffff;
+  padding: 24rpx 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qty-label {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1rpx solid #eeeeee;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.step-btn {
+  width: 64rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  background: #fafafa;
+  color: #333333;
+  font-size: 32rpx;
+}
+
+.step-btn.disabled {
+  color: #cccccc;
+}
+
+.step-num {
+  min-width: 80rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  border-left: 1rpx solid #eeeeee;
+  border-right: 1rpx solid #eeeeee;
+  font-size: 28rpx;
+}
+
+.service {
+  margin-top: 16rpx;
+  background: #ffffff;
+  padding: 24rpx 28rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+.service-item {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+/* 商品图文详情 */
+.detail-block {
+  margin-top: 16rpx;
+  background: #ffffff;
+  padding-bottom: 24rpx;
+}
+
+.detail-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 0 24rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.detail-line {
+  width: 64rpx;
+  height: 2rpx;
+  background: #e5e5e5;
+  margin: 0 20rpx;
+}
+
+.detail-intro {
+  padding: 0 28rpx;
+}
+
+.detail-para {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.8;
+  margin-bottom: 16rpx;
+  text-align: justify;
+}
+
+.detail-imgs {
+  margin-top: 8rpx;
+  width: 100%;
+}
+
+.detail-img {
+  display: block;
+  width: 100%;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 12rpx 24rpx;
+  padding-bottom: calc(12rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.footer-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 88rpx;
+}
+
+.footer-icon .icon {
+  font-size: 36rpx;
+  line-height: 1.2;
+}
+
+.ft-text {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: #666666;
+}
+
+.footer-btn {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #ffffff;
+  font-size: 30rpx;
+}
+
+.footer-btn.add {
+  margin-left: 16rpx;
+  background: linear-gradient(90deg, #ffa940, #ff7800);
+  border-radius: 40rpx 0 0 40rpx;
+}
+
+.footer-btn.buy {
+  background: linear-gradient(90deg, #ff5500, #ff3200);
+  border-radius: 0 40rpx 40rpx 0;
+}
