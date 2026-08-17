@@ -32,16 +32,30 @@
   height: 100%;
 }
 
-.gallery-count {
+/* 自定义指示点：激活项变长条高亮 */
+.gallery-dots {
   position: absolute;
-  right: 24rpx;
-  bottom: 24rpx;
+  left: 0;
+  right: 0;
+  bottom: 20rpx;
+  display: flex;
+  justify-content: center;
   z-index: 2;
-  padding: 6rpx 22rpx;
-  background: rgba(0, 0, 0, 0.45);
-  color: #ffffff;
-  font-size: 24rpx;
-  border-radius: 24rpx;
+}
+
+.gallery-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  margin: 0 8rpx;
+  transition: all 0.3s;
+}
+
+.gallery-dot.active {
+  width: 32rpx;
+  border-radius: 8rpx;
+  background: #ffffff;
 }
 
 .info {

@@ -7,7 +7,8 @@ Page({
     activeCategory: 'all',
     keyword: '',
     allGoods: [],
-    goodsList: []
+    goodsList: [],
+    bannerCurrent: 0
   },
 
   onLoad() {
@@ -23,6 +24,11 @@ Page({
   onSearchInput(e) {
     this.setData({ keyword: e.detail.value })
     this.filterGoods()
+  },
+
+  // Banner 轮播切换时同步自定义指示点
+  onBannerChange(e) {
+    this.setData({ bannerCurrent: e.detail.current })
   },
 
   onSearch() {

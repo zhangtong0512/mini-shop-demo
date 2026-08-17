@@ -20,7 +20,14 @@
         />
       </swiper-item>
     </swiper>
-    <view class="gallery-count">{{galleryCurrent + 1}}/{{goods.galleryImages.length}}</view>
+    <view class="gallery-dots">
+      <view
+        class="gallery-dot {{galleryCurrent == index ? 'active' : ''}}"
+        wx:for="{{goods.galleryImages}}"
+        wx:key="*this"
+        wx:for-index="index"
+      ></view>
+    </view>
   </view>
 
   <view class="info">

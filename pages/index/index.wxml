@@ -13,11 +13,21 @@
     </view>
   </view>
 
-  <swiper class="banner" indicator-dots autoplay circular interval="3000" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#ffffff">
-    <swiper-item wx:for="{{banners}}" wx:key="*this">
-      <image class="banner-img" src="{{item}}" mode="aspectFill" />
-    </swiper-item>
-  </swiper>
+  <view class="banner-wrap">
+    <swiper class="banner" autoplay circular interval="3000" bindchange="onBannerChange">
+      <swiper-item wx:for="{{banners}}" wx:key="*this">
+        <image class="banner-img" src="{{item}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+    <view class="banner-dots">
+      <view
+        class="banner-dot {{bannerCurrent == index ? 'active' : ''}}"
+        wx:for="{{banners}}"
+        wx:key="*this"
+        wx:for-index="index"
+      ></view>
+    </view>
+  </view>
 
   <scroll-view class="category-nav" scroll-x>
     <view
