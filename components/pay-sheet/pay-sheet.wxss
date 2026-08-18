@@ -1,0 +1,152 @@
+/* 自定义支付底部弹层：样式仿微信支付原生弹窗 */
+.pay-sheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  animation: mask-in 0.25s ease;
+}
+.mask.out {
+  animation: mask-out 0.2s ease forwards;
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 20rpx 40rpx calc(env(safe-area-inset-bottom) + 36rpx);
+  animation: sheet-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.sheet.out {
+  animation: sheet-out 0.2s ease forwards;
+}
+
+.handle {
+  width: 72rpx;
+  height: 8rpx;
+  border-radius: 8rpx;
+  background: #e5e5e5;
+  margin: 0 auto 28rpx;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+.badge {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 18rpx;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.header-text {
+  flex: 1;
+}
+.title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #222222;
+}
+.merchant {
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 6rpx;
+}
+
+.amount-box {
+  margin-top: 44rpx;
+  text-align: center;
+}
+.amount-box .symbol {
+  font-size: 44rpx;
+  font-weight: 600;
+  color: #111111;
+  margin-right: 4rpx;
+}
+.amount-box .amount {
+  font-size: 72rpx;
+  font-weight: 600;
+  color: #111111;
+}
+
+.order-no {
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999999;
+}
+.desc {
+  margin-top: 8rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.btn-primary {
+  margin-top: 56rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  text-align: center;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 34rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+}
+.btn-primary.disabled {
+  opacity: 0.7;
+}
+
+.btn-cancel {
+  margin-top: 24rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #666666;
+  font-size: 30rpx;
+}
+
+.hint {
+  margin-top: 12rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #bbbbbb;
+}
+
+@keyframes mask-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes mask-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes sheet-out {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}

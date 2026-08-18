@@ -125,7 +125,7 @@ Page({
       }
       wx.hideLoading()
 
-      pay.payOrder(order).then(paid => {
+      pay.payOrder(order, { sheet: this.selectComponent('#paySheet') }).then(paid => {
         if (paid) {
           wx.redirectTo({ url: '/pages/pay-success/pay-success?id=' + order.id })
         } else {

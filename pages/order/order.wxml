@@ -50,4 +50,7 @@
     <view class="empty-text">暂无相关订单</view>
     <view class="empty-btn" bindtap="onGoShopping">去逛逛</view>
   </view>
+
+  <!-- 自定义支付底部弹层（模拟支付 / 真实支付失败兜底） -->
+  <pay-sheet id="paySheet" />
 </view>

@@ -1,0 +1,27 @@
+<view class="pay-sheet" wx:if="{{visible}}" catchtouchmove="noop">
+  <view class="mask {{closing ? 'out' : ''}}" catchtap="onMaskTap"></view>
+  <view class="sheet {{closing ? 'out' : ''}}">
+    <view class="handle"></view>
+
+    <view class="header">
+      <view class="badge">¥</view>
+      <view class="header-text">
+        <view class="title">{{title}}</view>
+        <view class="merchant">{{merchant}}</view>
+      </view>
+    </view>
+
+    <view class="amount-box">
+      <text class="symbol">¥</text><text class="amount">{{amountText}}</text>
+    </view>
+    <view class="order-no" wx:if="{{orderNo}}">订单号：{{orderNo}}</view>
+    <view class="desc" wx:if="{{desc}}">商品：{{desc}}</view>
+
+    <view class="btn-primary {{paying ? 'disabled' : ''}}" bindtap="onConfirm">
+      {{paying ? '支付中…' : confirmText}}
+    </view>
+    <view class="btn-cancel" bindtap="onCancel">取消</view>
+
+    <view class="hint">🔒 Demo 演示环境，模拟支付，不产生真实扣款</view>
+  </view>
+</view>

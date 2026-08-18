@@ -73,4 +73,7 @@
       <view class="act-btn primary" bindtap="onBuyAgain">再次购买</view>
     </block>
   </view>
+
+  <!-- 自定义支付底部弹层（模拟支付 / 真实支付失败兜底） -->
+  <pay-sheet id="paySheet" />
 </view>

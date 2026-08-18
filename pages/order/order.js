@@ -79,18 +79,14 @@ Page({
     const id = Number(e.currentTarget.dataset.id)
     const order = mock.getOrderById(id)
     if (!order) return
-    wx.showLoading({ title: '支付中' })
-    setTimeout(() => {
-      wx.hideLoading()
-      pay.payOrder(order).then(paid => {
-        if (paid) {
-          wx.navigateTo({ url: '/pages/pay-success/pay-success?id=' + order.id })
-        } else {
-          wx.showToast({ title: '已取消支付', icon: 'none' })
-          this.refresh()
-        }
-      })
-    }, 600)
+    pay.payOrder(order, { sheet: this.selectComponent('#paySheet') }).then(paid => {
+      if (paid) {
+        wx.navigateTo({ url: '/pages/pay-success/pay-success?id=' + order.id })
+      } else {
+        wx.showToast({ title: '已取消支付', icon: 'none' })
+        this.refresh()
+      }
+    })
   },
 
   onCancel(e) {

@@ -91,18 +91,14 @@ Page({
   onPay() {
     const order = this.data.order
     if (!order) return
-    wx.showLoading({ title: '支付中' })
-    setTimeout(() => {
-      wx.hideLoading()
-      pay.payOrder(order).then(paid => {
-        if (paid) {
-          wx.redirectTo({ url: '/pages/pay-success/pay-success?id=' + order.id })
-        } else {
-          wx.showToast({ title: '已取消支付', icon: 'none' })
-          this.refresh()
-        }
-      })
-    }, 600)
+    pay.payOrder(order, { sheet: this.selectComponent('#paySheet') }).then(paid => {
+      if (paid) {
+        wx.redirectTo({ url: '/pages/pay-success/pay-success?id=' + order.id })
+      } else {
+        wx.showToast({ title: '已取消支付', icon: 'none' })
+        this.refresh()
+      }
+    })
   },
 
   onCancel() {
