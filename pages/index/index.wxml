@@ -1,15 +1,8 @@
 <view class="page">
   <view class="search-bar">
-    <view class="search-box">
+    <view class="search-box" bindtap="onSearchTap">
       <text class="search-icon">🔍</text>
-      <input
-        class="search-input"
-        placeholder="搜索商品"
-        confirm-type="search"
-        value="{{keyword}}"
-        bindinput="onSearchInput"
-        bindconfirm="onSearch"
-      />
+      <text class="search-placeholder">搜索商品</text>
     </view>
   </view>
 

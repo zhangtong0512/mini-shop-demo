@@ -91,6 +91,7 @@
   <view class="footer">
     <view class="footer-icon" bindtap="onGoHome"><text class="icon">🏠</text><text class="ft-text">首页</text></view>
     <view class="footer-icon" bindtap="onGoCart"><text class="icon">🛒</text><text class="ft-text">购物车</text></view>
+    <view class="footer-icon {{isFav ? 'fav-on' : ''}}" bindtap="onToggleFav"><text class="icon">{{isFav ? '♥' : '♡'}}</text><text class="ft-text">{{isFav ? '已收藏' : '收藏'}}</text></view>
     <view class="footer-btn add" bindtap="onAddCart">加入购物车</view>
     <view class="footer-btn buy" bindtap="onBuyNow">立即购买</view>
   </view>

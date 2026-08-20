@@ -153,6 +153,27 @@ function getGoodsById(id) {
   return goodsList.find(g => g.id === Number(id)) || null
 }
 
+// 热搜词：每个词都能命中 goodsList 中的商品
+const hotKeywords = ['手机', '耳机', '坚果', '面膜', '跑鞋', '背包', '智能手环', '瑜伽垫']
+
+function getHotKeywords() {
+  return hotKeywords
+}
+
+// 关键词搜索：匹配 标题 / 一句话卖点 / 标签，大小写不敏感
+function searchGoods(keyword) {
+  const kw = (keyword || '').trim()
+  if (!kw) return []
+  const q = kw.toLowerCase()
+  return goodsList.filter(g => {
+    return (
+      g.title.toLowerCase().indexOf(q) > -1 ||
+      (g.desc || '').toLowerCase().indexOf(q) > -1 ||
+      (g.tags || []).some(t => t.toLowerCase().indexOf(q) > -1)
+    )
+  })
+}
+
 function toOrderItem(goods, count) {
   return {
     id: goods.id,
@@ -398,6 +419,8 @@ module.exports = {
   getGoodsList,
   getBanners,
   getGoodsById,
+  getHotKeywords,
+  searchGoods,
   getOrders,
   getOrderById,
   ensureSeedOrders,

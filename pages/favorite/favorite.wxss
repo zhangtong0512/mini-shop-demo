@@ -1,0 +1,40 @@
+.page {
+  padding: 20rpx 0 40rpx;
+}
+
+.goods-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 16rpx;
+}
+
+.goods-grid goods-card {
+  width: 48.5%;
+  margin-bottom: 20rpx;
+}
+
+.empty {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+}
+
+.empty-text {
+  margin-top: 24rpx;
+  color: #999999;
+  font-size: 28rpx;
+}
+
+.empty-btn {
+  display: inline-block;
+  margin-top: 48rpx;
+  padding: 16rpx 64rpx;
+  color: #ffffff;
+  background: #ff5000;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}

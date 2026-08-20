@@ -9,7 +9,10 @@
     "pages/address/address",
     "pages/address-edit/address-edit",
     "pages/pay-success/pay-success",
-    "pages/order-detail/order-detail"
+    "pages/order-detail/order-detail",
+    "pages/user-info/user-info",
+    "pages/favorite/favorite",
+    "pages/search/search"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ff5000",

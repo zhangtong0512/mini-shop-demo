@@ -21,10 +21,10 @@
   font-size: 28rpx;
 }
 
-.search-input {
+.search-placeholder {
   flex: 1;
   font-size: 26rpx;
-  color: #333333;
+  color: #999999;
 }
 
 .banner-wrap {

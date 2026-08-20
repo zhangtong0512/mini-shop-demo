@@ -1,16 +1,21 @@
 const mock = require('../../utils/mock')
 const cart = require('../../utils/cart')
+const favorite = require('../../utils/favorite')
 
 Page({
   data: {
     goods: null,
     count: 1,
-    galleryCurrent: 0
+    galleryCurrent: 0,
+    isFav: false
   },
 
   onLoad(options) {
     const goods = mock.getGoodsById(options.id)
-    this.setData({ goods })
+    this.setData({
+      goods,
+      isFav: favorite.isFavorite(options.id)
+    })
     if (goods) {
       wx.setNavigationBarTitle({ title: goods.title })
     }
@@ -73,5 +78,12 @@ Page({
 
   onGoCart() {
     wx.switchTab({ url: '/pages/cart/cart' })
+  },
+
+  onToggleFav() {
+    if (!this.data.goods) return
+    const now = favorite.toggleFavorite(this.data.goods.id)
+    this.setData({ isFav: now })
+    wx.showToast({ title: now ? '已收藏' : '已取消收藏', icon: 'none' })
   }
 })

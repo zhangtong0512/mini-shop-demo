@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="search-bar">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索商品"
+        confirm-type="search"
+        value="{{keyword}}"
+        focus="{{focus}}"
+        bindinput="onInput"
+        bindconfirm="onConfirm"
+      />
+    </view>
+    <view class="cancel" bindtap="onCancel">取消</view>
+  </view>
+
+  <block wx:if="{{!showResults}}">
+    <view class="section" wx:if="{{history.length}}">
+      <view class="section-head">
+        <text>搜索历史</text>
+        <text class="clear" bindtap="onClearHistory">清空</text>
+      </view>
+      <view class="tag-row">
+        <view class="tag" wx:for="{{history}}" wx:key="*this" data-kw="{{item}}" bindtap="onTapKeyword">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head"><text>热搜词</text></view>
+      <view class="tag-row">
+        <view class="tag hot" wx:for="{{hotKeywords}}" wx:key="*this" data-kw="{{item}}" bindtap="onTapKeyword">{{item}}</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="goods-grid" wx:elif="{{showResults && results.length > 0}}">
+    <goods-card
+      wx:for="{{results}}"
+      wx:key="id"
+      goods="{{item}}"
+      bind:tapgoods="onTapGoods"
+    />
+  </view>
+
+  <view class="empty" wx:else>
+    <view class="empty-icon">🔍</view>
+    <view class="empty-text">没有找到「{{keyword}}」相关商品</view>
+  </view>
+</view>

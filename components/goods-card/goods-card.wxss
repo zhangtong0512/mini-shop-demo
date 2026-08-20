@@ -32,6 +32,21 @@
   height: 100%;
 }
 
+.card-remove {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 26rpx;
+  z-index: 3;
+}
+
 .card-body {
   padding: 16rpx 20rpx 20rpx;
 }

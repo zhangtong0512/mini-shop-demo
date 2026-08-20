@@ -5,7 +5,6 @@ Page({
     banners: [],
     categories: [],
     activeCategory: 'all',
-    keyword: '',
     allGoods: [],
     goodsList: [],
     bannerCurrent: 0
@@ -21,18 +20,14 @@ Page({
     })
   },
 
-  onSearchInput(e) {
-    this.setData({ keyword: e.detail.value })
-    this.filterGoods()
+  // 点击搜索条跳转独立搜索页
+  onSearchTap() {
+    wx.navigateTo({ url: '/pages/search/search' })
   },
 
   // Banner 轮播切换时同步自定义指示点
   onBannerChange(e) {
     this.setData({ bannerCurrent: e.detail.current })
-  },
-
-  onSearch() {
-    this.filterGoods()
   },
 
   onCategoryTap(e) {
@@ -41,18 +36,10 @@ Page({
   },
 
   filterGoods() {
-    const { allGoods, activeCategory, keyword } = this.data
-    let list = allGoods
-    if (activeCategory !== 'all') {
-      list = list.filter(g => g.category === activeCategory)
-    }
-    const kw = keyword.trim()
-    if (kw) {
-      list = list.filter(g =>
-        g.title.indexOf(kw) > -1 || (g.tags || []).some(t => t.indexOf(kw) > -1)
-      )
-    }
-    this.setData({ goodsList: list })
+    const { allGoods, activeCategory } = this.data
+    this.setData({
+      goodsList: activeCategory === 'all' ? allGoods : allGoods.filter(g => g.category === activeCategory)
+    })
   },
 
   onTapGoods(e) {

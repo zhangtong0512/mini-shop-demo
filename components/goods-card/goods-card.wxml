@@ -2,6 +2,8 @@
   <view class="card-img">
     <text class="card-emoji">{{goods.emoji}}</text>
     <image class="card-img-src" src="{{goods.image}}" mode="aspectFill" lazy-load />
+    <!-- catchtap 阻止冒泡，避免点移除时触发卡片跳详情 -->
+    <view class="card-remove" wx:if="{{removable}}" catchtap="onRemove">✕</view>
   </view>
   <view class="card-body">
     <view class="card-title">{{goods.title}}</view>

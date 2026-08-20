@@ -246,6 +246,11 @@
 .footer-icon .icon {
   font-size: 36rpx;
   line-height: 1.2;
+  color: #666666;
+}
+
+.footer-icon.fav-on .icon {
+  color: #ff5000;
 }
 
 .ft-text {

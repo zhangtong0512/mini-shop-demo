@@ -1,0 +1,28 @@
+<view class="page">
+  <view class="form-card">
+    <view class="avatar-row">
+      <!-- open-type="chooseAvatar"：微信原生头像选择能力 -->
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{form.avatar}}" class="avatar-preview" src="{{form.avatar}}" mode="aspectFill" />
+        <text wx:else>👤</text>
+      </button>
+      <view class="avatar-tip">点击{{form.avatar ? '更换' : '选择'}}头像</view>
+    </view>
+
+    <view class="form-row">
+      <text class="label">昵称</text>
+      <input
+        class="input"
+        type="nickname"
+        placeholder="请输入昵称"
+        value="{{form.nickname}}"
+        maxlength="20"
+        bindinput="onNickname"
+        bindchange="onNickname"
+      />
+    </view>
+  </view>
+
+  <view class="save-btn" bindtap="onLogin">{{mode === 'edit' ? '保存' : '登录'}}</view>
+  <view class="logout-btn" wx:if="{{mode === 'edit'}}" bindtap="onLogout">退出登录</view>
+</view>
