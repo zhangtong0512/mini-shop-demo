@@ -62,6 +62,19 @@
     <view class="service-item">↩️ 7天无理由退货</view>
   </view>
 
+  <!-- 商品评价预览 -->
+  <view class="review-block" wx:if="{{reviewCount > 0}}" bindtap="onReviewTap">
+    <view class="review-head">
+      <text class="review-title">商品评价</text>
+      <text class="review-summary">{{reviewStars}} {{reviewAvg}} 分</text>
+      <text class="review-count">{{reviewCount}} 条</text>
+      <text class="review-more">查看全部 ›</text>
+    </view>
+    <view class="review-preview" wx:for="{{reviewPreview}}" wx:key="id" wx:for-item="rv">
+      <review-card review="{{rv}}" />
+    </view>
+  </view>
+
   <!-- 商品图文详情 -->
   <view class="detail-block" wx:if="{{goods.detailImages.length > 0 || goods.detail.length > 0}}">
     <view class="detail-title">

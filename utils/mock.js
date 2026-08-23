@@ -5,12 +5,14 @@
  * 订单字段：
  *   id / orderNo / createTime / status(1待付款 2待发货 3待收货 4已完成 5已取消)
  *   items / goodsAmount / freight / totalPrice / totalCount
+ *   couponId / couponAmount(使用的优惠券与抵扣金额)
  *   address(下单时地址快照) / remark
  *   payDeadline(待付款超时时间戳) / stockDeducted(是否已扣库存)
  *   payTime / shipTime / finishTime / cancelTime
  */
 
 const config = require('./config')
+const coupon = require('./coupon')
 
 const PAY_TIMEOUT_MS = config.PAY_TIMEOUT_MINUTES * 60 * 1000
 
@@ -303,6 +305,8 @@ function createOrder(info) {
     items,
     goodsAmount: info.goodsAmount || 0,
     freight: info.freight || 0,
+    couponId: info.couponId || 0,
+    couponAmount: info.couponAmount || 0,
     totalPrice: info.totalPrice || 0,
     totalCount: info.totalCount || 0,
     address: info.address || null,
@@ -312,6 +316,8 @@ function createOrder(info) {
   }
   list.unshift(order)
   wx.setStorageSync(ORDER_KEY, list)
+  // 订单创建即占用优惠券；取消待付款订单时回退（见 cancelOrder / cancelExpiredOrders）
+  if (order.couponId) coupon.useCoupon(order.couponId)
   return order
 }
 
@@ -336,6 +342,7 @@ function cancelOrder(id) {
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 1) {
       if (o.stockDeducted) restoreStock(o.items)
+      if (o.couponId) coupon.restoreCoupon(o.couponId)
       return Object.assign({}, o, { status: 5, cancelTime: formatTime(new Date()) })
     }
     return o
@@ -379,6 +386,7 @@ function cancelExpiredOrders() {
   const list = getOrders().map(o => {
     if (o.status === 1 && o.payDeadline && now > o.payDeadline) {
       if (o.stockDeducted) restoreStock(o.items)
+      if (o.couponId) coupon.restoreCoupon(o.couponId)
       changed = true
       count++
       return Object.assign({}, o, {

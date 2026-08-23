@@ -12,14 +12,20 @@
     "pages/order-detail/order-detail",
     "pages/user-info/user-info",
     "pages/favorite/favorite",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/coupon/coupon",
+    "pages/review-list/review-list",
+    "pages/review-submit/review-submit",
+    "pages/help/help",
+    "pages/settings/settings"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ff5000",
     "navigationBarTitleText": "精选商城",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#f5f5f5",
-    "backgroundTextStyle": "dark"
+    "backgroundTextStyle": "dark",
+    "enableShareAppMessage": true
   },
   "tabBar": {
     "color": "#999999",

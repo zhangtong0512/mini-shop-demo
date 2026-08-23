@@ -3,6 +3,7 @@ const mock = require('../../utils/mock')
 const address = require('../../utils/address')
 const pay = require('../../utils/pay')
 const config = require('../../utils/config')
+const coupon = require('../../utils/coupon')
 
 Page({
   data: {
@@ -14,6 +15,9 @@ Page({
     totalCount: 0,
     address: null,
     remark: '',
+    usableCoupons: [], // 当前可用优惠券（满减门槛已筛）
+    couponId: 0,
+    couponAmount: 0,
     submitting: false,
     freeShippingThreshold: config.FREE_SHIPPING_THRESHOLD
   },
@@ -60,15 +64,43 @@ Page({
     const totalCount = items.reduce((s, i) => s + i.count, 0)
     // 满额免运费，否则收固定运费
     const freight = goodsAmount >= config.FREE_SHIPPING_THRESHOLD ? 0 : config.SHIPPING_FEE
+    // 可用优惠券；已选券失效（已用/过期/不满足门槛）时自动清空
+    const usableCoupons = coupon.getUsableCoupons(goodsAmount)
+    let couponId = this.data.couponId
+    if (couponId && !usableCoupons.some(c => c.id === couponId)) {
+      couponId = 0
+    }
+    const selected = couponId ? coupon.getCouponById(couponId) : null
+    const couponAmount = selected ? Math.min(selected.amount, goodsAmount) : 0
 
     this.setData({
       items,
       goodsAmount,
       freight,
-      totalPrice: goodsAmount + freight,
+      usableCoupons,
+      couponId,
+      couponAmount,
+      totalPrice: goodsAmount + freight - couponAmount,
       totalCount,
       // 用户已选过地址则保留，否则用默认地址
       address: this.data.address || address.getDefaultAddress()
+    })
+  },
+
+  // 选择优惠券：跳优惠券页（选择模式），经事件通道回传
+  onCouponTap() {
+    if (!this.data.usableCoupons.length) {
+      wx.showToast({ title: '暂无可用优惠券', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: '/pages/coupon/coupon?mode=select',
+      events: {
+        selectCoupon: data => {
+          this.setData({ couponId: data.coupon ? data.coupon.id : 0 })
+          this.refresh()
+        }
+      }
     })
   },
 
@@ -110,6 +142,8 @@ Page({
         remark: this.data.remark,
         goodsAmount: this.data.goodsAmount,
         freight: this.data.freight,
+        couponId: this.data.couponId,
+        couponAmount: this.data.couponAmount,
         totalPrice: this.data.totalPrice,
         totalCount: this.data.totalCount
       })

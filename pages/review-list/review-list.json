@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "商品详情",
+  "navigationBarTitleText": "商品评价",
   "usingComponents": {
     "review-card": "/components/review-card/review-card"
   }

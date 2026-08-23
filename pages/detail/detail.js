@@ -1,24 +1,41 @@
 const mock = require('../../utils/mock')
 const cart = require('../../utils/cart')
 const favorite = require('../../utils/favorite')
+const review = require('../../utils/review')
 
 Page({
   data: {
     goods: null,
     count: 1,
     galleryCurrent: 0,
-    isFav: false
+    isFav: false,
+    reviewCount: 0,
+    reviewAvg: 0,
+    reviewStars: '',
+    reviewPreview: []
   },
 
   onLoad(options) {
     const goods = mock.getGoodsById(options.id)
+    const rating = review.getGoodsRating(options.id)
+    const round = Math.round(rating.avg)
     this.setData({
       goods,
-      isFav: favorite.isFavorite(options.id)
+      isFav: favorite.isFavorite(options.id),
+      reviewCount: rating.count,
+      reviewAvg: rating.avg,
+      reviewStars: '★★★★★'.slice(0, round) + '☆☆☆☆☆'.slice(0, 5 - round),
+      reviewPreview: review.getReviewsByGoods(options.id).slice(0, 2)
     })
     if (goods) {
       wx.setNavigationBarTitle({ title: goods.title })
     }
+  },
+
+  // 查看全部评价
+  onReviewTap() {
+    if (!this.data.goods) return
+    wx.navigateTo({ url: '/pages/review-list/review-list?id=' + this.data.goods.id })
   },
 
   // 顶部轮播切换时同步页码角标
@@ -85,5 +102,13 @@ Page({
     const now = favorite.toggleFavorite(this.data.goods.id)
     this.setData({ isFav: now })
     wx.showToast({ title: now ? '已收藏' : '已取消收藏', icon: 'none' })
+  },
+
+  onShareAppMessage() {
+    const goods = this.data.goods
+    return {
+      title: goods ? goods.title : '精选商城',
+      path: '/pages/detail/detail?id=' + (goods ? goods.id : '')
+    }
   }
 })

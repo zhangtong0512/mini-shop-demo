@@ -1,0 +1,148 @@
+.page {
+  padding: 20rpx 24rpx 60rpx;
+}
+
+/* 商品信息 */
+.goods-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.thumb {
+  position: relative;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #fde2d9, #fff0ea);
+  border-radius: 12rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.thumb-emoji {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48rpx;
+}
+
+.g-title {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+  font-size: 27rpx;
+  color: #333333;
+  line-height: 1.4;
+}
+
+/* 表单卡片 */
+.card {
+  margin-top: 20rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 24rpx;
+}
+
+.row-label {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+
+.stars {
+  display: flex;
+  margin-bottom: 12rpx;
+}
+
+.star {
+  font-size: 64rpx;
+  color: #dddddd;
+  margin-right: 16rpx;
+}
+
+.star.on {
+  color: #ffb400;
+}
+
+.textarea {
+  width: 100%;
+  height: 200rpx;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 27rpx;
+  box-sizing: border-box;
+}
+
+.count-tip {
+  margin-top: 8rpx;
+  text-align: right;
+  font-size: 22rpx;
+  color: #bbbbbb;
+}
+
+/* 晒图 */
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.img-item {
+  position: relative;
+  width: 180rpx;
+  height: 180rpx;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+  background: #f5f5f5;
+}
+
+.img-del {
+  position: absolute;
+  right: -10rpx;
+  top: -10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 24rpx;
+}
+
+.img-add {
+  width: 180rpx;
+  height: 180rpx;
+  border: 2rpx dashed #dddddd;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+  color: #bbbbbb;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  margin-top: 40rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: linear-gradient(90deg, #ff5500, #ff3200);
+  color: #ffffff;
+  font-size: 30rpx;
+  border-radius: 44rpx;
+}
+
+.submit-btn.disabled {
+  opacity: 0.5;
+}

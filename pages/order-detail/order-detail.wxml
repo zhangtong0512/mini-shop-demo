@@ -30,6 +30,12 @@
         <view class="g-title">{{item.title}}</view>
         <view class="g-price">¥{{item.price}}<text class="g-count"> x{{item.count}}</text></view>
       </view>
+      <view
+        class="review-tag {{item.reviewed ? 'done' : ''}}"
+        wx:if="{{order.status == 4}}"
+        bindtap="onReviewItem"
+        data-gid="{{item.id}}"
+      >{{item.reviewed ? '已评价' : '去评价'}}</view>
     </view>
   </view>
 
@@ -37,6 +43,7 @@
   <view class="card amount-card">
     <view class="amount-row"><text>商品金额</text><text>¥{{order.goodsAmount}}</text></view>
     <view class="amount-row"><text>运费</text><text class="{{order.freight == 0 ? 'free' : ''}}">{{order.freight == 0 ? '免运费' : '¥' + order.freight}}</text></view>
+    <view class="amount-row" wx:if="{{order.couponAmount > 0}}"><text>优惠券</text><text class="coupon">-¥{{order.couponAmount}}</text></view>
     <view class="amount-row total"><text>实付款</text><text class="total-price">¥{{order.totalPrice}}</text></view>
   </view>
 
@@ -67,6 +74,11 @@
     </block>
     <block wx:elif="{{order.status == 3}}">
       <view class="act-btn primary" bindtap="onConfirm">确认收货</view>
+    </block>
+    <block wx:elif="{{order.status == 4}}">
+      <view class="act-btn" wx:if="{{!order.allReviewed}}" bindtap="onReview">去评价</view>
+      <view class="act-btn" bindtap="onDelete">删除订单</view>
+      <view class="act-btn primary" bindtap="onBuyAgain">再次购买</view>
     </block>
     <block wx:else>
       <view class="act-btn" bindtap="onDelete">删除订单</view>

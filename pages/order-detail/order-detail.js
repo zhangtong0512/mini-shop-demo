@@ -1,6 +1,7 @@
 const mock = require('../../utils/mock')
 const cart = require('../../utils/cart')
 const pay = require('../../utils/pay')
+const review = require('../../utils/review')
 
 const STATUS_META = {
   1: { icon: '💰', title: '等待付款', sub: '订单提交成功，请尽快完成支付' },
@@ -46,6 +47,13 @@ Page({
       return
     }
     const meta = STATUS_META[order.status] || { icon: '📄', title: '订单详情', sub: '' }
+    // 已完成订单：标记每个商品是否已评价
+    if (order.items) {
+      order.items.forEach(it => {
+        it.reviewed = review.hasReviewed(order.id, it.id)
+      })
+      order.allReviewed = order.items.every(it => it.reviewed)
+    }
     this.setData({
       order,
       statusIcon: meta.icon,
@@ -155,6 +163,24 @@ Page({
           setTimeout(() => wx.navigateBack(), 600)
         }
       }
+    })
+  },
+
+  // 评价单个商品
+  onReviewItem(e) {
+    const goodsId = Number(e.currentTarget.dataset.gid)
+    wx.navigateTo({
+      url: '/pages/review-submit/review-submit?orderId=' + this.data.order.id + '&goodsId=' + goodsId
+    })
+  },
+
+  // 去评价：跳到第一个未评价的商品
+  onReview() {
+    const order = this.data.order
+    const first = order.items.find(it => !it.reviewed)
+    if (!first) return
+    wx.navigateTo({
+      url: '/pages/review-submit/review-submit?orderId=' + order.id + '&goodsId=' + first.id
     })
   },
 

@@ -44,5 +44,12 @@ Page({
 
   onTapGoods(e) {
     wx.navigateTo({ url: '/pages/detail/detail?id=' + e.detail.id })
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '精选商城 · 微信小程序 Demo',
+      path: '/pages/index/index'
+    }
   }
 })

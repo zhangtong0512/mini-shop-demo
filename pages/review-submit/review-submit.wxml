@@ -1,0 +1,43 @@
+<view class="page" wx:if="{{goods}}">
+  <!-- 商品信息 -->
+  <view class="goods-card">
+    <view class="thumb">
+      <text class="thumb-emoji">{{goods.emoji}}</text>
+    </view>
+    <view class="g-title clamp2">{{goods.title}}</view>
+  </view>
+
+  <view class="card">
+    <view class="row-label">商品评分</view>
+    <view class="stars">
+      <text
+        class="star {{item <= rating ? 'on' : ''}}"
+        wx:for="{{[1,2,3,4,5]}}"
+        wx:key="*this"
+        data-rate="{{item}}"
+        bindtap="onRate"
+      >★</text>
+    </view>
+
+    <view class="row-label">评价内容</view>
+    <textarea
+      class="textarea"
+      placeholder="说说这件商品的真实感受吧（必填）"
+      value="{{content}}"
+      bindinput="onContent"
+      maxlength="200"
+    />
+    <view class="count-tip">{{content.length}}/200</view>
+
+    <view class="row-label">晒图（选填，最多 3 张）</view>
+    <view class="images">
+      <view class="img-item" wx:for="{{images}}" wx:key="*this">
+        <image class="img" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-idx="{{index}}" />
+        <view class="img-del" catchtap="onRemoveImage" data-idx="{{index}}">✕</view>
+      </view>
+      <view class="img-add" wx:if="{{images.length < 3}}" bindtap="onChooseImage">＋</view>
+    </view>
+  </view>
+
+  <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">提交评价</view>
+</view>

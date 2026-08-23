@@ -177,6 +177,52 @@
   color: #666666;
 }
 
+/* 商品评价预览 */
+.review-block {
+  margin-top: 16rpx;
+  background: #ffffff;
+  padding: 24rpx 0;
+}
+
+.review-head {
+  display: flex;
+  align-items: baseline;
+  padding: 0 28rpx 8rpx;
+}
+
+.review-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.review-summary {
+  margin-left: 16rpx;
+  font-size: 24rpx;
+  color: #ffb400;
+  letter-spacing: 1rpx;
+}
+
+.review-count {
+  margin-left: 8rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.review-more {
+  margin-left: auto;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.review-preview {
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.review-preview:last-child {
+  border-bottom: none;
+}
+
 /* 商品图文详情 */
 .detail-block {
   margin-top: 16rpx;

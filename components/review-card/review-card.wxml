@@ -1,0 +1,29 @@
+<view class="review">
+  <view class="r-head">
+    <view class="avatar">
+      <image wx:if="{{review.avatar}}" class="avatar-img" src="{{review.avatar}}" mode="aspectFill" />
+      <text wx:else>{{avatarText}}</text>
+    </view>
+    <view class="r-info">
+      <view class="r-name">{{review.nickname}}</view>
+      <view class="r-meta">
+        <text class="r-stars">{{stars}}</text>
+        <text class="r-time">{{review.createTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="r-content">{{review.content}}</view>
+
+  <view class="r-images" wx:if="{{review.images.length > 0}}">
+    <image
+      class="r-img"
+      wx:for="{{review.images}}"
+      wx:key="*this"
+      src="{{item}}"
+      mode="aspectFill"
+      catchtap="onPreview"
+      data-src="{{item}}"
+    />
+  </view>
+</view>

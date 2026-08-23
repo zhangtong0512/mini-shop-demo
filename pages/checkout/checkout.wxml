@@ -48,6 +48,13 @@
       <text>运费</text>
       <text class="value {{freight == 0 ? 'free' : ''}}">{{freight == 0 ? '免运费' : '¥' + freight}}</text>
     </view>
+    <view class="summary-row coupon-row" bindtap="onCouponTap">
+      <text>优惠券</text>
+      <view class="coupon-value">
+        <text class="value {{couponId ? 'on' : ''}}">{{couponId ? '-¥' + couponAmount : (usableCoupons.length ? usableCoupons.length + ' 张可用' : '暂无可用')}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
     <view class="summary-row">
       <text>配送方式</text>
       <text class="value">普通快递 · 满{{freeShippingThreshold}}元包邮</text>
@@ -66,8 +73,11 @@
 
   <view class="footer">
     <view class="total">
-      <text class="total-label">应付：</text>
-      <text class="total-price">¥{{totalPrice}}</text>
+      <view class="coupon-tip" wx:if="{{couponAmount > 0}}">已优惠 ¥{{couponAmount}}</view>
+      <view class="total-line">
+        <text class="total-label">应付：</text>
+        <text class="total-price">¥{{totalPrice}}</text>
+      </view>
     </view>
     <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">提交订单</view>
   </view>

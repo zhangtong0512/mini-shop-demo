@@ -166,6 +166,28 @@
   color: #ff5000;
 }
 
+/* 优惠券行 */
+.coupon-row .value.on {
+  color: #ff5000;
+}
+
+.coupon-value {
+  display: flex;
+  align-items: center;
+}
+
+.coupon-row .arrow {
+  margin-left: 8rpx;
+  color: #cccccc;
+  font-size: 32rpx;
+}
+
+.coupon-tip {
+  font-size: 22rpx;
+  color: #ff5000;
+  margin-bottom: 4rpx;
+}
+
 .remark-card {
   margin-top: 20rpx;
   background: #ffffff;

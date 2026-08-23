@@ -24,6 +24,12 @@ Page({
   },
 
   onShow() {
+    // 「我的」页经 switchTab 跳入时携带的指定 tab（switchTab 无法带参，走全局临时状态）
+    const tab = getApp().globalData.orderTab
+    if (tab) {
+      getApp().globalData.orderTab = null
+      this.setData({ activeTab: tab })
+    }
     this.refresh()
   },
 

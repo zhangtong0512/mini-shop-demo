@@ -1,0 +1,27 @@
+<view class="page">
+  <!-- 评分汇总 -->
+  <view class="summary">
+    <view class="s-avg">
+      <view class="avg-num">{{avg}}</view>
+      <view class="avg-star">{{stars}}</view>
+      <view class="avg-count">共 {{count}} 条评价</view>
+    </view>
+    <view class="s-goods" wx:if="{{goods}}">
+      <view class="thumb">
+        <text class="thumb-emoji">{{goods.emoji}}</text>
+      </view>
+      <view class="g-title clamp2">{{goods.title}}</view>
+    </view>
+  </view>
+
+  <view class="list" wx:if="{{list.length > 0}}">
+    <view class="review-card" wx:for="{{list}}" wx:key="id">
+      <review-card review="{{item}}" />
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <view class="empty-icon">💬</view>
+    <view class="empty-text">暂无评价，购买后回来晒一晒吧</view>
+  </view>
+</view>

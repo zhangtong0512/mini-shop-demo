@@ -30,7 +30,9 @@ Page({
 
   onOrderTap(e) {
     const tab = e.currentTarget.dataset.tab
-    wx.navigateTo({ url: '/pages/order/order?tab=' + tab })
+    // 订单是 tabBar 页，必须用 switchTab（无法带参），先存全局再跳转
+    getApp().globalData.orderTab = Number(tab)
+    wx.switchTab({ url: '/pages/order/order' })
   },
 
   onAddressTap() {
@@ -42,8 +44,20 @@ Page({
     wx.navigateTo({ url: '/pages/user-info/user-info' })
   },
 
+  onCouponTap() {
+    wx.navigateTo({ url: '/pages/coupon/coupon' })
+  },
+
   onFavoriteTap() {
     wx.navigateTo({ url: '/pages/favorite/favorite' })
+  },
+
+  onHelpTap() {
+    wx.navigateTo({ url: '/pages/help/help' })
+  },
+
+  onSettingsTap() {
+    wx.navigateTo({ url: '/pages/settings/settings' })
   },
 
   // 头像临时路径失效时兜底为昵称首字
@@ -51,8 +65,10 @@ Page({
     this.setData({ avatarError: true })
   },
 
-  onMenuTap(e) {
-    const name = e.currentTarget.dataset.name
-    wx.showToast({ title: name + '（demo 功能）', icon: 'none' })
+  onShareAppMessage() {
+    return {
+      title: '精选商城 · 微信小程序 Demo',
+      path: '/pages/index/index'
+    }
   }
 })
