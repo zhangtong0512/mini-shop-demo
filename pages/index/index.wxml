@@ -1,11 +1,19 @@
 <view class="page">
-  <view class="search-bar">
-    <view class="search-box" bindtap="onSearchTap">
-      <text class="search-icon">🔍</text>
-      <text class="search-placeholder">搜索商品</text>
+  <!-- 品牌渐变顶栏：搜索胶囊 + 扫一扫占位 -->
+  <view class="header">
+    <view class="header-inner">
+      <view class="search-box" hover-class="hv" bindtap="onSearchTap">
+        <text class="search-icon">🔍</text>
+        <text class="search-placeholder">搜索商品</text>
+      </view>
+      <view class="scan-btn" hover-class="hv" bindtap="onScanTap">
+        <image class="scan-ico" src="/images/scan.png" mode="aspectFit" />
+        <text class="scan-text">扫一扫</text>
+      </view>
     </view>
   </view>
 
+  <!-- 悬浮轮播卡片 -->
   <view class="banner-wrap">
     <swiper class="banner" autoplay circular interval="3000" bindchange="onBannerChange">
       <swiper-item wx:for="{{banners}}" wx:key="*this">
@@ -22,15 +30,27 @@
     </view>
   </view>
 
+  <!-- 图标分类导航（吸顶） -->
+  <view class="category-sticky">
   <scroll-view class="category-nav" scroll-x>
-    <view
-      class="category-item {{activeCategory == item.id ? 'active' : ''}}"
-      wx:for="{{categories}}"
-      wx:key="id"
-      data-id="{{item.id}}"
-      bindtap="onCategoryTap"
-    >{{item.name}}</view>
+    <view class="category-inner">
+      <view
+        class="category-item {{activeCategory == item.id ? 'active' : ''}}"
+        hover-class="category-hv"
+        wx:for="{{categories}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onCategoryTap"
+      >
+        <view class="category-icon">{{item.icon}}</view>
+        <view class="category-name">{{item.name}}</view>
+      </view>
+    </view>
   </scroll-view>
+  </view>
+
+  <!-- 为你推荐 -->
+  <view class="section-title">为你推荐</view>
 
   <view class="goods-grid">
     <goods-card
@@ -42,6 +62,7 @@
   </view>
 
   <view class="empty" wx:if="{{goodsList.length == 0}}">
-    <text>没有找到相关商品</text>
+    <view class="empty-icon">🛍️</view>
+    <view class="empty-text">没有找到相关商品</view>
   </view>
 </view>

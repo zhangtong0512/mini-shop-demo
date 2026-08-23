@@ -2,13 +2,14 @@
   padding: 20rpx 24rpx 60rpx;
 }
 
-/* 顶部 tab */
+/* 顶部 tab（胶囊容器） */
 .tabs {
   display: flex;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 40rpx;
   padding: 6rpx;
   margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .tab {
@@ -18,36 +19,63 @@
   line-height: 72rpx;
   font-size: 28rpx;
   color: #666666;
-  border-radius: 12rpx;
+  border-radius: 34rpx;
+  transition: all 0.2s;
 }
 
 .tab.active {
-  background: #fff1ea;
-  color: #ff5000;
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
+  color: #ffffff;
   font-weight: 600;
+  box-shadow: 0 6rpx 14rpx rgba(255, 80, 0, 0.3);
 }
 
-/* 优惠券卡片 */
+/* 优惠券卡片（票据造型：左侧渐变金额 + 右侧虚线分隔 + 两侧锯齿凹口） */
 .coupon-card {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   margin-bottom: 20rpx;
   overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 锯齿凹口：在分隔线上下各切一个半圆 */
+.coupon-card::before,
+.coupon-card::after {
+  content: '';
+  position: absolute;
+  left: 210rpx;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: #f7f7f9;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.coupon-card::before {
+  top: -14rpx;
+}
+
+.coupon-card::after {
+  bottom: -14rpx;
 }
 
 .c-left {
-  width: 200rpx;
-  background: linear-gradient(135deg, #ff6a00, #ff3200);
+  width: 210rpx;
+  background: linear-gradient(160deg, #ff6a00, #ff3200);
   color: #ffffff;
   text-align: center;
-  padding: 32rpx 0;
+  padding: 40rpx 0;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  border-right: 2rpx dashed rgba(255, 255, 255, 0.5);
 }
 
 .c-amount {
@@ -65,13 +93,13 @@
 .c-cond {
   margin-top: 12rpx;
   font-size: 22rpx;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
 .c-right {
   flex: 1;
   min-width: 0;
-  padding: 28rpx 20rpx;
+  padding: 28rpx 20rpx 72rpx;
 }
 
 .c-title {
@@ -95,18 +123,21 @@
 /* 右侧领取按钮 / 状态 */
 .c-btn {
   position: absolute;
-  right: 20rpx;
-  bottom: 20rpx;
-  padding: 10rpx 28rpx;
-  background: linear-gradient(90deg, #ff5500, #ff3200);
+  right: 24rpx;
+  bottom: 24rpx;
+  padding: 12rpx 32rpx;
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
   color: #ffffff;
   font-size: 24rpx;
-  border-radius: 28rpx;
+  border-radius: 30rpx;
+  box-shadow: 0 6rpx 14rpx rgba(255, 80, 0, 0.3);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .c-btn.claimed {
   background: #eeeeee;
   color: #999999;
+  box-shadow: none;
 }
 
 .c-status {
@@ -114,27 +145,33 @@
   right: 24rpx;
   top: 24rpx;
   font-size: 24rpx;
-  color: #999999;
+  color: #ff5000;
+  font-weight: 600;
 }
 
-/* 我的券：已过期置灰 */
+/* 我的券：已用/已过期置灰 */
 .coupon-card.disabled .c-left {
-  background: linear-gradient(135deg, #cfcfcf, #aaaaaa);
+  background: linear-gradient(160deg, #cfcfcf, #aaaaaa);
 }
 
 .coupon-card.disabled {
   opacity: 0.85;
 }
 
+.coupon-card.disabled .c-status {
+  color: #999999;
+}
+
 /* 选择模式下「不使用优惠券」 */
 .none {
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 26rpx 24rpx;
   margin-bottom: 20rpx;
   text-align: center;
   color: #999999;
   font-size: 27rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .page-tip {

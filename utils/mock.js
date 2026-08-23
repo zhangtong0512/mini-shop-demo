@@ -25,13 +25,13 @@ const ORDER_STATUS = {
 }
 
 const categories = [
-  { id: 'all', name: '全部' },
-  { id: 'digital', name: '手机数码' },
-  { id: 'apparel', name: '服饰鞋包' },
-  { id: 'appliance', name: '家用电器' },
-  { id: 'beauty', name: '美妆个护' },
-  { id: 'food', name: '食品生鲜' },
-  { id: 'sports', name: '运动户外' }
+  { id: 'all', name: '全部', icon: '🏠' },
+  { id: 'digital', name: '手机数码', icon: '📱' },
+  { id: 'apparel', name: '服饰鞋包', icon: '👕' },
+  { id: 'appliance', name: '家用电器', icon: '🌀' },
+  { id: 'beauty', name: '美妆个护', icon: '💄' },
+  { id: 'food', name: '食品生鲜', icon: '🍎' },
+  { id: 'sports', name: '运动户外', icon: '🏀' }
 ]
 
 const goodsList = [

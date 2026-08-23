@@ -9,9 +9,11 @@
 
 .addr-card {
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 28rpx 24rpx;
   margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  transition: opacity 0.2s ease;
 }
 
 .addr-line {
@@ -62,6 +64,7 @@
   border-radius: 28rpx;
   font-size: 24rpx;
   color: #666666;
+  transition: opacity 0.2s ease;
 }
 
 .op-btn.danger {
@@ -99,8 +102,10 @@
   height: 84rpx;
   line-height: 84rpx;
   text-align: center;
-  background: linear-gradient(90deg, #ff5500, #ff3200);
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
   color: #ffffff;
   font-size: 30rpx;
   border-radius: 42rpx;
+  box-shadow: 0 8rpx 20rpx rgba(255, 80, 0, 0.28);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }

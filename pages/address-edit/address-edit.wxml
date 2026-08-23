@@ -9,7 +9,7 @@
       <input class="input" type="number" placeholder="请填写手机号" value="{{form.phone}}" bindinput="onPhone" maxlength="11" />
     </view>
     <picker mode="region" value="{{form.region}}" bindchange="onRegion">
-      <view class="form-row">
+      <view class="form-row" hover-class="hv">
         <text class="label">所在地区</text>
         <view class="input region {{form.regionText ? '' : 'placeholder'}}">
           {{form.regionText || '请选择省 / 市 / 区'}}
@@ -27,5 +27,5 @@
     </view>
   </view>
 
-  <view class="save-btn" bindtap="onSave">保存</view>
+  <view class="save-btn" hover-class="hv-btn" bindtap="onSave">保存</view>
 </view>

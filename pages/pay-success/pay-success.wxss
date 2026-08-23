@@ -5,8 +5,9 @@
 .result {
   text-align: center;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 64rpx 0 56rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .icon {
@@ -36,8 +37,9 @@
 .tips {
   margin-top: 24rpx;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 28rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .tips-item {
@@ -62,10 +64,12 @@
   font-size: 30rpx;
   color: #333333;
   background: #ffffff;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .btn.primary {
-  background: linear-gradient(90deg, #ff5500, #ff3200);
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
   border-color: transparent;
   color: #ffffff;
+  box-shadow: 0 8rpx 20rpx rgba(255, 80, 0, 0.28);
 }

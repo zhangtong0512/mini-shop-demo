@@ -33,6 +33,7 @@
       <view
         class="review-tag {{item.reviewed ? 'done' : ''}}"
         wx:if="{{order.status == 4}}"
+        hover-class="hv"
         bindtap="onReviewItem"
         data-gid="{{item.id}}"
       >{{item.reviewed ? '已评价' : '去评价'}}</view>
@@ -66,23 +67,23 @@
   <!-- 底部操作 -->
   <view class="footer">
     <block wx:if="{{order.status == 1}}">
-      <view class="act-btn" bindtap="onCancel">取消订单</view>
-      <view class="act-btn primary" bindtap="onPay">去支付</view>
+      <view class="act-btn" hover-class="hv-btn" bindtap="onCancel">取消订单</view>
+      <view class="act-btn primary" hover-class="hv-btn" bindtap="onPay">去支付</view>
     </block>
     <block wx:elif="{{order.status == 2}}">
-      <view class="act-btn primary" bindtap="onShip">模拟发货</view>
+      <view class="act-btn primary" hover-class="hv-btn" bindtap="onShip">模拟发货</view>
     </block>
     <block wx:elif="{{order.status == 3}}">
-      <view class="act-btn primary" bindtap="onConfirm">确认收货</view>
+      <view class="act-btn primary" hover-class="hv-btn" bindtap="onConfirm">确认收货</view>
     </block>
     <block wx:elif="{{order.status == 4}}">
-      <view class="act-btn" wx:if="{{!order.allReviewed}}" bindtap="onReview">去评价</view>
-      <view class="act-btn" bindtap="onDelete">删除订单</view>
-      <view class="act-btn primary" bindtap="onBuyAgain">再次购买</view>
+      <view class="act-btn" hover-class="hv-btn" wx:if="{{!order.allReviewed}}" bindtap="onReview">去评价</view>
+      <view class="act-btn" hover-class="hv-btn" bindtap="onDelete">删除订单</view>
+      <view class="act-btn primary" hover-class="hv-btn" bindtap="onBuyAgain">再次购买</view>
     </block>
     <block wx:else>
-      <view class="act-btn" bindtap="onDelete">删除订单</view>
-      <view class="act-btn primary" bindtap="onBuyAgain">再次购买</view>
+      <view class="act-btn" hover-class="hv-btn" bindtap="onDelete">删除订单</view>
+      <view class="act-btn primary" hover-class="hv-btn" bindtap="onBuyAgain">再次购买</view>
     </block>
   </view>
 

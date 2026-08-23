@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   padding: 16rpx 24rpx;
-  background: #ff5000;
+  background: linear-gradient(180deg, #ff6a00, #ff5000);
 }
 
 .search-box {
@@ -20,6 +20,7 @@
   padding: 0 24rpx;
   background: #ffffff;
   border-radius: 32rpx;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.12);
 }
 
 .search-icon {
@@ -47,9 +48,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-left: 20rpx;
+  position: relative;
   font-size: 28rpx;
   font-weight: 600;
   color: #333333;
+}
+
+.section-head::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #ff6a00, #ff3200);
 }
 
 .clear {
@@ -71,10 +86,13 @@
   border-radius: 32rpx;
   font-size: 26rpx;
   color: #666666;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  transition: opacity 0.2s ease;
 }
 
 .tag.hot {
   color: #ff5000;
+  background: #fff2e8;
 }
 
 .goods-grid {

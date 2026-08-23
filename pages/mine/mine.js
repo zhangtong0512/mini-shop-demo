@@ -1,6 +1,8 @@
 const cart = require('../../utils/cart')
 const mock = require('../../utils/mock')
 const user = require('../../utils/user')
+const favorite = require('../../utils/favorite')
+const coupon = require('../../utils/coupon')
 
 Page({
   data: {
@@ -8,22 +10,28 @@ Page({
     isLoggedIn: false,
     avatarError: false,
     avatarText: '😀',
-    orderCounts: [0, 0, 0, 0]
+    orderCounts: [0, 0, 0, 0],
+    favCount: 0,
+    couponCount: 0,
+    cartCount: 0
   },
 
   onShow() {
-    // 登录态 + 各状态订单数量 + 购物车角标兜底
+    // 登录态 + 各状态订单数量 + 头部统计 + 购物车角标
     const u = user.getUserInfo()
+    const orders = mock.getOrders()
+    const now = Date.now()
     this.setData({
       isLoggedIn: !!u,
       user: u,
       avatarError: false,
       // 无头像时用昵称首字 / 默认表情兜底
-      avatarText: u && u.nickname ? u.nickname[0] : '😀'
-    })
-    const orders = mock.getOrders()
-    this.setData({
-      orderCounts: [1, 2, 3, 4].map(s => orders.filter(o => o.status === s).length)
+      avatarText: u && u.nickname ? u.nickname[0] : '😀',
+      orderCounts: [1, 2, 3, 4].map(s => orders.filter(o => o.status === s).length),
+      favCount: favorite.getCount(),
+      // 可用券：未使用且未过期
+      couponCount: coupon.getCoupons().filter(c => c.status === 0 && c.expireTime > now).length,
+      cartCount: cart.getCart().reduce((sum, i) => sum + i.count, 0)
     })
     cart.updateBadge()
   },
@@ -32,6 +40,12 @@ Page({
     const tab = e.currentTarget.dataset.tab
     // 订单是 tabBar 页，必须用 switchTab（无法带参），先存全局再跳转
     getApp().globalData.orderTab = Number(tab)
+    wx.switchTab({ url: '/pages/order/order' })
+  },
+
+  // 头部「全部订单」
+  onAllOrderTap() {
+    getApp().globalData.orderTab = 'all'
     wx.switchTab({ url: '/pages/order/order' })
   },
 
@@ -58,6 +72,10 @@ Page({
 
   onSettingsTap() {
     wx.navigateTo({ url: '/pages/settings/settings' })
+  },
+
+  onCartTap() {
+    wx.switchTab({ url: '/pages/cart/cart' })
   },
 
   // 头像临时路径失效时兜底为昵称首字

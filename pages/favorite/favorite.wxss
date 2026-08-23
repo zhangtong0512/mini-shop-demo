@@ -32,9 +32,11 @@
 .empty-btn {
   display: inline-block;
   margin-top: 48rpx;
-  padding: 16rpx 64rpx;
+  padding: 16rpx 72rpx;
   color: #ffffff;
-  background: #ff5000;
-  border-radius: 40rpx;
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
+  border-radius: 44rpx;
   font-size: 28rpx;
+  box-shadow: 0 8rpx 20rpx rgba(255, 80, 0, 0.28);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }

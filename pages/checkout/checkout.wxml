@@ -1,6 +1,6 @@
 <view class="page" wx:if="{{items.length > 0}}">
   <!-- 收货地址 -->
-  <view class="addr-card" bindtap="onAddressTap">
+  <view class="addr-card" hover-class="hv" bindtap="onAddressTap">
     <block wx:if="{{address}}">
       <view class="addr-ico">📍</view>
       <view class="addr-info">
@@ -48,7 +48,7 @@
       <text>运费</text>
       <text class="value {{freight == 0 ? 'free' : ''}}">{{freight == 0 ? '免运费' : '¥' + freight}}</text>
     </view>
-    <view class="summary-row coupon-row" bindtap="onCouponTap">
+    <view class="summary-row coupon-row" hover-class="hv" bindtap="onCouponTap">
       <text>优惠券</text>
       <view class="coupon-value">
         <text class="value {{couponId ? 'on' : ''}}">{{couponId ? '-¥' + couponAmount : (usableCoupons.length ? usableCoupons.length + ' 张可用' : '暂无可用')}}</text>
@@ -79,7 +79,7 @@
         <text class="total-price">¥{{totalPrice}}</text>
       </view>
     </view>
-    <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">提交订单</view>
+    <view class="submit-btn {{submitting ? 'disabled' : ''}}" hover-class="{{submitting ? '' : 'hv-btn'}}" bindtap="onSubmit">提交订单</view>
   </view>
 
   <!-- 自定义支付底部弹层（模拟支付 / 真实支付失败兜底） -->

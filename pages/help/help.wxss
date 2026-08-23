@@ -5,8 +5,9 @@
 /* FAQ 手风琴 */
 .faq {
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 0 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .faq-item {
@@ -52,13 +53,15 @@
 .contact {
   margin-top: 20rpx;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 0 24rpx;
   height: 100rpx;
   display: flex;
   align-items: center;
   font-size: 28rpx;
   color: #333333;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  transition: opacity 0.2s ease;
 }
 
 .contact-ico {

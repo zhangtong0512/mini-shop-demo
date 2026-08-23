@@ -1,7 +1,7 @@
 <view class="page">
   <view class="tabs">
-    <view class="tab {{mode == 'center' ? 'active' : ''}}" bindtap="onTabTap" data-mode="center">领券中心</view>
-    <view class="tab {{mode == 'mine' ? 'active' : ''}}" bindtap="onTabTap" data-mode="mine">我的券</view>
+    <view class="tab {{mode == 'center' ? 'active' : ''}}" hover-class="hv" bindtap="onTabTap" data-mode="center">领券中心</view>
+    <view class="tab {{mode == 'mine' ? 'active' : ''}}" hover-class="hv" bindtap="onTabTap" data-mode="mine">我的券</view>
   </view>
 
   <!-- 领券中心 -->
@@ -16,18 +16,19 @@
         <view class="c-desc">{{item.desc}}</view>
         <view class="c-time">领取后 {{item.expireDays}} 天内有效</view>
       </view>
-      <view class="c-btn {{item.claimed ? 'claimed' : ''}}" bindtap="onReceive" data-tid="{{item.tid}}">{{item.claimed ? '已领取' : '立即领取'}}</view>
+      <view class="c-btn {{item.claimed ? 'claimed' : ''}}" hover-class="{{item.claimed ? '' : 'hv-btn'}}" bindtap="onReceive" data-tid="{{item.tid}}">{{item.claimed ? '已领取' : '立即领取'}}</view>
     </view>
     <view class="page-tip">每人每种限领 1 张，可在结算时使用</view>
   </block>
 
   <!-- 我的券 -->
   <block wx:elif="{{mode == 'mine'}}">
-    <view class="none" wx:if="{{selectMode}}" bindtap="onNoCoupon">不使用优惠券</view>
+    <view class="none" hover-class="hv" wx:if="{{selectMode}}" bindtap="onNoCoupon">不使用优惠券</view>
     <view
       class="coupon-card mine {{item.status == 2 ? 'disabled' : ''}}"
       wx:for="{{myCoupons}}"
       wx:key="id"
+      hover-class="hv"
       bindtap="onPick"
       data-id="{{item.id}}"
     >

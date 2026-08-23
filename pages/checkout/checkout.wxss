@@ -6,8 +6,10 @@
   display: flex;
   align-items: center;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 28rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  transition: opacity 0.2s ease;
 }
 
 .addr-ico {
@@ -55,8 +57,9 @@
 .goods-card {
   margin-top: 20rpx;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .goods-header {
@@ -141,8 +144,9 @@
 .summary {
   margin-top: 20rpx;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 12rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .summary-row {
@@ -191,8 +195,9 @@
 .remark-card {
   margin-top: 20rpx;
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .remark-label {
@@ -239,10 +244,12 @@
   height: 80rpx;
   line-height: 80rpx;
   padding: 0 64rpx;
-  background: linear-gradient(90deg, #ff5500, #ff3200);
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
   color: #ffffff;
   font-size: 30rpx;
   border-radius: 40rpx;
+  box-shadow: 0 8rpx 20rpx rgba(255, 80, 0, 0.28);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .submit-btn.disabled {

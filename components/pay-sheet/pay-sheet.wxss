@@ -29,6 +29,7 @@
   background: #ffffff;
   border-radius: 28rpx 28rpx 0 0;
   padding: 20rpx 40rpx calc(env(safe-area-inset-bottom) + 36rpx);
+  box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.12);
   animation: sheet-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .sheet.out {
@@ -51,7 +52,7 @@
   width: 72rpx;
   height: 72rpx;
   border-radius: 18rpx;
-  background: #07c160;
+  background: linear-gradient(160deg, #07d169, #07c160);
   color: #ffffff;
   font-size: 36rpx;
   font-weight: 600;
@@ -59,6 +60,7 @@
   align-items: center;
   justify-content: center;
   margin-right: 20rpx;
+  box-shadow: 0 6rpx 14rpx rgba(7, 193, 96, 0.35);
 }
 .header-text {
   flex: 1;
@@ -108,11 +110,13 @@
   height: 96rpx;
   line-height: 96rpx;
   text-align: center;
-  background: #07c160;
+  background: linear-gradient(160deg, #07d169, #07c160);
   color: #ffffff;
   font-size: 34rpx;
   font-weight: 600;
   border-radius: 16rpx;
+  box-shadow: 0 8rpx 20rpx rgba(7, 193, 96, 0.3);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .btn-primary.disabled {
   opacity: 0.7;
@@ -125,6 +129,16 @@
   text-align: center;
   color: #666666;
   font-size: 30rpx;
+  transition: opacity 0.2s ease;
+}
+
+/* 组件样式隔离：内部复刻全局按压反馈 */
+.hv {
+  opacity: 0.82;
+}
+.hv-btn {
+  opacity: 0.85;
+  transform: scale(0.97);
 }
 
 .hint {

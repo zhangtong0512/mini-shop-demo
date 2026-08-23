@@ -42,17 +42,17 @@
     <view class="title">{{goods.title}}</view>
     <view class="desc">{{goods.desc}}</view>
     <view class="meta">
-      <text>库存 {{goods.stock}} 件</text>
-      <text>48 小时内发货</text>
+      <text class="meta-item">📦 库存 {{goods.stock}} 件</text>
+      <text class="meta-item">🚚 48 小时内发货</text>
     </view>
   </view>
 
   <view class="qty">
     <view class="qty-label">购买数量</view>
     <view class="stepper">
-      <view class="step-btn {{count <= 1 ? 'disabled' : ''}}" bindtap="onMinus">-</view>
+      <view class="step-btn {{count <= 1 ? 'disabled' : ''}}" hover-class="hv" bindtap="onMinus">−</view>
       <view class="step-num">{{count}}</view>
-      <view class="step-btn {{count >= 99 ? 'disabled' : ''}}" bindtap="onPlus">+</view>
+      <view class="step-btn {{count >= 99 ? 'disabled' : ''}}" hover-class="hv" bindtap="onPlus">+</view>
     </view>
   </view>
 
@@ -63,7 +63,7 @@
   </view>
 
   <!-- 商品评价预览 -->
-  <view class="review-block" wx:if="{{reviewCount > 0}}" bindtap="onReviewTap">
+  <view class="review-block" wx:if="{{reviewCount > 0}}" hover-class="hv" bindtap="onReviewTap">
     <view class="review-head">
       <text class="review-title">商品评价</text>
       <text class="review-summary">{{reviewStars}} {{reviewAvg}} 分</text>

@@ -12,7 +12,7 @@
   </view>
 
   <view class="btns">
-    <view class="btn primary" bindtap="onViewOrder">查看订单</view>
-    <view class="btn" bindtap="onBackHome">返回首页</view>
+    <view class="btn primary" hover-class="hv-btn" bindtap="onViewOrder">查看订单</view>
+    <view class="btn" hover-class="hv-btn" bindtap="onBackHome">返回首页</view>
   </view>
 </view>

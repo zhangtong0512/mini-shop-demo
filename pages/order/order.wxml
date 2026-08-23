@@ -1,20 +1,22 @@
 <view class="page">
+  <view class="tabs-wrap">
   <scroll-view class="tabs" scroll-x>
     <view
-      class="tab-item {{activeTab == item.key ? 'active' : ''}}"
+      class="tab {{activeTab == item.key ? 'active' : ''}}"
       wx:for="{{tabs}}"
       wx:key="key"
       data-key="{{item.key}}"
       bindtap="onTabTap"
     >{{item.name}}</view>
   </scroll-view>
+  </view>
 
   <view class="order-list" wx:if="{{orders.length > 0}}">
-    <view class="order-card" wx:for="{{orders}}" wx:key="id" bindtap="onOrderTap" data-id="{{item.id}}">
+    <view class="order-card" hover-class="hv" wx:for="{{orders}}" wx:key="id" bindtap="onOrderTap" data-id="{{item.id}}">
       <view class="order-head">
         <text class="order-no">{{item.orderNo}}</text>
         <view class="order-status-col">
-          <text class="order-status {{item.status == 1 ? 'wait-pay' : ''}}">{{item.statusText}}</text>
+          <text class="order-status st-{{item.status}}">{{item.statusText}}</text>
           <text class="order-remain" wx:if="{{item.remainText}}">{{item.remainText}}</text>
         </view>
       </view>
@@ -38,9 +40,9 @@
       </view>
 
       <view class="order-actions" wx:if="{{item.status == 1 || item.status == 3}}">
-        <view class="act-btn" wx:if="{{item.status == 1}}" catchtap="onCancel" data-id="{{item.id}}">取消订单</view>
-        <view class="act-btn primary" wx:if="{{item.status == 1}}" catchtap="onPay" data-id="{{item.id}}">去支付</view>
-        <view class="act-btn primary" wx:if="{{item.status == 3}}" catchtap="onConfirm" data-id="{{item.id}}">确认收货</view>
+        <view class="act-btn" hover-class="hv-btn" wx:if="{{item.status == 1}}" catchtap="onCancel" data-id="{{item.id}}">取消订单</view>
+        <view class="act-btn primary" hover-class="hv-btn" wx:if="{{item.status == 1}}" catchtap="onPay" data-id="{{item.id}}">去支付</view>
+        <view class="act-btn primary" hover-class="hv-btn" wx:if="{{item.status == 3}}" catchtap="onConfirm" data-id="{{item.id}}">确认收货</view>
       </view>
     </view>
   </view>
@@ -48,7 +50,7 @@
   <view class="empty" wx:else>
     <view class="empty-icon">📦</view>
     <view class="empty-text">暂无相关订单</view>
-    <view class="empty-btn" bindtap="onGoShopping">去逛逛</view>
+    <view class="empty-btn" hover-class="hv-btn" bindtap="onGoShopping">去逛逛</view>
   </view>
 
   <!-- 自定义支付底部弹层（模拟支付 / 真实支付失败兜底） -->

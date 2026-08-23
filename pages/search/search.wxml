@@ -12,24 +12,24 @@
         bindconfirm="onConfirm"
       />
     </view>
-    <view class="cancel" bindtap="onCancel">取消</view>
+    <view class="cancel" hover-class="hv" bindtap="onCancel">取消</view>
   </view>
 
   <block wx:if="{{!showResults}}">
     <view class="section" wx:if="{{history.length}}">
       <view class="section-head">
         <text>搜索历史</text>
-        <text class="clear" bindtap="onClearHistory">清空</text>
+        <text class="clear" hover-class="hv" bindtap="onClearHistory">清空</text>
       </view>
       <view class="tag-row">
-        <view class="tag" wx:for="{{history}}" wx:key="*this" data-kw="{{item}}" bindtap="onTapKeyword">{{item}}</view>
+        <view class="tag" hover-class="hv" wx:for="{{history}}" wx:key="*this" data-kw="{{item}}" bindtap="onTapKeyword">{{item}}</view>
       </view>
     </view>
 
     <view class="section">
       <view class="section-head"><text>热搜词</text></view>
       <view class="tag-row">
-        <view class="tag hot" wx:for="{{hotKeywords}}" wx:key="*this" data-kw="{{item}}" bindtap="onTapKeyword">{{item}}</view>
+        <view class="tag hot" hover-class="hv" wx:for="{{hotKeywords}}" wx:key="*this" data-kw="{{item}}" bindtap="onTapKeyword">{{item}}</view>
       </view>
     </view>
   </block>

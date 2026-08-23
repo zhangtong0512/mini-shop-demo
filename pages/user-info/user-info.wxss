@@ -4,8 +4,9 @@
 
 .form-card {
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 0 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .avatar-row {
@@ -71,10 +72,12 @@
   height: 88rpx;
   line-height: 88rpx;
   text-align: center;
-  background: linear-gradient(90deg, #ff5500, #ff3200);
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
   color: #ffffff;
   font-size: 30rpx;
   border-radius: 44rpx;
+  box-shadow: 0 8rpx 20rpx rgba(255, 80, 0, 0.28);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .logout-btn {
@@ -86,4 +89,6 @@
   color: #ff5000;
   font-size: 30rpx;
   border-radius: 44rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  transition: opacity 0.2s ease;
 }

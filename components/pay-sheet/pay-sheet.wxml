@@ -17,10 +17,10 @@
     <view class="order-no" wx:if="{{orderNo}}">订单号：{{orderNo}}</view>
     <view class="desc" wx:if="{{desc}}">商品：{{desc}}</view>
 
-    <view class="btn-primary {{paying ? 'disabled' : ''}}" bindtap="onConfirm">
+    <view class="btn-primary {{paying ? 'disabled' : ''}}" hover-class="{{paying ? '' : 'hv-btn'}}" bindtap="onConfirm">
       {{paying ? '支付中…' : confirmText}}
     </view>
-    <view class="btn-cancel" bindtap="onCancel">取消</view>
+    <view class="btn-cancel" hover-class="hv" bindtap="onCancel">取消</view>
 
     <view class="hint">🔒 Demo 演示环境，模拟支付，不产生真实扣款</view>
   </view>

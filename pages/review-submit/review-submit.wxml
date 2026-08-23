@@ -12,6 +12,7 @@
     <view class="stars">
       <text
         class="star {{item <= rating ? 'on' : ''}}"
+        hover-class="hv"
         wx:for="{{[1,2,3,4,5]}}"
         wx:key="*this"
         data-rate="{{item}}"
@@ -35,9 +36,9 @@
         <image class="img" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-idx="{{index}}" />
         <view class="img-del" catchtap="onRemoveImage" data-idx="{{index}}">✕</view>
       </view>
-      <view class="img-add" wx:if="{{images.length < 3}}" bindtap="onChooseImage">＋</view>
+      <view class="img-add" hover-class="hv" wx:if="{{images.length < 3}}" bindtap="onChooseImage">＋</view>
     </view>
   </view>
 
-  <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">提交评价</view>
+  <view class="submit-btn {{submitting ? 'disabled' : ''}}" hover-class="{{submitting ? '' : 'hv-btn'}}" bindtap="onSubmit">提交评价</view>
 </view>

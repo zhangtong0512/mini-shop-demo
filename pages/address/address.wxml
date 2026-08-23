@@ -1,6 +1,6 @@
 <view class="page">
   <view class="addr-list" wx:if="{{list.length > 0}}">
-    <view class="addr-card" wx:for="{{list}}" wx:key="id" bindtap="onItemTap" data-id="{{item.id}}">
+    <view class="addr-card" hover-class="hv" wx:for="{{list}}" wx:key="id" bindtap="onItemTap" data-id="{{item.id}}">
       <view class="addr-main">
         <view class="addr-line">
           <text class="addr-name">{{item.name}}</text>
@@ -11,9 +11,9 @@
       </view>
 
       <view class="addr-ops" wx:if="{{mode == 'manage'}}" catchtap="noop">
-        <view class="op-btn" bindtap="onSetDefault" data-id="{{item.id}}">{{item.isDefault ? '默认地址' : '设为默认'}}</view>
-        <view class="op-btn" bindtap="onEdit" data-id="{{item.id}}">编辑</view>
-        <view class="op-btn danger" bindtap="onDelete" data-id="{{item.id}}">删除</view>
+        <view class="op-btn" hover-class="hv" bindtap="onSetDefault" data-id="{{item.id}}">{{item.isDefault ? '默认地址' : '设为默认'}}</view>
+        <view class="op-btn" hover-class="hv" bindtap="onEdit" data-id="{{item.id}}">编辑</view>
+        <view class="op-btn danger" hover-class="hv" bindtap="onDelete" data-id="{{item.id}}">删除</view>
       </view>
     </view>
   </view>
@@ -24,6 +24,6 @@
   </view>
 
   <view class="footer">
-    <view class="add-btn" bindtap="onAdd">＋ 新增收货地址</view>
+    <view class="add-btn" hover-class="hv-btn" bindtap="onAdd">＋ 新增收货地址</view>
   </view>
 </view>

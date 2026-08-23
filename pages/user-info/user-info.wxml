@@ -2,7 +2,7 @@
   <view class="form-card">
     <view class="avatar-row">
       <!-- open-type="chooseAvatar"：微信原生头像选择能力 -->
-      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <button class="avatar-btn" hover-class="hv" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
         <image wx:if="{{form.avatar}}" class="avatar-preview" src="{{form.avatar}}" mode="aspectFill" />
         <text wx:else>👤</text>
       </button>
@@ -23,6 +23,6 @@
     </view>
   </view>
 
-  <view class="save-btn" bindtap="onLogin">{{mode === 'edit' ? '保存' : '登录'}}</view>
-  <view class="logout-btn" wx:if="{{mode === 'edit'}}" bindtap="onLogout">退出登录</view>
+  <view class="save-btn" hover-class="hv-btn" bindtap="onLogin">{{mode === 'edit' ? '保存' : '登录'}}</view>
+  <view class="logout-btn" hover-class="hv" wx:if="{{mode === 'edit'}}" bindtap="onLogout">退出登录</view>
 </view>
