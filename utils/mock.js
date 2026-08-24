@@ -3,16 +3,19 @@
  * 无后端依赖，数据存于本地 storage
  *
  * 订单字段：
- *   id / orderNo / createTime / status(1待付款 2待发货 3待收货 4已完成 5已取消)
+ *   id / orderNo / createTime / status(1待付款 2待发货 3待收货 4已完成 5已取消 6退款中 7已退款)
  *   items / goodsAmount / freight / totalPrice / totalCount
  *   couponId / couponAmount(使用的优惠券与抵扣金额)
+ *   pointsUsed / pointsAmount(使用的积分数量与抵扣金额)
  *   address(下单时地址快照) / remark
  *   payDeadline(待付款超时时间戳) / stockDeducted(是否已扣库存)
  *   payTime / shipTime / finishTime / cancelTime
+ *   refundReason / applyRefundTime / refundFrom / refundTime(退款相关)
  */
 
 const config = require('./config')
 const coupon = require('./coupon')
+const points = require('./points')
 
 const PAY_TIMEOUT_MS = config.PAY_TIMEOUT_MINUTES * 60 * 1000
 
@@ -21,7 +24,9 @@ const ORDER_STATUS = {
   2: '待发货',
   3: '待收货',
   4: '已完成',
-  5: '已取消'
+  5: '已取消',
+  6: '退款中',
+  7: '已退款'
 }
 
 const categories = [
@@ -137,6 +142,29 @@ goodsList.forEach(g => {
   ]
 })
 
+// ---------- 限时秒杀 ----------
+// 结束时间：每次启动后 24h（演示用，始终在未来，重启即续期）
+const flashEndsAt = Date.now() + 24 * 60 * 60 * 1000
+// 秒杀商品配置：flashPrice 秒杀价 / flashSold 已售 / flashStock 剩余展示
+// 实际库存仍走统一 goods.stock（闪购库存仅作展示）
+const flashConfig = [
+  { id: 1002, flashPrice: 399, flashSold: 321, flashStock: 79 },
+  { id: 1003, flashPrice: 259, flashSold: 158, flashStock: 42 },
+  { id: 1001, flashPrice: 3299, flashSold: 66, flashStock: 34 },
+  { id: 1009, flashPrice: 199, flashSold: 487, flashStock: 113 }
+]
+
+// 为秒杀商品盖上秒杀字段（getGoodsById 是函数声明，可提前引用）
+flashConfig.forEach(f => {
+  const g = getGoodsById(f.id)
+  if (g) {
+    g.flashPrice = f.flashPrice
+    g.flashSold = f.flashSold
+    g.flashStock = f.flashStock
+    g.flashEndsAt = flashEndsAt
+  }
+})
+
 const ORDER_KEY = 'orderList'
 
 function getCategories() {
@@ -153,6 +181,38 @@ function getBanners() {
 
 function getGoodsById(id) {
   return goodsList.find(g => g.id === Number(id)) || null
+}
+
+// 秒杀商品列表与结束时间
+function getFlashSale() {
+  return {
+    endsAt: flashEndsAt,
+    list: flashConfig.map(f => getGoodsById(f.id)).filter(Boolean)
+  }
+}
+
+// 是否在秒杀有效期内
+function isFlashActive(goods, now) {
+  now = now || Date.now()
+  return !!(goods && goods.flashPrice && goods.flashEndsAt && now < goods.flashEndsAt)
+}
+
+// 秒杀价 / 原价
+function getEffectivePrice(goods, now) {
+  if (!goods) return 0
+  return isFlashActive(goods, now) ? goods.flashPrice : goods.price
+}
+
+// 秒杀剩余时间文案（HH:MM:SS / 已结束）
+function flashRemainText(endsAt, now) {
+  now = now || Date.now()
+  const ms = endsAt - now
+  if (ms <= 0) return '已结束'
+  const total = Math.floor(ms / 1000)
+  const h = Math.floor(total / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = total % 60
+  return pad(h) + ':' + pad(m) + ':' + pad(s)
 }
 
 // 热搜词：每个词都能命中 goodsList 中的商品
@@ -307,12 +367,19 @@ function createOrder(info) {
     freight: info.freight || 0,
     couponId: info.couponId || 0,
     couponAmount: info.couponAmount || 0,
+    pointsUsed: info.pointsUsed || 0,
+    pointsAmount: info.pointsAmount || 0,
     totalPrice: info.totalPrice || 0,
     totalCount: info.totalCount || 0,
     address: info.address || null,
     remark: info.remark || '',
     payDeadline: Date.now() + PAY_TIMEOUT_MS,
     stockDeducted: false
+  }
+  // 订单创建即占用积分（余额不足则取消抵扣）；取消/超时/退款时退回
+  if (order.pointsUsed && !points.deductPoints(order.pointsUsed, '订单 ' + order.orderNo + ' 积分抵扣')) {
+    order.pointsUsed = 0
+    order.pointsAmount = 0
   }
   list.unshift(order)
   wx.setStorageSync(ORDER_KEY, list)
@@ -343,6 +410,7 @@ function cancelOrder(id) {
     if (o.id === id && o.status === 1) {
       if (o.stockDeducted) restoreStock(o.items)
       if (o.couponId) coupon.restoreCoupon(o.couponId)
+      if (o.pointsUsed) points.addPoints(o.pointsUsed, '订单 ' + o.orderNo + ' 取消退回')
       return Object.assign({}, o, { status: 5, cancelTime: formatTime(new Date()) })
     }
     return o
@@ -387,6 +455,7 @@ function cancelExpiredOrders() {
     if (o.status === 1 && o.payDeadline && now > o.payDeadline) {
       if (o.stockDeducted) restoreStock(o.items)
       if (o.couponId) coupon.restoreCoupon(o.couponId)
+      if (o.pointsUsed) points.addPoints(o.pointsUsed, '订单 ' + o.orderNo + ' 超时取消退回')
       changed = true
       count++
       return Object.assign({}, o, {
@@ -399,6 +468,146 @@ function cancelExpiredOrders() {
   })
   if (changed) wx.setStorageSync(ORDER_KEY, list)
   return count
+}
+
+// ---------- 退款 / 售后 ----------
+// 状态流：待发货(2)/待收货(3) → 申请 → 退款中(6) → 同意 → 已退款(7)
+//         （撤销/驳回 → 回到原状态 2/3）
+// 规则：申请即回补库存（置 stockDeducted=false，保证只回补一次）；
+//       同意退款退回积分；优惠券不回退（贴合真实电商）
+function applyRefund(id, reason) {
+  const now = formatTime(new Date())
+  let changed = false
+  const list = getOrders().map(o => {
+    if (o.id === id && (o.status === 2 || o.status === 3)) {
+      const next = Object.assign({}, o, {
+        status: 6,
+        refundReason: reason || '',
+        applyRefundTime: now,
+        refundFrom: o.status
+      })
+      if (next.stockDeducted) {
+        restoreStock(o.items)
+        next.stockDeducted = false
+      }
+      changed = true
+      return next
+    }
+    return o
+  })
+  if (changed) wx.setStorageSync(ORDER_KEY, list)
+  return changed
+}
+
+// 撤销退款申请（用户）/ 驳回退款（商家）：退款中(6) → 原状态(2/3)
+function revertRefund(id) {
+  let changed = false
+  const list = getOrders().map(o => {
+    if (o.id === id && o.status === 6 && o.refundFrom) {
+      const next = Object.assign({}, o, {
+        status: o.refundFrom,
+        refundReason: '',
+        applyRefundTime: '',
+        refundFrom: 0,
+        refundTime: ''
+      })
+      changed = true
+      return next
+    }
+    return o
+  })
+  if (changed) wx.setStorageSync(ORDER_KEY, list)
+  return changed
+}
+
+function cancelRefund(id) {
+  return revertRefund(id)
+}
+
+function rejectRefund(id) {
+  return revertRefund(id)
+}
+
+// 同意退款（demo 商家动作）：退款中(6) → 已退款(7)，退回积分
+function agreeRefund(id) {
+  const now = formatTime(new Date())
+  let changed = false
+  const list = getOrders().map(o => {
+    if (o.id === id && o.status === 6) {
+      const next = Object.assign({}, o, {
+        status: 7,
+        refundTime: now
+      })
+      if (next.pointsUsed) points.addPoints(next.pointsUsed, '订单 ' + o.orderNo + ' 退款退回')
+      changed = true
+      return next
+    }
+    return o
+  })
+  if (changed) wx.setStorageSync(ORDER_KEY, list)
+  return changed
+}
+
+// ---------- 订单筛选 ----------
+// key：'all' 全部 / 'refund' 退款售后(6|7) / 数字状态；kw：订单号或商品名（大小写不敏感），与状态 AND
+function filterOrders(orders, key, kw) {
+  const k = key === undefined || key === null ? 'all' : key
+  let list = orders
+  if (k === 'refund') {
+    list = list.filter(o => o.status === 6 || o.status === 7)
+  } else if (k !== 'all') {
+    const num = Number(k)
+    list = list.filter(o => o.status === num)
+  }
+  const q = (kw || '').trim().toLowerCase()
+  if (!q) return list
+  return list.filter(o => {
+    if ((o.orderNo || '').toLowerCase().indexOf(q) > -1) return true
+    return (o.items || []).some(it => (it.title || '').toLowerCase().indexOf(q) > -1)
+  })
+}
+
+// ---------- 物流跟踪（演示，确定性生成） ----------
+function hashNo(str) {
+  let h = 0
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) % 1000000
+  }
+  return h
+}
+
+// 'YYYY-MM-DD HH:mm:ss' + 分钟 → 新时间串
+function addMinutes(timeStr, mins) {
+  const parts = timeStr.split(' ')
+  const datePart = parts[0] || '2026-01-01'
+  const timePart = parts[1] || '00:00:00'
+  const d = datePart.split('-').map(Number)
+  const t = timePart.split(':').map(Number)
+  const dt = new Date(d[0], d[1] - 1, d[2], t[0], t[1], t[2])
+  dt.setMinutes(dt.getMinutes() + mins)
+  return formatTime(dt)
+}
+
+// 由订单推导物流轨迹（最新在前，同一订单多次调用结果一致）
+function getLogistics(orderId) {
+  const order = getOrderById(orderId)
+  if (!order) return []
+  const traces = [{ time: order.createTime, desc: '订单已提交' }]
+  if (order.payTime) {
+    traces.push({ time: order.payTime, desc: '支付成功' })
+  }
+  if (order.shipTime) {
+    const no = 'SF' + hashNo(order.orderNo + order.shipTime)
+    traces.push({ time: order.shipTime, desc: '商家已发货 · 顺丰速运 ' + no })
+    traces.push({ time: addMinutes(order.shipTime, 180), desc: '快件已到达【转运中心】' })
+    traces.push({ time: addMinutes(order.shipTime, 600), desc: '运输中，已发往【收货城市】' })
+    if (order.status === 4) {
+      traces.push({ time: addMinutes(order.shipTime, 900), desc: '已签收，感谢使用顺丰速运，期待再次为您服务' })
+    } else {
+      traces.push({ time: addMinutes(order.shipTime, 480), desc: '快件已到达【收货城市】，正在派送' })
+    }
+  }
+  return traces.reverse()
 }
 
 // 待付款剩余毫秒数
@@ -429,6 +638,10 @@ module.exports = {
   getGoodsById,
   getHotKeywords,
   searchGoods,
+  getFlashSale,
+  isFlashActive,
+  getEffectivePrice,
+  flashRemainText,
   getOrders,
   getOrderById,
   ensureSeedOrders,
@@ -440,6 +653,12 @@ module.exports = {
   confirmOrder,
   deleteOrder,
   cancelExpiredOrders,
+  applyRefund,
+  cancelRefund,
+  rejectRefund,
+  agreeRefund,
+  filterOrders,
+  getLogistics,
   getRemainMs,
   remainText,
   statusText
