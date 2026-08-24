@@ -220,7 +220,7 @@
 }
 
 .flash-inner {
-  display: flex;
+  display: inline-flex;
 }
 
 .flash-item {
