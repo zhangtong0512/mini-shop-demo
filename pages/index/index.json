@@ -2,5 +2,7 @@
   "usingComponents": {
     "goods-card": "/components/goods-card/goods-card"
   },
-  "navigationBarTitleText": "精选商城"
+  "navigationBarTitleText": "精选商城",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
 }

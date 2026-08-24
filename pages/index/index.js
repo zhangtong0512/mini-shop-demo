@@ -7,22 +7,76 @@ Page({
     activeCategory: 'all',
     allGoods: [],
     goodsList: [],
-    bannerCurrent: 0
+    bannerCurrent: 0,
+    flash: [], // 限时秒杀商品
+    flashEndsAt: 0,
+    flashRemain: ''
   },
 
   onLoad() {
+    this.loadData()
+  },
+
+  onHide() {
+    this.clearFlashTimer()
+  },
+
+  onUnload() {
+    this.clearFlashTimer()
+  },
+
+  // 加载首页数据（onLoad / 下拉刷新共用）
+  loadData() {
     const allGoods = mock.getGoodsList()
+    const flash = mock.getFlashSale()
+    const active = this.data.activeCategory || 'all'
     this.setData({
       banners: mock.getBanners(),
       categories: mock.getCategories(),
       allGoods,
-      goodsList: allGoods
+      goodsList: active === 'all' ? allGoods : allGoods.filter(g => g.category === active),
+      flash: flash.list,
+      flashEndsAt: flash.endsAt,
+      flashRemain: mock.flashRemainText(flash.endsAt)
     })
+    this.syncFlashTimer()
+  },
+
+  onPullDownRefresh() {
+    this.loadData()
+    wx.stopPullDownRefresh()
+  },
+
+  // 秒杀倒计时：每秒刷新，页面隐藏/卸载时停止
+  syncFlashTimer() {
+    this.clearFlashTimer()
+    if (this.data.flashEndsAt) {
+      this._flashTimer = setInterval(() => {
+        this.setData({ flashRemain: mock.flashRemainText(this.data.flashEndsAt) })
+      }, 1000)
+    }
+  },
+
+  clearFlashTimer() {
+    if (this._flashTimer) {
+      clearInterval(this._flashTimer)
+      this._flashTimer = null
+    }
   },
 
   // 点击搜索条跳转独立搜索页
   onSearchTap() {
     wx.navigateTo({ url: '/pages/search/search' })
+  },
+
+  // 秒杀区块「查看全部」→ 秒杀专场页
+  onFlashAll() {
+    wx.navigateTo({ url: '/pages/flash/flash' })
+  },
+
+  // 点击秒杀商品 → 详情（闪购价展示在详情页）
+  onTapFlash(e) {
+    wx.navigateTo({ url: '/pages/detail/detail?id=' + e.currentTarget.dataset.id })
   },
 
   // 扫一扫：调用微信扫码能力（真机打开相机，开发者工具里可模拟扫码）
@@ -103,6 +157,13 @@ Page({
     return {
       title: '精选商城 · 微信小程序 Demo',
       path: '/pages/index/index'
+    }
+  },
+
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: '精选商城 · 微信小程序 Demo'
     }
   }
 })

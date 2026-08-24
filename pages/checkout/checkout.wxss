@@ -175,6 +175,11 @@
   color: #ff5000;
 }
 
+/* 积分不足置灰 */
+.coupon-row .value.muted {
+  color: #bbbbbb;
+}
+
 .coupon-value {
   display: flex;
   align-items: center;

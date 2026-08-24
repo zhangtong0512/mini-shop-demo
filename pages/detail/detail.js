@@ -19,8 +19,11 @@ Page({
     const goods = mock.getGoodsById(options.id)
     const rating = review.getGoodsRating(options.id)
     const round = Math.round(rating.avg)
+    const isFlash = mock.isFlashActive(goods)
     this.setData({
       goods,
+      isFlash,
+      flashRemain: isFlash ? mock.flashRemainText(goods.flashEndsAt) : '',
       isFav: favorite.isFavorite(options.id),
       reviewCount: rating.count,
       reviewAvg: rating.avg,
@@ -29,6 +32,32 @@ Page({
     })
     if (goods) {
       wx.setNavigationBarTitle({ title: goods.title })
+    }
+    this.syncFlashTimer()
+  },
+
+  onHide() {
+    this.clearFlashTimer()
+  },
+
+  onUnload() {
+    this.clearFlashTimer()
+  },
+
+  // 闪购倒计时：秒杀生效时每秒刷新剩余时间
+  syncFlashTimer() {
+    this.clearFlashTimer()
+    if (this.data.isFlash) {
+      this._flashTimer = setInterval(() => {
+        this.setData({ flashRemain: mock.flashRemainText(this.data.goods.flashEndsAt) })
+      }, 1000)
+    }
+  },
+
+  clearFlashTimer() {
+    if (this._flashTimer) {
+      clearInterval(this._flashTimer)
+      this._flashTimer = null
     }
   },
 
@@ -64,7 +93,9 @@ Page({
 
   onAddCart() {
     if (!this.data.goods) return
-    cart.addToCart(this.data.goods, this.data.count)
+    // 闪购商品按秒杀价入购物车（价格在加入时固化）
+    const goods = Object.assign({}, this.data.goods, { price: mock.getEffectivePrice(this.data.goods) })
+    cart.addToCart(goods, this.data.count)
     wx.showToast({ title: '已加入购物车', icon: 'success' })
   },
 
@@ -109,6 +140,14 @@ Page({
     return {
       title: goods ? goods.title : '精选商城',
       path: '/pages/detail/detail?id=' + (goods ? goods.id : '')
+    }
+  },
+
+  // 分享到朋友圈（小程序支持仅分享当前页，query 由页面路径携带）
+  onShareTimeline() {
+    const goods = this.data.goods
+    return {
+      title: goods ? goods.title : '精选商城'
     }
   }
 })

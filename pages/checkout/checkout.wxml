@@ -55,6 +55,13 @@
         <text class="arrow">›</text>
       </view>
     </view>
+    <view class="summary-row coupon-row" hover-class="hv" bindtap="onPointsTap">
+      <text>积分抵扣</text>
+      <view class="coupon-value">
+        <text class="value {{usePoints ? 'on' : ''}} {{pointsCanUse ? '' : 'muted'}}">{{usePoints ? '-¥' + pointsAmount : (pointsCanUse ? '可用 ' + pointsUsable + ' 积分' : '不足100积分')}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
     <view class="summary-row">
       <text>配送方式</text>
       <text class="value">普通快递 · 满{{freeShippingThreshold}}元包邮</text>
@@ -73,7 +80,7 @@
 
   <view class="footer">
     <view class="total">
-      <view class="coupon-tip" wx:if="{{couponAmount > 0}}">已优惠 ¥{{couponAmount}}</view>
+      <view class="coupon-tip" wx:if="{{couponAmount + pointsAmount > 0}}">已优惠 ¥{{couponAmount + pointsAmount}}</view>
       <view class="total-line">
         <text class="total-label">应付：</text>
         <text class="total-price">¥{{totalPrice}}</text>

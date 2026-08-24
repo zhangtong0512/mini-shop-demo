@@ -1,4 +1,19 @@
 <view class="page">
+  <!-- 订单搜索：订单号 / 商品名 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-ico">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索订单号 / 商品名"
+        value="{{kw}}"
+        bindinput="onKwInput"
+        confirm-type="search"
+      />
+      <view class="search-clear" wx:if="{{kw}}" hover-class="hv" bindtap="onClearKw">✕</view>
+    </view>
+  </view>
+
   <view class="tabs-wrap">
   <scroll-view class="tabs" scroll-x>
     <view

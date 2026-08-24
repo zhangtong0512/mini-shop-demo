@@ -1,0 +1,38 @@
+<view class="page">
+  <!-- 积分余额卡 -->
+  <view class="balance-card">
+    <view class="b-label">我的积分</view>
+    <view class="b-num">{{balance}}</view>
+    <view class="b-tip">累计签到 {{totalDays}} 天 · 100 积分可抵扣 1 元</view>
+    <view
+      class="b-btn {{checkedToday ? 'done' : ''}}"
+      hover-class="{{checkedToday ? '' : 'hv-btn'}}"
+      bindtap="onCheckIn"
+    >{{checkedToday ? '今日已签到 ✓' : '每日签到 +5 积分'}}</view>
+  </view>
+
+  <!-- 积分明细 -->
+  <view class="section-title">积分明细</view>
+  <view class="card ledger" wx:if="{{ledger.length}}">
+    <view class="ledger-item" wx:for="{{ledger}}" wx:key="time">
+      <view class="l-info">
+        <view class="l-desc">{{item.desc}}</view>
+        <view class="l-time">{{item.time}}</view>
+      </view>
+      <view class="l-points {{item.points > 0 ? 'plus' : 'minus'}}">{{item.points > 0 ? '+' : ''}}{{item.points}}</view>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <view class="empty-icon">🎁</view>
+    <view class="empty-text">暂无积分明细</view>
+  </view>
+
+  <!-- 积分规则 -->
+  <view class="section-title">积分规则</view>
+  <view class="card rules">
+    <view class="rule-row">· 每日签到可领取 <text class="hl">5 积分</text></view>
+    <view class="rule-row">· <text class="hl">100 积分 = 1 元</text>，结算时可抵扣现金</view>
+    <view class="rule-row">· 下单使用积分后，取消 / 超时取消 / 退款会原路退回</view>
+    <view class="rule-row">· 积分抵扣不超过商品金额</view>
+  </view>
+</view>

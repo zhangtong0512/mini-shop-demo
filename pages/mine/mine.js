@@ -3,6 +3,7 @@ const mock = require('../../utils/mock')
 const user = require('../../utils/user')
 const favorite = require('../../utils/favorite')
 const coupon = require('../../utils/coupon')
+const points = require('../../utils/points')
 
 Page({
   data: {
@@ -13,7 +14,8 @@ Page({
     orderCounts: [0, 0, 0, 0],
     favCount: 0,
     couponCount: 0,
-    cartCount: 0
+    cartCount: 0,
+    pointsBalance: 0
   },
 
   onShow() {
@@ -31,7 +33,8 @@ Page({
       favCount: favorite.getCount(),
       // 可用券：未使用且未过期
       couponCount: coupon.getCoupons().filter(c => c.status === 0 && c.expireTime > now).length,
-      cartCount: cart.getCart().reduce((sum, i) => sum + i.count, 0)
+      cartCount: cart.getCart().reduce((sum, i) => sum + i.count, 0),
+      pointsBalance: points.getBalance()
     })
     cart.updateBadge()
   },
@@ -64,6 +67,10 @@ Page({
 
   onFavoriteTap() {
     wx.navigateTo({ url: '/pages/favorite/favorite' })
+  },
+
+  onCheckinTap() {
+    wx.navigateTo({ url: '/pages/checkin/checkin' })
   },
 
   onHelpTap() {

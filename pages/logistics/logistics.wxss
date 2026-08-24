@@ -1,0 +1,88 @@
+/* 物流跟踪 */
+.page {
+  padding-bottom: 40rpx;
+}
+
+.head {
+  margin: 20rpx;
+  padding: 28rpx 24rpx;
+}
+
+.h-status {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ff5000;
+}
+
+.h-no {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.timeline {
+  margin: 0 20rpx;
+  padding: 6rpx 24rpx;
+}
+
+.tl-item {
+  position: relative;
+  display: flex;
+}
+
+/* 左侧竖线（连接各节点） */
+.tl-item::after {
+  content: '';
+  position: absolute;
+  left: 9rpx;
+  top: 64rpx;
+  bottom: 0;
+  width: 2rpx;
+  background: #eee;
+}
+
+.tl-item:last-child::after {
+  display: none;
+}
+
+.tl-dot {
+  width: 20rpx;
+  height: 20rpx;
+  margin: 42rpx 24rpx 0 0;
+  border-radius: 50%;
+  background: #ddd;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.tl-item.active .tl-dot {
+  background: #ff5000;
+  box-shadow: 0 0 0 8rpx rgba(255, 80, 0, 0.15);
+}
+
+.tl-body {
+  flex: 1;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.tl-item:last-child .tl-body {
+  border-bottom: none;
+}
+
+.tl-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.tl-desc.active {
+  color: #333;
+  font-weight: 600;
+}
+
+.tl-time {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #999;
+}

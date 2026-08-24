@@ -8,7 +8,9 @@ const STATUS_META = {
   2: { icon: '📦', title: '卖家发货中', sub: '付款成功，等待卖家发货' },
   3: { icon: '🚚', title: '已发货', sub: '商品正在路上，请注意查收' },
   4: { icon: '✅', title: '交易完成', sub: '感谢您的购买，期待再次光临' },
-  5: { icon: '⏹️', title: '订单已取消', sub: '很遗憾，该订单已取消' }
+  5: { icon: '⏹️', title: '订单已取消', sub: '很遗憾，该订单已取消' },
+  6: { icon: '🔁', title: '退款处理中', sub: '退款申请已提交，等待商家处理' },
+  7: { icon: '💸', title: '已退款', sub: '退款已原路退回，积分已返还' }
 }
 
 Page({
@@ -150,6 +152,75 @@ Page({
         }
       }
     })
+  },
+
+  // 申请退款（待发货 / 待收货）：选原因 → 确认 → 提交
+  onApplyRefund() {
+    const order = this.data.order
+    if (!order || (order.status !== 2 && order.status !== 3)) return
+    const reasons = ['不想要了', '商品破损 / 质量问题', '尺码 / 规格不合适', '其他']
+    wx.showActionSheet({
+      itemList: reasons,
+      success: res => {
+        const reason = reasons[res.tapIndex]
+        wx.showModal({
+          title: '申请退款',
+          content: '确定申请退款吗？\n理由：' + reason + '\n退款后库存将释放',
+          success: r => {
+            if (r.confirm) {
+              mock.applyRefund(this.id, reason)
+              wx.showToast({ title: '退款申请已提交', icon: 'none' })
+              this.refresh()
+            }
+          }
+        })
+      }
+    })
+  },
+
+  // 撤销退款申请（用户）
+  onCancelRefund() {
+    wx.showModal({
+      title: '撤销申请',
+      content: '确定撤销本次退款申请吗？',
+      success: res => {
+        if (res.confirm) {
+          mock.cancelRefund(this.id)
+          wx.showToast({ title: '已撤销申请', icon: 'none' })
+          this.refresh()
+        }
+      }
+    })
+  },
+
+  // demo：模拟商家同意退款（退款中 → 已退款）
+  onAgreeRefund() {
+    wx.showModal({
+      title: '模拟同意退款',
+      content: 'Demo 中模拟商家同意退款，订单将变为「已退款」，积分原路退回',
+      success: res => {
+        if (res.confirm) {
+          mock.agreeRefund(this.id)
+          wx.showToast({ title: '退款成功', icon: 'success' })
+          this.refresh()
+        }
+      }
+    })
+  },
+
+  // 复制订单号
+  onCopyOrderNo() {
+    const order = this.data.order
+    if (!order) return
+    wx.setClipboardData({
+      data: order.orderNo,
+      success: () => wx.showToast({ title: '订单号已复制', icon: 'success' })
+    })
+  },
+
+  // 查看物流（待收货 / 已完成）
+  onLogistics() {
+    wx.navigateTo({ url: '/pages/logistics/logistics?id=' + this.id })
   },
 
   onDelete() {

@@ -228,6 +228,56 @@
   color: #999999;
 }
 
+.info-value {
+  display: flex;
+  align-items: center;
+  color: #333333;
+}
+
+.info-no {
+  font-size: 25rpx;
+}
+
+.copy-btn {
+  margin-left: 16rpx;
+  padding: 4rpx 20rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 22rpx;
+  font-size: 22rpx;
+  color: #ff5000;
+}
+
+/* 物流入口 */
+.logistics-entry {
+  display: flex;
+  align-items: center;
+  margin: 20rpx 20rpx 0;
+  padding: 24rpx;
+}
+
+.lg-ico {
+  margin-right: 20rpx;
+  font-size: 40rpx;
+}
+
+.lg-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.lg-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.lg-arrow {
+  margin-left: auto;
+  color: #cccccc;
+  font-size: 36rpx;
+}
+
 /* 底部操作 */
 .footer {
   position: fixed;

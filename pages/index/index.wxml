@@ -49,6 +49,47 @@
   </scroll-view>
   </view>
 
+  <!-- 限时秒杀 -->
+  <view class="flash-wrap card" wx:if="{{flash.length}}">
+    <view class="flash-head" hover-class="hv" bindtap="onFlashAll">
+      <view class="flash-title">⚡ 限时秒杀</view>
+      <view class="flash-remain">
+        <text class="flash-remain-label">距结束</text>
+        <text class="flash-remain-time">{{flashRemain}}</text>
+      </view>
+      <view class="flash-more">查看全部 ›</view>
+    </view>
+    <scroll-view class="flash-scroll" scroll-x show-scrollbar="{{false}}">
+      <view class="flash-inner">
+        <view
+          class="flash-item"
+          wx:for="{{flash}}"
+          wx:key="id"
+          hover-class="hv"
+          bindtap="onTapFlash"
+          data-id="{{item.id}}"
+        >
+          <view class="fi-thumb">
+            <text class="fi-emoji">{{item.emoji}}</text>
+            <image class="fi-img" src="{{item.galleryImages[0]}}" mode="aspectFill" lazy-load />
+            <view class="fi-badge">限时</view>
+          </view>
+          <view class="fi-name clamp2">{{item.title}}</view>
+          <view class="fi-price">
+            <text class="fi-now">¥{{item.flashPrice}}</text>
+            <text class="fi-origin">¥{{item.price}}</text>
+          </view>
+          <view class="fi-progress">
+            <view class="fi-bar">
+              <view class="fi-bar-in" style="width: {{item.flashSold / (item.flashSold + item.flashStock) * 100}}%;"></view>
+            </view>
+            <text class="fi-sold">已抢 {{item.flashSold}} 件</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- 为你推荐 -->
   <view class="section-title">为你推荐</view>
 

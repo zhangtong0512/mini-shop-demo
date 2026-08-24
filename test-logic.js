@@ -136,6 +136,14 @@ test('积分：calcPointsDiscount 边界', () => {
   assert.deepStrictEqual(points.calcPointsDiscount(1, 100), { usablePoints: 100, pointsAmount: 1, canUse: true })
 })
 
+test('积分：优惠券 + 积分叠加不超商品金额', () => {
+  // 结算页按「商品金额 − 优惠券」作为抵扣上限，模拟叠加场景
+  const full = points.calcPointsDiscount(100, 20000) // 无券：上限 ¥100
+  const afterCoupon = points.calcPointsDiscount(100 - 50, 20000) // 用 50 元券后剩余 ¥50
+  assert.strictEqual(full.pointsAmount, 100)
+  assert.strictEqual(afterCoupon.pointsAmount, 50) // 叠加不超商品金额
+})
+
 test('积分：下单占用，取消/超时退回', () => {
   const order = mock.createOrder({
     items: itemsOf(1001),

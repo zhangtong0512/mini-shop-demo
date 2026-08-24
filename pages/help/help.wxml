@@ -9,10 +9,10 @@
     </view>
   </view>
 
-  <view class="contact" hover-class="hv" bindtap="onContact">
+  <button class="contact contact-btn" open-type="contact" hover-class="hv">
     <text class="contact-ico">💬</text>
     <text>联系客服</text>
     <text class="arrow">›</text>
-  </view>
+  </button>
   <view class="tip">客服工作时间：9:00 - 21:00</view>
 </view>

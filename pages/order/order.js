@@ -7,14 +7,16 @@ const TABS = [
   { key: 2, name: '待发货' },
   { key: 3, name: '待收货' },
   { key: 4, name: '已完成' },
-  { key: 5, name: '已取消' }
+  { key: 5, name: '已取消' },
+  { key: 'refund', name: '退款/售后' }
 ]
 
 Page({
   data: {
     tabs: TABS,
     activeTab: 'all',
-    orders: []
+    orders: [],
+    kw: ''
   },
 
   onLoad(options) {
@@ -46,11 +48,27 @@ Page({
     this.refresh()
   },
 
+  // 搜索订单号 / 商品名（与状态 tab 叠加过滤）
+  onKwInput(e) {
+    this.setData({ kw: e.detail.value })
+    this.refresh()
+  },
+
+  onClearKw() {
+    if (!this.data.kw) return
+    this.setData({ kw: '' })
+    this.refresh()
+  },
+
+  onPullDownRefresh() {
+    this.refresh()
+    wx.stopPullDownRefresh()
+  },
+
   refresh() {
     mock.cancelExpiredOrders()
     const all = mock.getOrders()
-    const key = this.data.activeTab
-    const orders = (key === 'all' ? all : all.filter(o => o.status === key)).map(o => {
+    const orders = mock.filterOrders(all, this.data.activeTab, this.data.kw).map(o => {
       return Object.assign({}, o, {
         statusText: mock.statusText(o.status),
         remainText: mock.remainText(o)

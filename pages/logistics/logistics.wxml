@@ -1,0 +1,22 @@
+<view class="page">
+  <!-- 订单状态头部 -->
+  <view class="card head">
+    <view class="h-status">{{statusText}}</view>
+    <view class="h-no">订单号：{{orderNo}}</view>
+  </view>
+
+  <!-- 物流时间轴（最新在上） -->
+  <view class="card timeline" wx:if="{{traces.length}}">
+    <view class="tl-item {{index == 0 ? 'active' : ''}}" wx:for="{{traces}}" wx:key="time">
+      <view class="tl-dot"></view>
+      <view class="tl-body">
+        <view class="tl-desc {{index == 0 ? 'active' : ''}}">{{item.desc}}</view>
+        <view class="tl-time">{{item.time}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <view class="empty-icon">🚚</view>
+    <view class="empty-text">暂无物流信息</view>
+  </view>
+</view>

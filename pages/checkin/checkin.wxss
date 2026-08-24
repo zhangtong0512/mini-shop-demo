@@ -1,0 +1,107 @@
+/* 积分中心 */
+.page {
+  padding-bottom: 40rpx;
+}
+
+.balance-card {
+  margin: 20rpx;
+  padding: 44rpx 36rpx 36rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(160deg, #ff6a00, #ff3200);
+  color: #fff;
+  box-shadow: 0 8rpx 20rpx rgba(255, 80, 0, 0.28);
+}
+
+.b-label {
+  font-size: 26rpx;
+  opacity: 0.92;
+}
+
+.b-num {
+  margin-top: 8rpx;
+  font-size: 72rpx;
+  font-weight: 700;
+  font-family: monospace;
+  line-height: 1.1;
+}
+
+.b-tip {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.b-btn {
+  margin-top: 28rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 44rpx;
+  background: #fff;
+  color: #ff5000;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.b-btn.done {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.ledger {
+  margin: 0 20rpx 20rpx;
+  padding: 0 24rpx;
+}
+
+.ledger-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.ledger-item:last-child {
+  border-bottom: none;
+}
+
+.l-desc {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.l-time {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.l-points {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.l-points.plus {
+  color: #ff5000;
+}
+
+.l-points.minus {
+  color: #666;
+}
+
+.rules {
+  margin: 0 20rpx 20rpx;
+  padding: 12rpx 24rpx;
+}
+
+.rule-row {
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.rule-row .hl {
+  color: #ff5000;
+  font-weight: 600;
+}

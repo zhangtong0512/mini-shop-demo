@@ -2,6 +2,44 @@
   padding-bottom: 20rpx;
 }
 
+/* 订单搜索框 */
+.search-bar {
+  padding: 20rpx 24rpx 0;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  padding: 0 24rpx;
+  border-radius: 36rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.search-ico {
+  margin-right: 12rpx;
+  font-size: 26rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  color: #333333;
+}
+
+.search-clear {
+  width: 40rpx;
+  height: 40rpx;
+  margin-left: 8rpx;
+  border-radius: 50%;
+  background: #eee;
+  color: #999;
+  font-size: 24rpx;
+  text-align: center;
+  line-height: 40rpx;
+}
+
 /* 胶囊式状态 tab */
 .tabs-wrap {
   position: sticky;
@@ -75,6 +113,8 @@
 .order-status.st-3 { color: #8a4dff; }
 .order-status.st-4 { color: #07c160; }
 .order-status.st-5 { color: #999999; }
+.order-status.st-6 { color: #ff8a00; }
+.order-status.st-7 { color: #999999; }
 
 .order-remain {
   margin-left: 12rpx;

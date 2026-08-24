@@ -4,6 +4,7 @@ const address = require('../../utils/address')
 const pay = require('../../utils/pay')
 const config = require('../../utils/config')
 const coupon = require('../../utils/coupon')
+const points = require('../../utils/points')
 
 Page({
   data: {
@@ -18,6 +19,11 @@ Page({
     usableCoupons: [], // 当前可用优惠券（满减门槛已筛）
     couponId: 0,
     couponAmount: 0,
+    pointsBalance: 0,
+    pointsUsable: 0,
+    pointsAmount: 0,
+    usePoints: false,
+    pointsCanUse: false,
     submitting: false,
     freeShippingThreshold: config.FREE_SHIPPING_THRESHOLD
   },
@@ -48,7 +54,7 @@ Page({
         title: g.title,
         emoji: g.emoji,
         image: g.image,
-        price: g.price,
+        price: mock.getEffectivePrice(g), // 闪购商品按秒杀价结算
         count: this._buyNow.count
       }]
     } else {
@@ -73,6 +79,13 @@ Page({
     const selected = couponId ? coupon.getCouponById(couponId) : null
     const couponAmount = selected ? Math.min(selected.amount, goodsAmount) : 0
 
+    // 积分抵扣：100 积分 = 1 元；上限按「商品金额 − 优惠券」计算，避免叠加超扣为负；余额不足自动关闭
+    const pointsBalance = points.getBalance()
+    const disc = points.calcPointsDiscount(goodsAmount - couponAmount, pointsBalance)
+    let usePoints = this.data.usePoints
+    if (usePoints && !disc.canUse) usePoints = false
+    const pointsAmount = usePoints ? disc.pointsAmount : 0
+
     this.setData({
       items,
       goodsAmount,
@@ -80,11 +93,26 @@ Page({
       usableCoupons,
       couponId,
       couponAmount,
-      totalPrice: goodsAmount + freight - couponAmount,
+      pointsBalance,
+      pointsUsable: disc.usablePoints,
+      pointsAmount,
+      usePoints,
+      pointsCanUse: disc.canUse,
+      totalPrice: goodsAmount + freight - couponAmount - pointsAmount,
       totalCount,
       // 用户已选过地址则保留，否则用默认地址
       address: this.data.address || address.getDefaultAddress()
     })
+  },
+
+  // 使用积分抵扣开关
+  onPointsTap() {
+    if (!this.data.pointsCanUse) {
+      wx.showToast({ title: '积分不足 100，暂不可用', icon: 'none' })
+      return
+    }
+    this.setData({ usePoints: !this.data.usePoints })
+    this.refresh()
   },
 
   // 选择优惠券：跳优惠券页（选择模式），经事件通道回传
@@ -144,6 +172,8 @@ Page({
         freight: this.data.freight,
         couponId: this.data.couponId,
         couponAmount: this.data.couponAmount,
+        pointsUsed: this.data.usePoints ? this.data.pointsUsable : 0,
+        pointsAmount: this.data.usePoints ? this.data.pointsAmount : 0,
         totalPrice: this.data.totalPrice,
         totalCount: this.data.totalCount
       })

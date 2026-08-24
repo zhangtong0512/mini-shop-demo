@@ -69,6 +69,20 @@
   font-size: 36rpx;
 }
 
+/* 客服按钮（open-type="contact"）清掉 button 默认样式，与菜单行一致 */
+.contact-btn {
+  width: 100%;
+  padding: 0;
+  margin: 20rpx 0 0;
+  line-height: normal;
+  border: none;
+  border-radius: 20rpx;
+}
+
+.contact-btn::after {
+  border: none;
+}
+
 .arrow {
   margin-left: auto;
   color: #cccccc;

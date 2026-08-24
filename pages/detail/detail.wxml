@@ -34,10 +34,12 @@
     <view class="price-row">
       <view class="price">
         <text class="symbol">¥</text>
-        <text class="num">{{goods.price}}</text>
+        <text class="num">{{isFlash ? goods.flashPrice : goods.price}}</text>
         <text class="origin">¥{{goods.originalPrice}}</text>
+        <view class="flash-badge" wx:if="{{isFlash}}">限时</view>
       </view>
-      <view class="sales">已售 {{goods.sales}} 件</view>
+      <view class="sales" wx:if="{{!isFlash}}">已售 {{goods.sales}} 件</view>
+      <view class="sales flash-sales" wx:else>限时价 · 距结束 {{flashRemain}}</view>
     </view>
     <view class="title">{{goods.title}}</view>
     <view class="desc">{{goods.desc}}</view>

@@ -5,6 +5,7 @@ const address = require('../../utils/address')
 const mock = require('../../utils/mock')
 const coupon = require('../../utils/coupon')
 const review = require('../../utils/review')
+const points = require('../../utils/points')
 
 Page({
   data: {
@@ -37,7 +38,7 @@ Page({
   onResetDemo() {
     wx.showModal({
       title: '重置演示数据',
-      content: '将清空购物车、订单、地址、收藏、评价、优惠券等全部本地数据并恢复初始示例，确定继续？',
+      content: '将清空购物车、订单、地址、收藏、评价、优惠券、积分等全部本地数据并恢复初始示例，确定继续？',
       success: res => {
         if (res.confirm) {
           wx.clearStorageSync()
@@ -46,6 +47,7 @@ Page({
           mock.ensureSeedOrders()
           coupon.ensureSeed()
           review.ensureSeed()
+          points.ensureSeed()
           this.setData({ notify: settings.getSettings().notify })
           wx.showToast({ title: '已重置', icon: 'success' })
         }
