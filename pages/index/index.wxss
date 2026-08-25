@@ -99,6 +99,99 @@
   background: #ffffff;
 }
 
+/* 限时秒杀 */
+.flash-section {
+  margin: 24rpx 0 0;
+  padding: 24rpx 0 8rpx;
+  background: linear-gradient(180deg, #fff3e9, #ffffff);
+}
+
+.flash-head {
+  display: flex;
+  align-items: center;
+  padding: 0 24rpx;
+}
+
+.flash-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ff5000;
+}
+
+.flash-tip {
+  margin-left: 16rpx;
+  font-size: 22rpx;
+  color: #ff9a62;
+}
+
+.flash-scroll {
+  margin-top: 20rpx;
+  white-space: nowrap;
+}
+
+.flash-inner {
+  display: inline-flex;
+  padding: 0 16rpx;
+}
+
+.flash-item {
+  width: 200rpx;
+  margin: 0 12rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 16rpx;
+  box-shadow: 0 4rpx 14rpx rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.flash-thumb {
+  height: 120rpx;
+  background: linear-gradient(135deg, #fde2d9, #fff0ea);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flash-emoji {
+  font-size: 56rpx;
+}
+
+.flash-name {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #333333;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.flash-price {
+  margin-top: 10rpx;
+  display: flex;
+  align-items: baseline;
+}
+
+.flash-now {
+  color: #ff5000;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.flash-old {
+  margin-left: 8rpx;
+  font-size: 20rpx;
+  color: #bbbbbb;
+  text-decoration: line-through;
+}
+
+.hv {
+  opacity: 0.82;
+}
+
 /* 图标分类导航（吸顶容器） */
 .category-sticky {
   position: sticky;

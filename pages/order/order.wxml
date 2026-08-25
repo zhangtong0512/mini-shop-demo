@@ -37,13 +37,14 @@
       </view>
 
       <view class="order-items">
-        <view class="order-item" wx:for="{{item.items}}" wx:for-item="g" wx:key="id">
+        <view class="order-item" wx:for="{{item.items}}" wx:for-item="g" wx:key="index">
           <view class="thumb">
             <text class="thumb-emoji">{{g.emoji}}</text>
             <image class="thumb-img" src="{{g.image}}" mode="aspectFill" />
           </view>
           <view class="g-info">
             <view class="g-title">{{g.title}}</view>
+            <view class="g-spec" wx:if="{{g.spec}}">{{g.spec}}</view>
             <view class="g-count">x{{g.count}}</view>
           </view>
           <view class="g-price">¥{{g.price}}</view>

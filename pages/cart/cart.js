@@ -24,7 +24,7 @@ Page({
   },
 
   onToggleSelect(e) {
-    cart.toggleSelect(e.currentTarget.dataset.id)
+    cart.toggleSelect(e.currentTarget.dataset.key)
     this.refresh()
   },
 
@@ -34,23 +34,23 @@ Page({
   },
 
   onPlus(e) {
-    cart.changeCount(e.currentTarget.dataset.id, 1)
+    cart.changeCount(e.currentTarget.dataset.key, 1)
     this.refresh()
   },
 
   onMinus(e) {
-    cart.changeCount(e.currentTarget.dataset.id, -1)
+    cart.changeCount(e.currentTarget.dataset.key, -1)
     this.refresh()
   },
 
   onRemove(e) {
-    const id = e.currentTarget.dataset.id
+    const key = e.currentTarget.dataset.key
     wx.showModal({
       title: '提示',
       content: '确定要删除该商品吗？',
       success: res => {
         if (res.confirm) {
-          cart.removeItem(id)
+          cart.removeItem(key)
           this.refresh()
         }
       }

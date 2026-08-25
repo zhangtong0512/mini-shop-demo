@@ -31,13 +31,14 @@
 
   <!-- 商品清单 -->
   <view class="card goods-card">
-    <view class="goods-item" wx:for="{{order.items}}" wx:key="id">
+    <view class="goods-item" wx:for="{{order.items}}" wx:key="index">
       <view class="thumb">
         <text class="thumb-emoji">{{item.emoji}}</text>
         <image class="thumb-img" src="{{item.image}}" mode="aspectFill" />
       </view>
       <view class="g-info">
         <view class="g-title">{{item.title}}</view>
+        <view class="g-spec" wx:if="{{item.spec}}">{{item.spec}}</view>
         <view class="g-price">¥{{item.price}}<text class="g-count"> x{{item.count}}</text></view>
       </view>
       <view
@@ -47,6 +48,37 @@
         bindtap="onReviewItem"
         data-gid="{{item.id}}"
       >{{item.reviewed ? '已评价' : '去评价'}}</view>
+      <view
+        class="after-tag"
+        wx:if="{{item.canApplyAfterSale}}"
+        hover-class="hv"
+        bindtap="onApplyAfterSale"
+        data-gid="{{item.id}}"
+        data-sku="{{item.skuKey}}"
+      >申请售后</view>
+    </view>
+  </view>
+
+  <!-- 售后记录 -->
+  <view class="card after-card" wx:if="{{order.afterSales.length > 0}}">
+    <view class="after-title">售后记录</view>
+    <view class="after-item" wx:for="{{order.afterSales}}" wx:key="id">
+      <view class="after-goods">
+        <text class="after-emoji">{{item.emoji}}</text>
+        <view class="after-info">
+          <view class="after-name">{{item.goodsTitle}}</view>
+          <view class="after-spec" wx:if="{{item.spec}}">{{item.spec}}</view>
+          <view class="after-meta">{{item.typeText}} · 申请于 {{item.applyTime}}</view>
+        </view>
+      </view>
+      <view class="after-right">
+        <text class="after-status st-{{item.status}}">{{item.statusText}}</text>
+        <view class="after-amount">-¥{{item.amount}}</view>
+        <view class="after-handle" wx:if="{{item.status == 'pending'}}">
+          <view class="after-btn reject" hover-class="hv" data-rid="{{item.id}}" data-action="reject" bindtap="onHandleRefund">拒绝</view>
+          <view class="after-btn agree" hover-class="hv" data-rid="{{item.id}}" data-action="approve" bindtap="onHandleRefund">同意退款</view>
+        </view>
+      </view>
     </view>
   </view>
 
@@ -97,8 +129,10 @@
       <view class="act-btn primary" hover-class="hv-btn" bindtap="onBuyAgain">再次购买</view>
     </block>
     <block wx:elif="{{order.status == 6}}">
-      <view class="act-btn" hover-class="hv-btn" bindtap="onCancelRefund">撤销申请</view>
-      <view class="act-btn primary" hover-class="hv-btn" bindtap="onAgreeRefund">模拟同意退款</view>
+      <!-- 整单退款流（本地，refundFrom 有值）→ 撤销/同意；按商品售后流（远端）→ 再次购买，记录卡里处理 -->
+      <view class="act-btn" hover-class="hv-btn" wx:if="{{order.refundFrom}}" bindtap="onCancelRefund">撤销申请</view>
+      <view class="act-btn primary" hover-class="hv-btn" wx:if="{{order.refundFrom}}" bindtap="onAgreeRefund">模拟同意退款</view>
+      <view class="act-btn primary" hover-class="hv-btn" wx:else bindtap="onBuyAgain">再次购买</view>
     </block>
     <block wx:elif="{{order.status == 7}}">
       <view class="act-btn" hover-class="hv-btn" bindtap="onDelete">删除订单</view>

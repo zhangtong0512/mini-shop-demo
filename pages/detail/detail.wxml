@@ -34,7 +34,7 @@
     <view class="price-row">
       <view class="price">
         <text class="symbol">¥</text>
-        <text class="num">{{isFlash ? goods.flashPrice : goods.price}}</text>
+        <text class="num">{{isFlash ? goods.flashPrice : skuPrice}}</text>
         <text class="origin">¥{{goods.originalPrice}}</text>
         <view class="flash-badge" wx:if="{{isFlash}}">限时</view>
       </view>
@@ -43,8 +43,13 @@
     </view>
     <view class="title">{{goods.title}}</view>
     <view class="desc">{{goods.desc}}</view>
+    <view class="spec-row" wx:if="{{hasSpec}}" hover-class="hv" bindtap="onSpecTap">
+      <text class="spec-row-label">规格</text>
+      <text class="spec-row-value">已选：{{skuText}}</text>
+      <text class="spec-row-arrow">›</text>
+    </view>
     <view class="meta">
-      <text class="meta-item">📦 库存 {{goods.stock}} 件</text>
+      <text class="meta-item">📦 库存 {{skuStock}} 件</text>
       <text class="meta-item">🚚 48 小时内发货</text>
     </view>
   </view>
@@ -54,7 +59,7 @@
     <view class="stepper">
       <view class="step-btn {{count <= 1 ? 'disabled' : ''}}" hover-class="hv" bindtap="onMinus">−</view>
       <view class="step-num">{{count}}</view>
-      <view class="step-btn {{count >= 99 ? 'disabled' : ''}}" hover-class="hv" bindtap="onPlus">+</view>
+      <view class="step-btn {{count >= countMax ? 'disabled' : ''}}" hover-class="hv" bindtap="onPlus">+</view>
     </view>
   </view>
 
@@ -110,4 +115,6 @@
     <view class="footer-btn add" bindtap="onAddCart">加入购物车</view>
     <view class="footer-btn buy" bindtap="onBuyNow">立即购买</view>
   </view>
+
+  <sku-sheet id="skuSheet" />
 </view>

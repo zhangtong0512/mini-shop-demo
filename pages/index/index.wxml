@@ -16,21 +16,21 @@
   <!-- 悬浮轮播卡片 -->
   <view class="banner-wrap">
     <swiper class="banner" autoplay circular interval="3000" bindchange="onBannerChange">
-      <swiper-item wx:for="{{banners}}" wx:key="*this">
-        <image class="banner-img" src="{{item}}" mode="aspectFill" />
+      <swiper-item wx:for="{{banners}}" wx:key="id">
+        <image class="banner-img" src="{{item.image}}" mode="aspectFill" bindtap="onBannerTap" data-banner="{{item}}" />
       </swiper-item>
     </swiper>
     <view class="banner-dots">
       <view
         class="banner-dot {{bannerCurrent == index ? 'active' : ''}}"
         wx:for="{{banners}}"
-        wx:key="*this"
+        wx:key="id"
         wx:for-index="index"
       ></view>
     </view>
   </view>
 
-  <!-- 图标分类导航（吸顶） -->
+  <!-- 图标分类导航 + 排序栏（吸顶） -->
   <view class="category-sticky">
   <scroll-view class="category-nav" scroll-x>
     <view class="category-inner">
@@ -47,6 +47,7 @@
       </view>
     </view>
   </scroll-view>
+  <sort-bar bind:sortchange="onSortchange" bind:pricechange="onPricechange" />
   </view>
 
   <!-- 限时秒杀 -->

@@ -34,17 +34,20 @@
     </view>
   </block>
 
-  <view class="goods-grid" wx:elif="{{showResults && results.length > 0}}">
-    <goods-card
-      wx:for="{{results}}"
-      wx:key="id"
-      goods="{{item}}"
-      bind:tapgoods="onTapGoods"
-    />
-  </view>
+  <block wx:if="{{showResults}}">
+    <sort-bar wx:if="{{results.length > 0}}" bind:sortchange="onSortchange" bind:pricechange="onPricechange" />
+    <view class="goods-grid" wx:if="{{results.length > 0}}">
+      <goods-card
+        wx:for="{{results}}"
+        wx:key="id"
+        goods="{{item}}"
+        bind:tapgoods="onTapGoods"
+      />
+    </view>
 
-  <view class="empty" wx:else>
-    <view class="empty-icon">🔍</view>
-    <view class="empty-text">没有找到「{{keyword}}」相关商品</view>
-  </view>
+    <view class="empty" wx:else>
+      <view class="empty-icon">🔍</view>
+      <view class="empty-text">没有找到「{{keyword}}」相关商品</view>
+    </view>
+  </block>
 </view>

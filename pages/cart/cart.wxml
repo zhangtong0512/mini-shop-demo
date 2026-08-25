@@ -1,7 +1,7 @@
 <view class="page">
   <view class="list" wx:if="{{list.length > 0}}">
-    <view class="item" wx:for="{{list}}" wx:key="id">
-      <view class="checkbox {{item.selected ? 'checked' : ''}}" hover-class="hv" bindtap="onToggleSelect" data-id="{{item.id}}">
+    <view class="item" wx:for="{{list}}" wx:key="key">
+      <view class="checkbox {{item.selected ? 'checked' : ''}}" hover-class="hv" bindtap="onToggleSelect" data-key="{{item.key}}">
         <text wx:if="{{item.selected}}">✓</text>
       </view>
       <view class="thumb" hover-class="hv" bindtap="onGoDetail" data-id="{{item.id}}">
@@ -10,16 +10,17 @@
       </view>
       <view class="item-info">
         <view class="item-title" bindtap="onGoDetail" data-id="{{item.id}}">{{item.title}}</view>
+        <view class="item-spec" wx:if="{{item.spec}}">{{item.spec}}</view>
         <view class="item-bottom">
           <view class="item-price">¥{{item.price}}</view>
           <view class="stepper">
-            <view class="step-btn" hover-class="hv" bindtap="onMinus" data-id="{{item.id}}">−</view>
+            <view class="step-btn" hover-class="hv" bindtap="onMinus" data-key="{{item.key}}">−</view>
             <view class="step-num">{{item.count}}</view>
-            <view class="step-btn" hover-class="hv" bindtap="onPlus" data-id="{{item.id}}">+</view>
+            <view class="step-btn" hover-class="hv" bindtap="onPlus" data-key="{{item.key}}">+</view>
           </view>
         </view>
       </view>
-      <view class="remove" hover-class="hv" bindtap="onRemove" data-id="{{item.id}}">✕</view>
+      <view class="remove" hover-class="hv" bindtap="onRemove" data-key="{{item.key}}">✕</view>
     </view>
   </view>
 

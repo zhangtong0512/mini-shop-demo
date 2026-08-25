@@ -8,7 +8,10 @@ Page({
     hotKeywords: [],
     results: [],
     showResults: false,
-    focus: true
+    focus: true,
+    sortMode: 'default',
+    priceMin: 0,
+    priceMax: Infinity
   },
 
   onLoad() {
@@ -66,7 +69,26 @@ Page({
   },
 
   doSearch(kw) {
-    this.setData({ results: mock.searchGoods(kw), showResults: true })
+    this.setData({ keyword: kw })
+    const { sortMode, priceMin, priceMax } = this.data
+    const results = mock.filterByPrice(mock.searchGoods(kw, sortMode), priceMin, priceMax)
+    this.setData({ results, showResults: true })
+  },
+
+  onSortchange(e) {
+    this.setData({ sortMode: e.detail.mode })
+    this._resort()
+  },
+
+  onPricechange(e) {
+    this.setData({ priceMin: e.detail.min, priceMax: e.detail.max })
+    this._resort()
+  },
+
+  // 排序/价格变化时用当前关键词重新搜索
+  _resort() {
+    const kw = (this.data.keyword || '').trim()
+    if (kw && this.data.showResults) this.doSearch(kw)
   },
 
   onTapGoods(e) {

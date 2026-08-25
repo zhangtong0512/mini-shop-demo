@@ -16,6 +16,7 @@
     "pages/coupon/coupon",
     "pages/review-list/review-list",
     "pages/review-submit/review-submit",
+    "pages/after-sale/after-sale",
     "pages/help/help",
     "pages/settings/settings",
     "pages/flash/flash",

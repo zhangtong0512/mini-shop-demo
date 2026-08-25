@@ -132,6 +132,33 @@
   line-height: 1.5;
 }
 
+/* 规格选择行 */
+.spec-row {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+}
+
+.spec-row-label {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.spec-row-value {
+  flex: 1;
+  margin-left: 24rpx;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.spec-row-arrow {
+  color: #cccccc;
+  font-size: 32rpx;
+}
+
 .meta {
   margin-top: 20rpx;
   display: flex;

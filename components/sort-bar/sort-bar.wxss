@@ -1,0 +1,54 @@
+/* 商品排序栏 */
+.sort-bar {
+  background: #ffffff;
+}
+
+.sort-row {
+  display: flex;
+  align-items: center;
+  height: 84rpx;
+  padding: 0 12rpx;
+  border-bottom: 1rpx solid #f0f0f2;
+}
+
+.sort-item {
+  flex: 1;
+  text-align: center;
+  font-size: 26rpx;
+  color: #666666;
+  transition: color 0.15s ease;
+}
+
+.sort-item.active {
+  color: #ff5000;
+  font-weight: 600;
+}
+
+.sort-item.filter {
+  flex: 1.4;
+}
+
+.filter-panel {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20rpx 24rpx 8rpx;
+  background: #ffffff;
+}
+
+.price-chip {
+  padding: 12rpx 28rpx;
+  margin: 0 16rpx 16rpx 0;
+  background: #f5f5f7;
+  border: 2rpx solid transparent;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  color: #333333;
+  transition: all 0.15s ease;
+}
+
+.price-chip.active {
+  background: #fff1e8;
+  border-color: #ff6a00;
+  color: #ff5000;
+  font-weight: 600;
+}

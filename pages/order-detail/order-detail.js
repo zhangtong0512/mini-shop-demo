@@ -2,6 +2,7 @@ const mock = require('../../utils/mock')
 const cart = require('../../utils/cart')
 const pay = require('../../utils/pay')
 const review = require('../../utils/review')
+const afterSale = require('../../utils/after-sale')
 
 const STATUS_META = {
   1: { icon: '💰', title: '等待付款', sub: '订单提交成功，请尽快完成支付' },
@@ -9,8 +10,19 @@ const STATUS_META = {
   3: { icon: '🚚', title: '已发货', sub: '商品正在路上，请注意查收' },
   4: { icon: '✅', title: '交易完成', sub: '感谢您的购买，期待再次光临' },
   5: { icon: '⏹️', title: '订单已取消', sub: '很遗憾，该订单已取消' },
-  6: { icon: '🔁', title: '退款处理中', sub: '退款申请已提交，等待商家处理' },
+  6: { icon: '🔧', title: '售后处理中', sub: '您的售后申请已提交，请耐心等待' },
   7: { icon: '💸', title: '已退款', sub: '退款已原路退回，积分已返还' }
+}
+
+const AFTER_SALE_STATUS_TEXT = {
+  pending: '申请中',
+  refunded: '已退款',
+  rejected: '已拒绝'
+}
+
+const AFTER_SALE_TYPE_TEXT = {
+  refund: '仅退款',
+  return: '退款退货'
 }
 
 Page({
@@ -49,12 +61,20 @@ Page({
       return
     }
     const meta = STATUS_META[order.status] || { icon: '📄', title: '订单详情', sub: '' }
-    // 已完成订单：标记每个商品是否已评价
     if (order.items) {
+      const records = afterSale.getByOrder(order.id)
       order.items.forEach(it => {
         it.reviewed = review.hasReviewed(order.id, it.id)
+        const rec = records.find(r => r.goodsId === it.id && (r.skuKey || '') === (it.skuKey || ''))
+        it.afterSaleStatus = rec ? rec.status : ''
+        // 已申请且未拒绝则不再显示申请入口；可申请：待发货/待收货/已完成 且无有效售后
+        it.canApplyAfterSale = [2, 3, 4].indexOf(order.status) > -1 && !(rec && rec.status !== 'rejected')
       })
       order.allReviewed = order.items.every(it => it.reviewed)
+      order.afterSales = records.map(r => Object.assign({}, r, {
+        statusText: AFTER_SALE_STATUS_TEXT[r.status] || r.status,
+        typeText: AFTER_SALE_TYPE_TEXT[r.type] || r.type
+      }))
     }
     this.setData({
       order,
@@ -258,8 +278,35 @@ Page({
   onBuyAgain() {
     const order = this.data.order
     if (!order) return
-    order.items.forEach(it => cart.addToCart(it, it.count))
+    order.items.forEach(it => cart.addToCart(it, it.count, it.skuKey))
     wx.showToast({ title: '已加入购物车', icon: 'success' })
     setTimeout(() => wx.switchTab({ url: '/pages/cart/cart' }), 800)
+  },
+
+  // 申请售后（按商品）
+  onApplyAfterSale(e) {
+    const goodsId = Number(e.currentTarget.dataset.gid)
+    const skuKey = e.currentTarget.dataset.sku || ''
+    wx.navigateTo({
+      url: '/pages/after-sale/after-sale?orderId=' + this.data.order.id + '&goodsId=' + goodsId + '&sku=' + encodeURIComponent(skuKey)
+    })
+  },
+
+  // demo：卖家处理售后（同意退款 → 回补库存 / 拒绝）
+  onHandleRefund(e) {
+    const recordId = Number(e.currentTarget.dataset.rid)
+    const action = e.currentTarget.dataset.action
+    const content = action === 'approve' ? '同意后将回补库存并向买家退款' : '确定要拒绝该售后申请吗？'
+    wx.showModal({
+      title: '卖家处理',
+      content,
+      success: res => {
+        if (res.confirm) {
+          afterSale.handleRefund(recordId, action)
+          wx.showToast({ title: action === 'approve' ? '已同意退款' : '已拒绝申请', icon: 'none' })
+          this.refresh()
+        }
+      }
+    })
   }
 })

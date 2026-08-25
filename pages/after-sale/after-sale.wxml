@@ -1,0 +1,30 @@
+<view class="page" wx:if="{{item}}">
+  <!-- 商品信息 -->
+  <view class="card goods-card">
+    <view class="thumb"><text class="thumb-emoji">{{item.emoji}}</text></view>
+    <view class="g-info">
+      <view class="g-title clamp2">{{item.title}}</view>
+      <view class="g-spec" wx:if="{{item.spec}}">{{item.spec}}</view>
+      <view class="g-amount">退款金额 <text class="amount">¥{{amount}}</text></view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row-label">售后类型</view>
+    <view class="chips">
+      <view class="chip {{type == 'refund' ? 'active' : ''}}" hover-class="hv" data-type="refund" bindtap="onTypeTap">仅退款</view>
+      <view class="chip {{type == 'return' ? 'active' : ''}}" hover-class="hv" data-type="return" bindtap="onTypeTap">退款退货</view>
+    </view>
+
+    <view class="row-label">退款原因</view>
+    <view class="chips">
+      <view class="chip {{reason == item ? 'active' : ''}}" hover-class="hv" wx:for="{{reasons}}" wx:key="*this" data-reason="{{item}}" bindtap="onReasonTap">{{item}}</view>
+    </view>
+
+    <view class="row-label">补充说明（选填）</view>
+    <textarea class="textarea" placeholder="请描述遇到的问题，方便卖家快速处理" value="{{remark}}" bindinput="onRemark" maxlength="200" />
+    <view class="count-tip">{{remark.length}}/200</view>
+  </view>
+
+  <view class="submit-btn {{submitting ? 'disabled' : ''}}" hover-class="{{submitting ? '' : 'hv-btn'}}" bindtap="onSubmit">提交申请</view>
+</view>
