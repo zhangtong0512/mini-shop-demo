@@ -6,6 +6,8 @@
  *   res === null 表示取消；否则返回 { skuKey, count }
  *   mode: 'cart'（确定）| 'buy'（立即购买）
  */
+const mock = require('../../utils/mock')
+
 Component({
   data: {
     visible: false,
@@ -52,15 +54,22 @@ Component({
     // 由选中的各维值计算当前 SKU
     _calc(goods, sel) {
       const specs = (goods && goods.specs) || []
+      let result
       if (!specs.length) {
-        return { skuKey: '', price: goods.price, stock: goods.stock, valid: true }
+        result = { skuKey: '', price: goods.price, stock: goods.stock, valid: true }
+      } else {
+        const skuKey = sel.join('|')
+        const sku = (goods.skus || []).find(s => s.key === skuKey)
+        if (!sku) {
+          return { skuKey: '', price: goods.price, stock: 0, valid: false }
+        }
+        result = { skuKey, price: sku.price, stock: sku.stock, valid: sku.stock > 0 }
       }
-      const skuKey = sel.join('|')
-      const sku = (goods.skus || []).find(s => s.key === skuKey)
-      if (!sku) {
-        return { skuKey: '', price: goods.price, stock: 0, valid: false }
+      // 闪购商品统一按秒杀价展示（与详情页/购物车/结算一致，价格在加购时固化）
+      if (mock.isFlashActive(goods)) {
+        result.price = mock.getEffectivePrice(goods)
       }
-      return { skuKey, price: sku.price, stock: sku.stock, valid: sku.stock > 0 }
+      return result
     },
 
     onDimTap(e) {

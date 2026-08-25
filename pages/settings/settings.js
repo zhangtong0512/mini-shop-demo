@@ -6,6 +6,7 @@ const mock = require('../../utils/mock')
 const coupon = require('../../utils/coupon')
 const review = require('../../utils/review')
 const points = require('../../utils/points')
+const afterSale = require('../../utils/after-sale')
 
 Page({
   data: {
@@ -48,6 +49,7 @@ Page({
           coupon.ensureSeed()
           review.ensureSeed()
           points.ensureSeed()
+          afterSale.ensureSeed()
           this.setData({ notify: settings.getSettings().notify })
           wx.showToast({ title: '已重置', icon: 'success' })
         }

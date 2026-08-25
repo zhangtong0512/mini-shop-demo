@@ -36,10 +36,14 @@ test.beforeEach(() => {
   points.ensureSeed()
 })
 
-// 便捷：生成单商品订单 items 片段
+// 便捷：生成单商品订单 items 片段（有规格商品自动带首个 SKU）
 function itemsOf(gid) {
   const g = mock.getGoodsById(gid)
-  return [{ id: g.id, title: g.title, emoji: g.emoji, image: g.image, price: g.price, count: 1 }]
+  const skuKey = (g.skus && g.skus.length) ? g.skus[0].key : ''
+  return [{
+    id: g.id, title: g.title, emoji: g.emoji, image: g.image,
+    price: mock.getSkuPrice(g, skuKey), count: 1, skuKey
+  }]
 }
 function createSimpleOrder() {
   const g = mock.getGoodsById(1006)

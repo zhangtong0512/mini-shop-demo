@@ -19,11 +19,18 @@ function normalize(item) {
   if (isOld && g && g.skus && g.skus.length) {
     skuKey = g.skus[0].key
   }
+  // 价格：闪购价加购时固化，不被重算覆盖；仅「有规格的旧数据」才回填 SKU 价格
+  let price = item.price
+  if (mock.isFlashActive(g)) {
+    price = mock.getEffectivePrice(g)
+  } else if (isOld && g && g.skus && g.skus.length) {
+    price = mock.getSkuPrice(g, skuKey)
+  }
   return Object.assign({}, item, {
     skuKey,
     key: itemKey(item.id, skuKey),
     spec: isOld ? mock.specText(g, skuKey) : item.spec,
-    price: isOld && g ? mock.getSkuPrice(g, skuKey) : item.price
+    price
   })
 }
 
