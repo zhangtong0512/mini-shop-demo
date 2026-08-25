@@ -1,11 +1,34 @@
 /**
  * 购物车本地存储与操作
  * 购物车保存在 storage 中，购物车 tab（index=1）会同步角标数量
+ * SKU 化：同商品不同规格视为两条，复合键 = id + '_' + skuKey
  */
+const mock = require('./mock')
+
 const CART_KEY = 'cartList'
 
+function itemKey(id, skuKey) {
+  return id + '_' + (skuKey || '')
+}
+
+// 归一化购物车条目：旧数据（无 skuKey）自动绑定首个 SKU 并回填价格/规格，注入复合 key
+function normalize(item) {
+  const g = mock.getGoodsById(item.id)
+  const isOld = !item.skuKey
+  let skuKey = item.skuKey || ''
+  if (isOld && g && g.skus && g.skus.length) {
+    skuKey = g.skus[0].key
+  }
+  return Object.assign({}, item, {
+    skuKey,
+    key: itemKey(item.id, skuKey),
+    spec: isOld ? mock.specText(g, skuKey) : item.spec,
+    price: isOld && g ? mock.getSkuPrice(g, skuKey) : item.price
+  })
+}
+
 function getCart() {
-  return wx.getStorageSync(CART_KEY) || []
+  return (wx.getStorageSync(CART_KEY) || []).map(normalize)
 }
 
 function saveCart(list) {
@@ -34,38 +57,64 @@ function updateBadge() {
   }
 }
 
-function addToCart(goods, count) {
+// 加购：返回 { ok: true } 或 { ok: false, msg }（校验 SKU 库存）
+function addToCart(goods, count, skuKey) {
   const num = count || 1
+  const g = goods || {}
+  // 传入的可能是订单/购物车快照（无 specs/skus），回查真实商品做库存与规格
+  const real = (g.skus || g.specs) ? g : (mock.getGoodsById(g.id) || g)
+  let key = skuKey || ''
+  // 有规格但未传 skuKey 时绑定首个 SKU（旧调用兼容）
+  if (!key && real.skus && real.skus.length) key = real.skus[0].key
+  const sku = mock.getSku(real, key)
+  const price = sku ? sku.price : real.price
+  const stock = sku ? sku.stock : real.stock
+
   const list = getCart()
-  const found = list.find(item => item.id === goods.id)
+  const found = list.find(item => item.key === itemKey(g.id, key))
+  const baseCount = found ? found.count : 0
+  if (stock != null && num + baseCount > stock) {
+    return { ok: false, msg: '「' + real.title + '」库存不足（仅剩 ' + stock + ' 件）' }
+  }
+
   if (found) {
     found.count += num
   } else {
     list.push({
-      id: goods.id,
-      title: goods.title,
-      emoji: goods.emoji,
-      image: goods.image,
-      price: goods.price,
+      id: g.id,
+      title: g.title,
+      emoji: g.emoji,
+      image: g.image,
+      price,
       count: num,
-      selected: true
+      selected: true,
+      skuKey: key,
+      spec: g.spec || mock.specText(real, key)
     })
   }
   saveCart(list)
+  return { ok: true }
 }
 
-function changeCount(id, delta) {
+function changeCount(key, delta) {
   const list = getCart()
-  const item = list.find(i => i.id === id)
+  const item = list.find(i => i.key === key)
   if (!item) return
-  item.count = item.count + delta
-  if (item.count < 1) item.count = 1
+  let next = item.count + delta
+  if (next < 1) next = 1
+  // 加数时按 SKU 库存截断，避免超卖
+  if (delta > 0) {
+    const g = mock.getGoodsById(item.id)
+    const stock = mock.getSkuStock(g, item.skuKey)
+    if (next > stock) next = stock
+  }
+  item.count = next
   saveCart(list)
 }
 
-function toggleSelect(id) {
+function toggleSelect(key) {
   const list = getCart()
-  const item = list.find(i => i.id === id)
+  const item = list.find(i => i.key === key)
   if (item) {
     item.selected = !item.selected
     saveCart(list)
@@ -76,8 +125,8 @@ function toggleSelectAll(selected) {
   saveCart(getCart().map(i => Object.assign({}, i, { selected })))
 }
 
-function removeItem(id) {
-  saveCart(getCart().filter(i => i.id !== id))
+function removeItem(key) {
+  saveCart(getCart().filter(i => i.key !== key))
 }
 
 function removeSelected() {

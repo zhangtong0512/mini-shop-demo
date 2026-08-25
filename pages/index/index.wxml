@@ -16,21 +16,41 @@
   <!-- 悬浮轮播卡片 -->
   <view class="banner-wrap">
     <swiper class="banner" autoplay circular interval="3000" bindchange="onBannerChange">
-      <swiper-item wx:for="{{banners}}" wx:key="*this">
-        <image class="banner-img" src="{{item}}" mode="aspectFill" />
+      <swiper-item wx:for="{{banners}}" wx:key="id">
+        <image class="banner-img" src="{{item.image}}" mode="aspectFill" bindtap="onBannerTap" data-banner="{{item}}" />
       </swiper-item>
     </swiper>
     <view class="banner-dots">
       <view
         class="banner-dot {{bannerCurrent == index ? 'active' : ''}}"
         wx:for="{{banners}}"
-        wx:key="*this"
+        wx:key="id"
         wx:for-index="index"
       ></view>
     </view>
   </view>
 
-  <!-- 图标分类导航（吸顶） -->
+  <!-- 限时秒杀 -->
+  <view class="flash-section" wx:if="{{flashList.length > 0}}">
+    <view class="flash-head">
+      <text class="flash-title">⚡ 限时秒杀</text>
+      <text class="flash-tip">手慢无 · 每日限量</text>
+    </view>
+    <scroll-view class="flash-scroll" scroll-x>
+      <view class="flash-inner">
+        <view class="flash-item" hover-class="hv" wx:for="{{flashList}}" wx:key="id" data-id="{{item.id}}" bindtap="onTapFlash">
+          <view class="flash-thumb"><text class="flash-emoji">{{item.emoji}}</text></view>
+          <view class="flash-name">{{item.title}}</view>
+          <view class="flash-price">
+            <text class="flash-now">¥{{item.flashPrice}}</text>
+            <text class="flash-old">¥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 图标分类导航 + 排序栏（吸顶） -->
   <view class="category-sticky">
   <scroll-view class="category-nav" scroll-x>
     <view class="category-inner">
@@ -47,10 +67,11 @@
       </view>
     </view>
   </scroll-view>
+  <sort-bar bind:sortchange="onSortchange" bind:pricechange="onPricechange" />
   </view>
 
-  <!-- 为你推荐 -->
-  <view class="section-title">为你推荐</view>
+  <!-- 猜你喜欢 -->
+  <view class="section-title">猜你喜欢</view>
 
   <view class="goods-grid">
     <goods-card

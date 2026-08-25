@@ -1,0 +1,40 @@
+<view class="sku-sheet" wx:if="{{visible}}" catchtouchmove="noop">
+  <view class="mask {{closing ? 'out' : ''}}" catchtap="onCancel"></view>
+  <view class="sheet {{closing ? 'out' : ''}}">
+    <view class="handle"></view>
+
+    <view class="goods-bar">
+      <view class="g-thumb"><text class="g-emoji">{{goods.emoji}}</text></view>
+      <view class="g-info">
+        <view class="g-title">{{goods.title}}</view>
+        <view class="g-price">
+          <text class="symbol">¥</text><text class="num">{{price}}</text>
+          <text class="g-stock" wx:if="{{stock > 0}}">库存 {{stock}} 件</text>
+          <text class="g-stock out" wx:else>暂时缺货</text>
+        </view>
+      </view>
+      <view class="close" hover-class="hv" catchtap="onCancel">✕</view>
+    </view>
+
+    <view class="spec-group" wx:for="{{specs}}" wx:key="name" wx:for-item="group" wx:for-index="di">
+      <view class="spec-name">{{group.name}}</view>
+      <view class="spec-vals">
+        <view class="spec-val {{group.selected === val ? 'active' : ''}}" hover-class="hv"
+              wx:for="{{group.values}}" wx:key="*this" wx:for-item="val"
+              data-dim="{{di}}" data-val="{{val}}" bindtap="onDimTap">{{val}}</view>
+      </view>
+    </view>
+
+    <view class="count-bar">
+      <text class="count-label">购买数量</text>
+      <view class="stepper">
+        <view class="step-btn" hover-class="hv" bindtap="onMinus">−</view>
+        <view class="step-num">{{count}}</view>
+        <view class="step-btn" hover-class="hv" bindtap="onPlus">+</view>
+      </view>
+    </view>
+
+    <view class="btn-primary {{canConfirm ? '' : 'disabled'}}" hover-class="{{canConfirm ? 'hv-btn' : ''}}" bindtap="onConfirm">{{confirmText}}</view>
+    <view class="btn-cancel" hover-class="hv" bindtap="onCancel">取消</view>
+  </view>
+</view>

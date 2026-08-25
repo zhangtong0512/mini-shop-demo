@@ -28,7 +28,8 @@ Page({
     if (source === 'buynow') {
       this._buyNow = {
         id: Number(options.id),
-        count: Math.max(1, Math.min(Number(options.count) || 1, 99))
+        count: Math.max(1, Math.min(Number(options.count) || 1, 99)),
+        skuKey: options.sku || ''
       }
     }
     this.refresh()
@@ -43,16 +44,19 @@ Page({
         setTimeout(() => wx.navigateBack(), 900)
         return
       }
-      items = [{
-        id: g.id,
-        title: g.title,
-        emoji: g.emoji,
-        image: g.image,
-        price: g.price,
-        count: this._buyNow.count
-      }]
+      items = [mock.toOrderItem(g, this._buyNow.count, this._buyNow.skuKey)]
     } else {
-      items = cart.getSelectedItems()
+      // 购物车条目只取订单所需字段（剥离 key/selected 等购物车态字段）
+      items = cart.getSelectedItems().map(i => ({
+        id: i.id,
+        title: i.title,
+        emoji: i.emoji,
+        image: i.image,
+        price: i.price,
+        count: i.count,
+        skuKey: i.skuKey || '',
+        spec: i.spec || ''
+      }))
       if (items.length === 0) {
         wx.showToast({ title: '没有待结算的商品', icon: 'none' })
         setTimeout(() => wx.navigateBack(), 900)

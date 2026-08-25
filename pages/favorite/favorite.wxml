@@ -1,4 +1,5 @@
 <view class="page">
+  <sort-bar wx:if="{{list.length > 0}}" showFilter="{{false}}" bind:sortchange="onSortchange" />
   <view class="goods-grid" wx:if="{{list.length > 0}}">
     <goods-card
       wx:for="{{list}}"

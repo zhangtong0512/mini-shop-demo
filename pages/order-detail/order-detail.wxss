@@ -141,6 +141,12 @@
   -webkit-box-orient: vertical;
 }
 
+.g-spec {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
 .g-price {
   font-size: 28rpx;
   color: #ff5000;
@@ -197,6 +203,130 @@
   border-color: #dddddd;
   color: #999999;
   background: #f7f7f7;
+}
+
+/* 申请售后标签 */
+.after-tag {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-left: 16rpx;
+  padding: 8rpx 22rpx;
+  border: 1rpx solid #999999;
+  border-radius: 26rpx;
+  font-size: 23rpx;
+  color: #666666;
+  transition: opacity 0.2s ease;
+}
+
+/* 售后记录 */
+.after-card {
+  margin-top: 20rpx;
+}
+
+.after-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #222222;
+  margin-bottom: 8rpx;
+}
+
+.after-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f2f2f2;
+}
+
+.after-item:last-child {
+  border-bottom: none;
+  padding-bottom: 4rpx;
+}
+
+.after-goods {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.after-emoji {
+  font-size: 44rpx;
+  margin-right: 16rpx;
+}
+
+.after-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.after-name {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.4;
+}
+
+.after-spec {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.after-meta {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.after-right {
+  flex-shrink: 0;
+  margin-left: 20rpx;
+  text-align: right;
+}
+
+.after-status {
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.after-status.st-pending {
+  color: #ff6a00;
+}
+
+.after-status.st-refunded {
+  color: #07c160;
+}
+
+.after-status.st-rejected {
+  color: #999999;
+}
+
+.after-amount {
+  margin-top: 6rpx;
+  font-size: 26rpx;
+  color: #ff5000;
+  font-weight: 600;
+}
+
+.after-handle {
+  margin-top: 12rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.after-btn {
+  margin-left: 12rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 26rpx;
+  font-size: 23rpx;
+  border: 1rpx solid #dddddd;
+  color: #666666;
+  transition: opacity 0.2s ease;
+}
+
+.after-btn.agree {
+  border-color: #ff5000;
+  color: #ff5000;
 }
 
 .total-price {

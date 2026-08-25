@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "goods-card": "/components/goods-card/goods-card"
+    "goods-card": "/components/goods-card/goods-card",
+    "sort-bar": "/components/sort-bar/sort-bar"
   },
   "navigationBarTitleText": "精选商城"
 }

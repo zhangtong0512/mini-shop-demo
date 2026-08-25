@@ -1,8 +1,10 @@
 const favorite = require('../../utils/favorite')
+const mock = require('../../utils/mock')
 
 Page({
   data: {
-    list: []
+    list: [],
+    sortMode: 'default'
   },
 
   onShow() {
@@ -11,7 +13,12 @@ Page({
   },
 
   refresh() {
-    this.setData({ list: favorite.getFavoriteGoods() })
+    this.setData({ list: mock.sortGoods(favorite.getFavoriteGoods(), this.data.sortMode) })
+  },
+
+  onSortchange(e) {
+    this.setData({ sortMode: e.detail.mode })
+    this.refresh()
   },
 
   onTapGoods(e) {

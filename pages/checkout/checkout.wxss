@@ -124,6 +124,12 @@
   -webkit-box-orient: vertical;
 }
 
+.goods-spec {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #999999;
+}
+
 .goods-price {
   display: flex;
   justify-content: space-between;

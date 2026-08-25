@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "商品详情",
   "usingComponents": {
-    "review-card": "/components/review-card/review-card"
+    "review-card": "/components/review-card/review-card",
+    "sku-sheet": "/components/sku-sheet/sku-sheet"
   }
 }

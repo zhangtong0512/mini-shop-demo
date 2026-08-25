@@ -7,6 +7,8 @@ const TABS = [
   { key: 2, name: '待发货' },
   { key: 3, name: '待收货' },
   { key: 4, name: '已完成' },
+  { key: 6, name: '售后' },
+  { key: 7, name: '已退款' },
   { key: 5, name: '已取消' }
 ]
 

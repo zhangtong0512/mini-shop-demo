@@ -1,0 +1,20 @@
+<view class="sort-bar">
+  <view class="sort-row">
+    <view class="sort-item {{mode == 'default' ? 'active' : ''}}" data-mode="default" bindtap="onSortTap">综合</view>
+    <view class="sort-item {{mode == 'sales' ? 'active' : ''}}" data-mode="sales" bindtap="onSortTap">销量</view>
+    <view class="sort-item {{mode == 'priceAsc' || mode == 'priceDesc' ? 'active' : ''}}" data-mode="price" bindtap="onSortTap">价格{{mode == 'priceAsc' ? ' ↑' : (mode == 'priceDesc' ? ' ↓' : '')}}</view>
+    <view class="sort-item {{mode == 'newest' ? 'active' : ''}}" data-mode="newest" bindtap="onSortTap">最新</view>
+    <view class="sort-item filter {{filterOpen ? 'active' : ''}}" wx:if="{{showFilter}}" bindtap="onFilterTap">筛选{{priceIndex > 0 ? ' · ' + priceLabel : ''}}</view>
+  </view>
+
+  <view class="filter-panel" wx:if="{{filterOpen && showFilter}}">
+    <view
+      class="price-chip {{priceIndex == idx ? 'active' : ''}}"
+      wx:for="{{PRICE_RANGES}}"
+      wx:key="label"
+      wx:for-index="idx"
+      data-idx="{{idx}}"
+      bindtap="onPriceTap"
+    >{{item.label}}</view>
+  </view>
+</view>

@@ -7,7 +7,11 @@ Page({
     activeCategory: 'all',
     allGoods: [],
     goodsList: [],
-    bannerCurrent: 0
+    bannerCurrent: 0,
+    flashList: [],
+    sortMode: 'default',
+    priceMin: 0,
+    priceMax: Infinity
   },
 
   onLoad() {
@@ -16,7 +20,8 @@ Page({
       banners: mock.getBanners(),
       categories: mock.getCategories(),
       allGoods,
-      goodsList: allGoods
+      goodsList: allGoods,
+      flashList: mock.getFlashGoods()
     })
   },
 
@@ -83,16 +88,50 @@ Page({
     this.setData({ bannerCurrent: e.detail.current })
   },
 
-  onCategoryTap(e) {
-    this.setData({ activeCategory: e.currentTarget.dataset.id })
-    this.filterGoods()
+  // Banner 点击：商品 → 详情；分类 → 切换分类；其它 → 提示
+  onBannerTap(e) {
+    const b = e.currentTarget.dataset.banner || {}
+    if (b.linkType === 'goods' && b.target) {
+      wx.navigateTo({ url: '/pages/detail/detail?id=' + b.target })
+    } else if (b.linkType === 'category' && b.target) {
+      this.setData({ activeCategory: b.target })
+      this.applyFilters()
+      wx.pageScrollTo({ scrollTop: 320, duration: 300 })
+    } else {
+      wx.showToast({ title: b.title || '敬请期待', icon: 'none' })
+    }
   },
 
-  filterGoods() {
-    const { allGoods, activeCategory } = this.data
-    this.setData({
-      goodsList: activeCategory === 'all' ? allGoods : allGoods.filter(g => g.category === activeCategory)
-    })
+  // 点击秒杀商品
+  onTapFlash(e) {
+    wx.navigateTo({ url: '/pages/detail/detail?id=' + e.currentTarget.dataset.id })
+  },
+
+  onCategoryTap(e) {
+    this.setData({ activeCategory: e.currentTarget.dataset.id })
+    this.applyFilters()
+  },
+
+  // 分类 → 价格区间 → 排序 正交叠加
+  applyFilters() {
+    const { allGoods, activeCategory, sortMode, priceMin, priceMax } = this.data
+    let list = allGoods
+    if (activeCategory !== 'all') {
+      list = list.filter(g => g.category === activeCategory)
+    }
+    list = mock.filterByPrice(list, priceMin, priceMax)
+    list = mock.sortGoods(list, sortMode)
+    this.setData({ goodsList: list })
+  },
+
+  onSortchange(e) {
+    this.setData({ sortMode: e.detail.mode })
+    this.applyFilters()
+  },
+
+  onPricechange(e) {
+    this.setData({ priceMin: e.detail.min, priceMax: e.detail.max })
+    this.applyFilters()
   },
 
   onTapGoods(e) {

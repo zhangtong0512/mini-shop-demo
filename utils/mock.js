@@ -21,7 +21,9 @@ const ORDER_STATUS = {
   2: '待发货',
   3: '待收货',
   4: '已完成',
-  5: '已取消'
+  5: '已取消',
+  6: '售后中',
+  7: '已退款'
 }
 
 const categories = [
@@ -35,24 +37,43 @@ const categories = [
 ]
 
 const goodsList = [
-  { id: 1001, category: 'digital', emoji: '📱', title: '星野 X10 智能手机 12GB+256GB 曜石黑', desc: '6.7 英寸 2K 直屏 · 5000mAh 大电池 · 5000 万像素三摄', price: 3999, originalPrice: 4599, sales: 12800, stock: 860, tags: ['手机', '数码'] },
+  { id: 1001, category: 'digital', emoji: '📱', title: '星野 X10 智能手机', desc: '6.7 英寸 2K 直屏 · 5000mAh 大电池 · 5000 万像素三摄', price: 3999, originalPrice: 4599, sales: 12800, stock: 860, tags: ['手机', '数码'],
+    specs: [{ name: '颜色', values: ['曜石黑', '冰川蓝'] }, { name: '版本', values: ['12GB+256GB', '12GB+512GB'] }],
+    skus: [
+      { key: '曜石黑|12GB+256GB', price: 3999, stock: 500 },
+      { key: '曜石黑|12GB+512GB', price: 4599, stock: 200 },
+      { key: '冰川蓝|12GB+256GB', price: 3999, stock: 100 },
+      { key: '冰川蓝|12GB+512GB', price: 4599, stock: 60 }
+    ] },
   { id: 1002, category: 'digital', emoji: '🎧', title: '幻影无线蓝牙耳机 Pro 主动降噪', desc: '深度降噪 · 40 小时长续航 · 入耳检测', price: 499, originalPrice: 699, sales: 35600, stock: 2400, tags: ['耳机', '数码'] },
   { id: 1003, category: 'sports', emoji: '👟', title: '城市轻跑鞋 透气网面 轻量缓震', desc: '透气飞织鞋面 · 缓震中底 · 通勤跑步两相宜', price: 329, originalPrice: 429, sales: 8200, stock: 1500, tags: ['跑鞋', '运动'] },
-  { id: 1004, category: 'apparel', emoji: '🧥', title: '简约连帽卫衣 宽松慵懒风', desc: '280g 加绒面料 · 落肩设计 · 多色可选', price: 189, originalPrice: 269, sales: 15200, stock: 3000, tags: ['卫衣', '服饰'] },
+  { id: 1004, category: 'apparel', emoji: '🧥', title: '简约连帽卫衣 宽松慵懒风', desc: '280g 加绒面料 · 落肩设计 · 多色可选', price: 189, originalPrice: 269, sales: 15200, stock: 3000, tags: ['卫衣', '服饰'],
+    specs: [{ name: '颜色', values: ['黑色', '白色', '藏青'] }, { name: '尺码', values: ['M', 'L', 'XL'] }],
+    skus: [
+      { key: '黑色|M', price: 189, stock: 120 },
+      { key: '黑色|L', price: 189, stock: 90 },
+      { key: '黑色|XL', price: 199, stock: 60 },
+      { key: '白色|M', price: 189, stock: 100 },
+      { key: '白色|L', price: 189, stock: 80 },
+      { key: '白色|XL', price: 199, stock: 50 },
+      { key: '藏青|M', price: 189, stock: 110 },
+      { key: '藏青|L', price: 189, stock: 70 },
+      { key: '藏青|XL', price: 199, stock: 40 }
+    ] },
   { id: 1005, category: 'appliance', emoji: '🌀', title: '空气循环扇 落地式 3 档风速', desc: '上下 90° 摇头 · 远距送风 · 低噪电机', price: 259, originalPrice: 329, sales: 4600, stock: 980, tags: ['电扇', '家电'] },
-  { id: 1006, category: 'beauty', emoji: '🧼', title: '氨基酸温和洁面乳 100g', desc: '温和不紧绷 · 泡沫细腻 · 敏感肌适用', price: 89, originalPrice: 129, sales: 52300, stock: 5200, tags: ['洁面', '美妆'] },
-  { id: 1007, category: 'food', emoji: '🥜', title: '每日坚果混合装 30 包', desc: '6 种坚果果干 · 独立小包 · 锁鲜装', price: 128, originalPrice: 158, sales: 30100, stock: 4200, tags: ['坚果', '零食'] },
+  { id: 1006, category: 'beauty', emoji: '🧼', title: '氨基酸温和洁面乳 100g', desc: '温和不紧绷 · 泡沫细腻 · 敏感肌适用', price: 89, originalPrice: 129, sales: 52300, stock: 5200, tags: ['洁面', '美妆'], flash: true, flashPrice: 59 },
+  { id: 1007, category: 'food', emoji: '🥜', title: '每日坚果混合装 30 包', desc: '6 种坚果果干 · 独立小包 · 锁鲜装', price: 128, originalPrice: 158, sales: 30100, stock: 4200, tags: ['坚果', '零食'], flash: true, flashPrice: 89 },
   { id: 1008, category: 'apparel', emoji: '🎒', title: '双肩电脑背包 15.6 英寸 防泼水', desc: '独立电脑仓 · 多隔层收纳 · 商务休闲通用', price: 159, originalPrice: 219, sales: 9800, stock: 1700, tags: ['背包', '箱包'] },
-  { id: 1009, category: 'digital', emoji: '⌚', title: '智能手环 6 代 血氧心率监测', desc: '1.62 英寸彩屏 · 14 天续航 · 50 米防水', price: 249, originalPrice: 349, sales: 68800, stock: 9000, tags: ['手环', '数码'] },
+  { id: 1009, category: 'digital', emoji: '⌚', title: '智能手环 6 代 血氧心率监测', desc: '1.62 英寸彩屏 · 14 天续航 · 50 米防水', price: 249, originalPrice: 349, sales: 68800, stock: 9000, tags: ['手环', '数码'], flash: true, flashPrice: 169 },
   { id: 1010, category: 'appliance', emoji: '🥤', title: '便携榨汁杯 充电式 一键启动', desc: 'USB 充电 · 400ml 容量 · 食品级材质', price: 99, originalPrice: 149, sales: 22500, stock: 3600, tags: ['榨汁杯', '家电'] },
   { id: 1011, category: 'beauty', emoji: '🧴', title: '玻尿酸补水面膜 5 片装', desc: '三重玻尿酸 · 服帖膜布 · 深层补水', price: 79, originalPrice: 119, sales: 43100, stock: 6100, tags: ['面膜', '美妆'] },
-  { id: 1012, category: 'sports', emoji: '🧘', title: '加厚防滑瑜伽垫 183×61cm', desc: 'TPE 材质 · 双面防滑 · 附绑带收纳', price: 69, originalPrice: 99, sales: 17600, stock: 2800, tags: ['瑜伽垫', '运动'] }
+  { id: 1012, category: 'sports', emoji: '🧘', title: '加厚防滑瑜伽垫 183×61cm', desc: 'TPE 材质 · 双面防滑 · 附绑带收纳', price: 69, originalPrice: 99, sales: 17600, stock: 2800, tags: ['瑜伽垫', '运动'], flash: true, flashPrice: 39 }
 ]
 
 const banners = [
-  'https://picsum.photos/seed/shop-banner-1/750/300',
-  'https://picsum.photos/seed/shop-banner-2/750/300',
-  'https://picsum.photos/seed/shop-banner-3/750/300'
+  { id: 1, image: 'https://picsum.photos/seed/shop-banner-1/750/300', title: '星野 X10 新品首发', linkType: 'goods', target: 1001 },
+  { id: 2, image: 'https://picsum.photos/seed/shop-banner-2/750/300', title: '服饰焕新季', linkType: 'category', target: 'apparel' },
+  { id: 3, image: 'https://picsum.photos/seed/shop-banner-3/750/300', title: '新人专享礼', linkType: 'none', target: '' }
 ]
 
 // 商品图文详情的详细介绍文案（按商品 id）
@@ -151,6 +172,11 @@ function getBanners() {
   return banners
 }
 
+// 限时秒杀商品
+function getFlashGoods() {
+  return goodsList.filter(g => g.flash)
+}
+
 function getGoodsById(id) {
   return goodsList.find(g => g.id === Number(id)) || null
 }
@@ -163,28 +189,88 @@ function getHotKeywords() {
 }
 
 // 关键词搜索：匹配 标题 / 一句话卖点 / 标签，大小写不敏感
-function searchGoods(keyword) {
+function searchGoods(keyword, mode) {
   const kw = (keyword || '').trim()
   if (!kw) return []
   const q = kw.toLowerCase()
-  return goodsList.filter(g => {
+  const matched = goodsList.filter(g => {
     return (
       g.title.toLowerCase().indexOf(q) > -1 ||
       (g.desc || '').toLowerCase().indexOf(q) > -1 ||
       (g.tags || []).some(t => t.toLowerCase().indexOf(q) > -1)
     )
   })
+  return sortGoods(matched, mode)
 }
 
-function toOrderItem(goods, count) {
+// 排序：default 保持数组序 / sales 销量降序 / priceAsc / priceDesc / newest id 降序
+function sortGoods(list, mode) {
+  const arr = (list || []).slice()
+  switch (mode) {
+    case 'sales':
+      return arr.sort((a, b) => (b.sales || 0) - (a.sales || 0))
+    case 'priceAsc':
+      return arr.sort((a, b) => a.price - b.price)
+    case 'priceDesc':
+      return arr.sort((a, b) => b.price - a.price)
+    case 'newest':
+      return arr.sort((a, b) => b.id - a.id)
+    default:
+      return arr
+  }
+}
+
+// 价格区间过滤；max 为 Infinity 表示无上限
+function filterByPrice(list, min, max) {
+  min = Number(min) || 0
+  max = max === Infinity || max === undefined || max === null ? Infinity : Number(max)
+  return (list || []).filter(g => g.price >= min && g.price <= max)
+}
+
+function toOrderItem(goods, count, skuKey) {
   return {
     id: goods.id,
     title: goods.title,
     emoji: goods.emoji,
     image: goods.image,
-    price: goods.price,
-    count
+    price: getSkuPrice(goods, skuKey),
+    count,
+    skuKey: skuKey || '',
+    spec: specText(goods, skuKey)
   }
+}
+
+// ---------- SKU ----------
+
+// 归一化 SKU 列表：无规格商品返回单条伪 SKU（key 为空串），后续逻辑无需区分
+function _effectiveSkus(goods) {
+  if (!goods) return []
+  if (goods.skus && goods.skus.length) return goods.skus
+  return [{ key: '', spec: '', price: goods.price, stock: goods.stock }]
+}
+
+// 按 skuKey 取 SKU；无规格商品返回伪 SKU；有规格但查不到返回 null
+function getSku(goods, skuKey) {
+  if (!goods) return null
+  const list = _effectiveSkus(goods)
+  if (!goods.skus || !goods.skus.length) return list[0]
+  return list.find(s => s.key === (skuKey || '')) || null
+}
+
+// 规格文案：如 '黑色 / M'，无规格返回空串
+function specText(goods, skuKey) {
+  if (!goods || !goods.specs || !goods.specs.length) return ''
+  return (skuKey || '').split('|').join(' / ')
+}
+
+function getSkuPrice(goods, skuKey) {
+  const sku = getSku(goods, skuKey)
+  return sku ? sku.price : (goods && goods.price)
+}
+
+function getSkuStock(goods, skuKey) {
+  const sku = getSku(goods, skuKey)
+  return sku ? sku.stock : (goods && goods.stock)
 }
 
 function pad(n) {
@@ -224,7 +310,7 @@ function ensureSeedOrders() {
       orderNo: 'D2026081510240001',
       createTime: '2026-08-15 10:24:00',
       status: 2,
-      items: [toOrderItem(g1, 2)],
+      items: [toOrderItem(g1, 2, '曜石黑|12GB+256GB')],
       goodsAmount: g1.price * 2,
       freight: 0,
       totalPrice: g1.price * 2,
@@ -264,25 +350,41 @@ function checkStock(items) {
     if (!g) {
       return { ok: false, msg: '「' + it.title + '」已下架，请重新选购' }
     }
-    if (it.count > g.stock) {
-      return { ok: false, msg: '「' + it.title + '」库存不足（仅剩 ' + g.stock + ' 件）' }
+    const sku = getSku(g, it.skuKey)
+    if (!sku) {
+      return { ok: false, msg: '「' + it.title + '」请选择规格' }
+    }
+    if (it.count > sku.stock) {
+      return { ok: false, msg: '「' + it.title + '」库存不足（仅剩 ' + sku.stock + ' 件）' }
     }
   }
   return { ok: true }
 }
 
-// 支付成功后扣减库存（重复扣减由 stockDeducted 防止）
+// 支付成功后扣减库存（重复扣减由 stockDeducted 防止；按 SKU 维度）
 function deductStock(items) {
   for (const it of items) {
     const g = getGoodsById(it.id)
-    if (g) g.stock = Math.max(0, g.stock - it.count)
+    if (!g) continue
+    if (g.skus && g.skus.length) {
+      const sku = g.skus.find(s => s.key === (it.skuKey || ''))
+      if (sku) sku.stock = Math.max(0, sku.stock - it.count)
+    } else {
+      g.stock = Math.max(0, g.stock - it.count)
+    }
   }
 }
 
 function restoreStock(items) {
   for (const it of items) {
     const g = getGoodsById(it.id)
-    if (g) g.stock += it.count
+    if (!g) continue
+    if (g.skus && g.skus.length) {
+      const sku = g.skus.find(s => s.key === (it.skuKey || ''))
+      if (sku) sku.stock += it.count
+    } else {
+      g.stock += it.count
+    }
   }
 }
 
@@ -378,6 +480,23 @@ function deleteOrder(id) {
   )
 }
 
+// 售后流程：直接设置订单状态，并记录原状态（首次进入售后中时）用于售后结束回退
+function setOrderStatus(id, status) {
+  wx.setStorageSync(ORDER_KEY, getOrders().map(o => {
+    if (o.id === id) {
+      const next = Object.assign({}, o, { status })
+      if (status === 6 && o.status !== 6 && !o.preAfterSaleStatus) {
+        next.preAfterSaleStatus = o.status
+      }
+      if (status === 7 && !o.refundTime) {
+        next.refundTime = formatTime(new Date())
+      }
+      return next
+    }
+    return o
+  }))
+}
+
 // 待付款订单超时自动取消（返回本次取消的数量）
 function cancelExpiredOrders() {
   const now = Date.now()
@@ -426,9 +545,17 @@ module.exports = {
   getCategories,
   getGoodsList,
   getBanners,
+  getFlashGoods,
   getGoodsById,
+  getSku,
+  specText,
+  getSkuPrice,
+  getSkuStock,
+  toOrderItem,
   getHotKeywords,
   searchGoods,
+  sortGoods,
+  filterByPrice,
   getOrders,
   getOrderById,
   ensureSeedOrders,
@@ -439,6 +566,8 @@ module.exports = {
   shipOrder,
   confirmOrder,
   deleteOrder,
+  setOrderStatus,
+  restoreStock,
   cancelExpiredOrders,
   getRemainMs,
   remainText,
