@@ -81,6 +81,12 @@
     <view class="ar-btn">立即体验 ›</view>
   </view>
 
+  <!-- 加入对比 -->
+  <view class="compare-entry {{isCompare ? 'active' : ''}}" hover-class="hv" bindtap="onCompareTap">
+    <text class="compare-icon">{{isCompare ? '✓' : '📊'}}</text>
+    <text class="compare-text">{{isCompare ? '已加入对比' : '加入对比'}}</text>
+  </view>
+
   <!-- 商品评价预览 -->
   <view class="review-block" wx:if="{{reviewCount > 0}}" hover-class="hv" bindtap="onReviewTap">
     <view class="review-head">

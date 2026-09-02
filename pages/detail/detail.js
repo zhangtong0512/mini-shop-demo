@@ -5,6 +5,7 @@ const review = require('../../utils/review')
 const groupBuy = require('../../utils/group-buy')
 const user = require('../../utils/user')
 const ar = require('../../utils/ar')
+const compare = require('../../utils/compare')
 
 Page({
   data: {
@@ -12,6 +13,7 @@ Page({
     count: 1,
     galleryCurrent: 0,
     isFav: false,
+    isCompare: false,
     reviewCount: 0,
     reviewAvg: 0,
     reviewStars: '',
@@ -65,6 +67,7 @@ Page({
       isFlash,
       flashRemain: isFlash ? mock.flashRemainText(goods.flashEndsAt) : '',
       isFav: favorite.isFavorite(options.id),
+      isCompare: compare.isInCompare(options.id),
       reviewCount: rating.count,
       reviewAvg: rating.avg,
       reviewStars: '★★★★★'.slice(0, round) + '☆☆☆☆☆'.slice(0, 5 - round),
@@ -123,6 +126,25 @@ Page({
   onArTap() {
     if (!this.data.goods) return
     wx.navigateTo({ url: '/pages/ar-preview/ar-preview?id=' + this.data.goods.id })
+  },
+
+  // 加入/移除对比
+  onCompareTap() {
+    if (!this.data.goods) return
+    const { isCompare } = this.data
+    if (isCompare) {
+      compare.removeFromCompare(this.data.goods.id)
+      this.setData({ isCompare: false })
+      wx.showToast({ title: '已移除对比', icon: 'none' })
+    } else {
+      const result = compare.addToCompare(this.data.goods.id)
+      if (result.ok) {
+        this.setData({ isCompare: true })
+        wx.showToast({ title: result.msg, icon: 'success' })
+      } else {
+        wx.showToast({ title: result.msg, icon: 'none' })
+      }
+    }
   },
 
   // 顶部轮播切换时同步页码角标

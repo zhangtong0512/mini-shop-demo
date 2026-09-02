@@ -1,0 +1,82 @@
+<view class="compare-page">
+  <!-- 头部操作栏 -->
+  <view class="header-bar">
+    <text class="compare-count">对比 {{compareGoods.length}}/{{MAX_COMPARE}} 件商品</text>
+    <view class="header-actions">
+      <text class="action-text" bindtap="onAddGoods">+ 添加</text>
+      <text class="action-text danger" bindtap="onClearAll" wx:if="{{compareGoods.length > 0}}">清空</text>
+    </view>
+  </view>
+
+  <!-- 商品列表 -->
+  <scroll-view scroll-x class="compare-scroll" wx:if="{{compareGoods.length > 0}}">
+    <view class="compare-table">
+      <!-- 商品行 -->
+      <view class="compare-row goods-row">
+        <view class="row-label">商品</view>
+        <view class="goods-cell" wx:for="{{compareGoods}}" wx:key="id">
+          <view class="goods-card" bindtap="onGoodsTap" data-id="{{item.id}}">
+            <view class="goods-emoji">{{item.emoji}}</view>
+            <text class="goods-name">{{item.title}}</text>
+            <view class="remove-btn" catchtap="onRemoveGoods" data-id="{{item.id}}">×</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 参数行 -->
+      <view class="compare-row" wx:for="{{dimensions}}" wx:key="key">
+        <view class="row-label">{{item.label}}</view>
+        <view class="param-cell" wx:for="{{compareGoods}}" wx:for-item="goods" wx:key="id">
+          <text 
+            class="param-value {{item.type === 'price' ? 'price' : ''}}"
+            wx:if="{{item.type === 'price'}}"
+          >¥{{goods[item.key]}}</text>
+          <text 
+            class="param-value {{item.type === 'number' ? 'number' : ''}}"
+            wx:elif="{{item.type === 'number'}}"
+          >{{goods[item.key]}}</text>
+          <text 
+            class="param-value text"
+            wx:else
+          >{{goods[item.key] || '-'}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📊</text>
+    <text class="empty-title">暂无对比商品</text>
+    <text class="empty-desc">请从商品详情页添加商品进行对比</text>
+    <view class="empty-btn" bindtap="onAddGoods">去选购</view>
+  </view>
+
+  <!-- 对比分析 -->
+  <view class="analysis-section" wx:if="{{analysis}}">
+    <view class="analysis-header" bindtap="onToggleAnalysis">
+      <text class="analysis-title">对比分析</text>
+      <text class="analysis-toggle">{{showAnalysis ? '收起' : '展开'}}</text>
+    </view>
+    <view class="analysis-content" wx:if="{{showAnalysis}}">
+      <view class="analysis-item" wx:for="{{analysis.summary}}" wx:key="*this">
+        <text class="analysis-dot">•</text>
+        <text>{{item}}</text>
+      </view>
+      <view class="best-item" wx:if="{{analysis.bestPrice}}">
+        <text class="best-label">最低价</text>
+        <text class="best-value" bindtap="onGoodsTap" data-id="{{analysis.bestPrice.id}}">{{analysis.bestPrice.title}}</text>
+      </view>
+      <view class="best-item" wx:if="{{analysis.bestSales}}">
+        <text class="best-label">最高销量</text>
+        <text class="best-value" bindtap="onGoodsTap" data-id="{{analysis.bestSales.id}}">{{analysis.bestSales.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 对比历史 -->
+  <view class="history-section">
+    <view class="section-title">对比历史</view>
+    <view class="empty-history">暂无对比历史</view>
+  </view>
+</view>

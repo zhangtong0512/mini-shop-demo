@@ -34,6 +34,8 @@ const storeModule = require('./utils/store')
 const groupBuy = require('./utils/group-buy')
 const live = require('./utils/live')
 const ar = require('./utils/ar')
+const distribution = require('./utils/distribution')
+const compare = require('./utils/compare')
 
 test.beforeEach(() => {
   resetStore()
@@ -46,6 +48,8 @@ test.beforeEach(() => {
   groupBuy.ensureSeed()
   live.ensureSeed()
   ar.ensureSeed()
+  distribution.ensureSeed()
+  compare.ensureSeed()
 })
 
 // 便捷：生成单商品订单 items 片段（有规格商品自动带首个 SKU）
@@ -736,4 +740,208 @@ test('AR：清空浏览历史', () => {
 test('AR：AR_GOODS_CONFIG导出', () => {
   assert.ok(Array.isArray(ar.AR_GOODS_CONFIG))
   assert.ok(ar.AR_GOODS_CONFIG.length >= 3)
+})
+
+// ========== 分销功能 ==========
+
+test('分销：初始化种子数据', () => {
+  distribution.ensureSeed()
+  const agents = distribution.getAgents()
+  assert.ok(agents.length > 0)
+})
+
+test('分销：获取分销配置', () => {
+  const config = distribution.getConfig()
+  assert.ok(config)
+  assert.ok(typeof config.commissionRate === 'number')
+})
+
+test('分销：获取分销员列表', () => {
+  const agents = distribution.getAgents()
+  assert.ok(Array.isArray(agents))
+  assert.ok(agents.length >= 3)
+})
+
+test('分销：按状态筛选分销员', () => {
+  const active = distribution.getAgents(1)
+  assert.ok(Array.isArray(active))
+  active.forEach(a => assert.strictEqual(a.status, 1))
+})
+
+test('分销：获取分销员详情', () => {
+  const agent = distribution.getAgentById('agent_001')
+  assert.ok(agent)
+  assert.strictEqual(agent.agentId, 'agent_001')
+})
+
+test('分销：获取不存在的分销员', () => {
+  const agent = distribution.getAgentById('agent_999')
+  assert.strictEqual(agent, null)
+})
+
+test('分销：通过用户ID获取分销员', () => {
+  const agent = distribution.getAgentByUserId('user_001')
+  assert.ok(agent)
+  assert.strictEqual(agent.userId, 'user_001')
+})
+
+test('分销：检查是否是分销员', () => {
+  assert.strictEqual(distribution.isAgent('user_001'), true)
+  assert.strictEqual(distribution.isAgent('user_999'), false)
+})
+
+test('分销：计算佣金', () => {
+  const commission = distribution.calculateCommission(100, 1)
+  assert.strictEqual(commission, 10)
+  const commission2 = distribution.calculateCommission(100, 2)
+  assert.strictEqual(commission2, 5)
+})
+
+test('分销：获取商品佣金比例', () => {
+  const rate = distribution.getGoodsCommissionRate(1001)
+  assert.strictEqual(rate, 0.1)
+})
+
+test('分销：检查商品是否可分销', () => {
+  assert.strictEqual(distribution.isGoodsPromotable(1001), true)
+  assert.strictEqual(distribution.isGoodsPromotable(9999), false)
+})
+
+test('分销：添加佣金记录', () => {
+  const record = distribution.addCommissionRecord('agent_001', 'ORD_TEST_001', 500, 1)
+  assert.ok(record)
+  assert.strictEqual(record.commission, 50)
+})
+
+test('分销：获取佣金记录', () => {
+  const records = distribution.getCommissionRecords('agent_001')
+  assert.ok(Array.isArray(records))
+  assert.ok(records.length > 0)
+})
+
+test('分销：获取佣金统计', () => {
+  const stats = distribution.getCommissionStats('agent_001')
+  assert.ok(typeof stats.total === 'number')
+  assert.ok(typeof stats.count === 'number')
+})
+
+test('分销：申请提现', () => {
+  const result = distribution.applyWithdraw('agent_001', 100, '工商银行', '6222 **** **** 1234')
+  assert.strictEqual(result.ok, true)
+})
+
+test('分销：提现金额不足', () => {
+  const result = distribution.applyWithdraw('agent_001', 999999, '工商银行', '6222 **** **** 1234')
+  assert.strictEqual(result.ok, false)
+})
+
+test('分销：获取提现记录', () => {
+  const records = distribution.getWithdrawRecords('agent_001')
+  assert.ok(Array.isArray(records))
+})
+
+test('分销：获取下级分销员', () => {
+  const subAgents = distribution.getSubAgents('agent_001')
+  assert.ok(Array.isArray(subAgents))
+})
+
+test('分销：生成分享链接', () => {
+  const link = distribution.getShareLink(1001, 'agent_001')
+  assert.ok(link.includes('1001'))
+  assert.ok(link.includes('agent_001'))
+})
+
+// ========== 商品对比功能 ==========
+
+test('对比：初始化种子数据', () => {
+  compare.ensureSeed()
+  const list = compare.getCompareList()
+  assert.ok(Array.isArray(list))
+})
+
+test('对比：添加商品到对比', () => {
+  const result = compare.addToCompare(1001)
+  assert.strictEqual(result.ok, true)
+  assert.strictEqual(compare.getCompareCount(), 1)
+})
+
+test('对比：重复添加商品', () => {
+  compare.addToCompare(1001)
+  const result = compare.addToCompare(1001)
+  assert.strictEqual(result.ok, false)
+})
+
+test('对比：添加超过上限', () => {
+  compare.addToCompare(1001)
+  compare.addToCompare(1002)
+  compare.addToCompare(1003)
+  compare.addToCompare(1004)
+  const result = compare.addToCompare(1005)
+  assert.strictEqual(result.ok, false)
+  assert.strictEqual(compare.getCompareCount(), compare.MAX_COMPARE)
+})
+
+test('对比：移除商品', () => {
+  compare.clearCompare()
+  compare.addToCompare(1001)
+  const result = compare.removeFromCompare(1001)
+  assert.strictEqual(result.ok, true)
+  assert.strictEqual(compare.getCompareCount(), 0)
+})
+
+test('对比：移除不存在的商品', () => {
+  compare.clearCompare()
+  const result = compare.removeFromCompare(9999)
+  assert.strictEqual(result.ok, false)
+})
+
+test('对比：清空对比列表', () => {
+  compare.addToCompare(1001)
+  compare.addToCompare(1002)
+  compare.clearCompare()
+  assert.strictEqual(compare.getCompareCount(), 0)
+})
+
+test('对比：检查商品是否在对比中', () => {
+  compare.clearCompare()
+  compare.addToCompare(1001)
+  assert.strictEqual(compare.isInCompare(1001), true)
+  assert.strictEqual(compare.isInCompare(1002), false)
+})
+
+test('对比：获取对比商品详情', () => {
+  compare.clearCompare()
+  compare.addToCompare(1001)
+  compare.addToCompare(1002)
+  const goods = compare.getCompareGoods(mock)
+  assert.ok(Array.isArray(goods))
+  assert.strictEqual(goods.length, 2)
+})
+
+test('对比：获取对比维度', () => {
+  const dimensions = compare.getCompareDimensions()
+  assert.ok(Array.isArray(dimensions))
+  assert.ok(dimensions.length > 0)
+})
+
+test('对比：分析对比结果', () => {
+  compare.clearCompare()
+  compare.addToCompare(1001)
+  compare.addToCompare(1002)
+  const goods = compare.getCompareGoods(mock)
+  const result = compare.analyzeCompare(goods)
+  assert.strictEqual(result.ok, true)
+  assert.ok(result.analysis)
+})
+
+test('对比：商品数量不足时分析', () => {
+  compare.clearCompare()
+  compare.addToCompare(1001)
+  const goods = compare.getCompareGoods(mock)
+  const result = compare.analyzeCompare(goods)
+  assert.strictEqual(result.ok, false)
+})
+
+test('对比：MAX_COMPARE导出', () => {
+  assert.strictEqual(compare.MAX_COMPARE, 4)
 })
