@@ -5,6 +5,8 @@ const pay = require('../../utils/pay')
 const config = require('../../utils/config')
 const coupon = require('../../utils/coupon')
 const points = require('../../utils/points')
+const member = require('../../utils/member')
+const store = require('../../utils/store')
 
 Page({
   data: {
@@ -25,12 +27,19 @@ Page({
     usePoints: false,
     pointsCanUse: false,
     submitting: false,
-    freeShippingThreshold: config.FREE_SHIPPING_THRESHOLD
+    freeShippingThreshold: config.FREE_SHIPPING_THRESHOLD,
+    memberDiscount: 1,
+    memberLevelName: '',
+    memberDiscountAmount: 0,
+    deliveryMode: 'express', // express快递 / selfPickup自提
+    currentStore: null
   },
 
   onLoad(options) {
     const source = options.from === 'buynow' ? 'buynow' : 'cart'
-    this.setData({ source })
+    const deliveryMode = store.getDeliveryMode()
+    const currentStore = store.getCurrentStore()
+    this.setData({ source, deliveryMode, currentStore })
     if (source === 'buynow') {
       this._buyNow = {
         id: Number(options.id),
@@ -74,8 +83,8 @@ Page({
 
     const goodsAmount = items.reduce((s, i) => s + i.price * i.count, 0)
     const totalCount = items.reduce((s, i) => s + i.count, 0)
-    // 满额免运费，否则收固定运费
-    const freight = goodsAmount >= config.FREE_SHIPPING_THRESHOLD ? 0 : config.SHIPPING_FEE
+    // 满额免运费，否则收固定运费；自提免运费
+    const freight = this.data.deliveryMode === 'selfPickup' ? 0 : (goodsAmount >= config.FREE_SHIPPING_THRESHOLD ? 0 : config.SHIPPING_FEE)
     // 可用优惠券；已选券失效（已用/过期/不满足门槛）时自动清空
     const usableCoupons = coupon.getUsableCoupons(goodsAmount)
     let couponId = this.data.couponId
@@ -92,6 +101,12 @@ Page({
     if (usePoints && !disc.canUse) usePoints = false
     const pointsAmount = usePoints ? disc.pointsAmount : 0
 
+    // 会员折扣
+    const memberInfo = member.getMemberInfo()
+    const memberDiscount = memberInfo.discount
+    const memberLevelName = memberInfo.levelName
+    const memberDiscountAmount = Math.round(goodsAmount * (1 - memberDiscount) * 100) / 100
+
     this.setData({
       items,
       goodsAmount,
@@ -104,7 +119,10 @@ Page({
       pointsAmount,
       usePoints,
       pointsCanUse: disc.canUse,
-      totalPrice: goodsAmount + freight - couponAmount - pointsAmount,
+      memberDiscount,
+      memberLevelName,
+      memberDiscountAmount,
+      totalPrice: goodsAmount + freight - couponAmount - pointsAmount - memberDiscountAmount,
       totalCount,
       // 用户已选过地址则保留，否则用默认地址
       address: this.data.address || address.getDefaultAddress()
@@ -149,14 +167,36 @@ Page({
     })
   },
 
+  onDeliveryModeTap(e) {
+    const mode = e.currentTarget.dataset.mode
+    this.setData({ deliveryMode: mode })
+    store.setDeliveryMode(mode)
+    this.refresh()
+  },
+
+  onStoreTap() {
+    wx.navigateTo({
+      url: '/pages/store-select/store-select',
+      events: {
+        selectStore: data => {
+          this.setData({ currentStore: data.store })
+        }
+      }
+    })
+  },
+
   onRemark(e) {
     this.setData({ remark: e.detail.value })
   },
 
   onSubmit() {
     if (this.data.submitting) return
-    if (!this.data.address) {
+    if (this.data.deliveryMode === 'express' && !this.data.address) {
       wx.showToast({ title: '请选择收货地址', icon: 'none' })
+      return
+    }
+    if (this.data.deliveryMode === 'selfPickup' && !this.data.currentStore) {
+      wx.showToast({ title: '请选择自提门店', icon: 'none' })
       return
     }
     const stockRes = mock.checkStock(this.data.items)
@@ -172,7 +212,7 @@ Page({
     setTimeout(() => {
       const order = mock.createOrder({
         items: this.data.items,
-        address: this.data.address,
+        address: this.data.deliveryMode === 'selfPickup' ? this.data.currentStore : this.data.address,
         remark: this.data.remark,
         goodsAmount: this.data.goodsAmount,
         freight: this.data.freight,
@@ -181,7 +221,9 @@ Page({
         pointsUsed: this.data.usePoints ? this.data.pointsUsable : 0,
         pointsAmount: this.data.usePoints ? this.data.pointsAmount : 0,
         totalPrice: this.data.totalPrice,
-        totalCount: this.data.totalCount
+        totalCount: this.data.totalCount,
+        deliveryMode: this.data.deliveryMode,
+        storeId: this.data.deliveryMode === 'selfPickup' ? this.data.currentStore.id : 0
       })
       if (!order) {
         wx.hideLoading()

@@ -2,6 +2,49 @@
   padding: 20rpx 24rpx 160rpx;
 }
 
+/* 配送方式选择 */
+.delivery-mode-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 8rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.mode-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.mode-option.active {
+  background: linear-gradient(135deg, #ff6a00, #ff3200);
+  color: #fff;
+}
+
+.mode-icon {
+  margin-right: 8rpx;
+  font-size: 32rpx;
+}
+
+/* 门店卡片 */
+.store-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
 .addr-card {
   display: flex;
   align-items: center;

@@ -114,8 +114,24 @@
   vertical-align: middle;
 }
 
+.group-badge {
+  display: inline-block;
+  margin-left: 16rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
 .flash-sales {
   color: #ff5000;
+}
+
+.group-sales {
+  color: #9C27B0;
 }
 
 .title {
@@ -393,4 +409,101 @@
 .footer-btn.buy {
   background: linear-gradient(90deg, #ff5500, #ff3200);
   border-radius: 0 40rpx 40rpx 0;
+}
+
+/* 拼团区块 */
+.group-section {
+  margin: 20rpx 24rpx 0;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.group-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.group-price {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #9C27B0;
+}
+
+.joinable-groups {
+  margin-bottom: 16rpx;
+}
+
+.joinable-title {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+.joinable-list {
+  white-space: nowrap;
+}
+
+.joinable-item {
+  display: inline-flex;
+  align-items: center;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+  margin-right: 16rpx;
+}
+
+.joinable-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20rpx;
+  margin-right: 12rpx;
+}
+
+.joinable-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.joinable-name {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.joinable-remain {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.joinable-btn {
+  background: #9C27B0;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  margin-left: 12rpx;
+}
+
+.create-group-btn {
+  background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+  color: #fff;
+  text-align: center;
+  padding: 16rpx 0;
+  border-radius: 40rpx;
+  font-size: 28rpx;
 }

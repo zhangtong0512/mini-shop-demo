@@ -1,0 +1,48 @@
+<view class="level-page">
+  <view class="level-header">
+    <text class="title">会员等级规则</text>
+    <text class="subtitle">消费1元=1成长值，成长值达到对应门槛即可升级</text>
+  </view>
+
+  <view class="level-list">
+    <view class="level-card {{item.isCurrent ? 'current' : ''}}" wx:for="{{levels}}" wx:key="level">
+      <view class="level-header" style="background: {{item.color}};">
+        <text class="level-icon">{{item.icon}}</text>
+        <text class="level-name">{{item.name}}</text>
+        <text class="level-badge" wx:if="{{item.isCurrent}}">当前</text>
+      </view>
+      <view class="level-body">
+        <view class="growth-req">
+          <text class="label">成长值要求</text>
+          <text class="value">{{item.minGrowth}}</text>
+        </view>
+        <view class="discount-req">
+          <text class="label">享受折扣</text>
+          <text class="value">{{item.discount * 10}}折</text>
+        </view>
+        <view class="benefits-list">
+          <text class="label">专属权益</text>
+          <view class="benefit-tags">
+            <text class="benefit-tag" wx:for="{{item.benefitsText}}" wx:for-item="benefit" wx:key="*this">{{benefit}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="rules-section">
+    <text class="rules-title">成长值获取规则</text>
+    <view class="rule-item">
+      <text class="rule-icon">🛒</text>
+      <text class="rule-text">消费1元 = 1成长值</text>
+    </view>
+    <view class="rule-item">
+      <text class="rule-icon">✅</text>
+      <text class="rule-text">每日签到 = 5成长值</text>
+    </view>
+    <view class="rule-item">
+      <text class="rule-icon">⭐</text>
+      <text class="rule-text">商品评价 = 10成长值</text>
+    </view>
+  </view>
+</view>

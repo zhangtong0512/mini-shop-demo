@@ -1,6 +1,18 @@
 <view class="page" wx:if="{{items.length > 0}}">
-  <!-- 收货地址 -->
-  <view class="addr-card" hover-class="hv" bindtap="onAddressTap">
+  <!-- 配送方式选择 -->
+  <view class="delivery-mode-card">
+    <view class="mode-option {{deliveryMode === 'express' ? 'active' : ''}}" bindtap="onDeliveryModeTap" data-mode="express">
+      <text class="mode-icon">🚚</text>
+      <text class="mode-text">快递配送</text>
+    </view>
+    <view class="mode-option {{deliveryMode === 'selfPickup' ? 'active' : ''}}" bindtap="onDeliveryModeTap" data-mode="selfPickup">
+      <text class="mode-icon">🏪</text>
+      <text class="mode-text">门店自提</text>
+    </view>
+  </view>
+
+  <!-- 收货地址（快递配送时显示） -->
+  <view class="addr-card" hover-class="hv" bindtap="onAddressTap" wx:if="{{deliveryMode === 'express'}}">
     <block wx:if="{{address}}">
       <view class="addr-ico">📍</view>
       <view class="addr-info">
@@ -15,6 +27,26 @@
       <view class="addr-ico">📍</view>
       <view class="addr-info">
         <view class="addr-empty">请选择收货地址</view>
+      </view>
+    </block>
+    <view class="addr-arrow">›</view>
+  </view>
+
+  <!-- 门店选择（自提时显示） -->
+  <view class="store-card" hover-class="hv" bindtap="onStoreTap" wx:if="{{deliveryMode === 'selfPickup'}}">
+    <block wx:if="{{currentStore}}">
+      <view class="addr-ico">🏪</view>
+      <view class="addr-info">
+        <view class="addr-line">
+          <text class="addr-name">{{currentStore.name}}</text>
+        </view>
+        <view class="addr-detail">{{currentStore.address}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="addr-ico">🏪</view>
+      <view class="addr-info">
+        <view class="addr-empty">请选择自提门店</view>
       </view>
     </block>
     <view class="addr-arrow">›</view>
@@ -63,9 +95,13 @@
         <text class="arrow">›</text>
       </view>
     </view>
+    <view class="summary-row" wx:if="{{memberDiscount < 1}}">
+      <text>会员折扣 ({{memberLevelName}})</text>
+      <text class="value on">-¥{{memberDiscountAmount}}</text>
+    </view>
     <view class="summary-row">
       <text>配送方式</text>
-      <text class="value">普通快递 · 满{{freeShippingThreshold}}元包邮</text>
+      <text class="value">{{deliveryMode === 'express' ? '普通快递 · 满' + freeShippingThreshold + '元包邮' : '门店自提 · 免运费'}}</text>
     </view>
     <view class="summary-row">
       <text>支付方式</text>
@@ -81,7 +117,7 @@
 
   <view class="footer">
     <view class="total">
-      <view class="coupon-tip" wx:if="{{couponAmount + pointsAmount > 0}}">已优惠 ¥{{couponAmount + pointsAmount}}</view>
+      <view class="coupon-tip" wx:if="{{couponAmount + pointsAmount + memberDiscountAmount > 0}}">已优惠 ¥{{couponAmount + pointsAmount + memberDiscountAmount}}</view>
       <view class="total-line">
         <text class="total-label">应付：</text>
         <text class="total-price">¥{{totalPrice}}</text>

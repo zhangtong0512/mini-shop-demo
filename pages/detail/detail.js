@@ -2,6 +2,8 @@ const mock = require('../../utils/mock')
 const cart = require('../../utils/cart')
 const favorite = require('../../utils/favorite')
 const review = require('../../utils/review')
+const groupBuy = require('../../utils/group-buy')
+const user = require('../../utils/user')
 
 Page({
   data: {
@@ -18,7 +20,12 @@ Page({
     skuPrice: 0,
     skuStock: 0,
     skuText: '',
-    countMax: 1
+    countMax: 1,
+    isGroupMode: false,
+    groupPrice: 0,
+    groupConfig: null,
+    canCreateGroup: true,
+    joinableGroups: []
   },
 
   onLoad(options) {
@@ -27,6 +34,11 @@ Page({
     const round = Math.round(rating.avg)
     const hasSpec = !!(goods && goods.specs && goods.specs.length)
     const isFlash = mock.isFlashActive(goods)
+    
+    // 拼团模式
+    const isGroupMode = options.mode === 'group'
+    const groupConfig = groupBuy.getGroupGoodsConfig().find(c => c.goodsId === Number(options.id))
+    
     // 默认选中首个 SKU（有规格商品）
     let skuKey = ''
     let skuPrice = goods ? goods.price : 0
@@ -36,6 +48,13 @@ Page({
       skuPrice = mock.getSkuPrice(goods, skuKey)
       skuStock = mock.getSkuStock(goods, skuKey)
     }
+    
+    // 获取可参与的拼团
+    const userInfo = user.getUserInfo()
+    const userId = userInfo ? userInfo.id : ''
+    const joinableGroups = groupConfig ? groupBuy.getJoinableGroups(Number(options.id), userId) : []
+    const canCreateGroup = groupConfig ? groupBuy.canCreateGroup(Number(options.id), userId) : false
+    
     this.setData({
       goods,
       isFlash,
@@ -50,7 +69,12 @@ Page({
       skuPrice,
       skuStock,
       skuText: mock.specText(goods, skuKey),
-      countMax: skuStock || 1
+      countMax: skuStock || 1,
+      isGroupMode,
+      groupPrice: groupConfig ? groupConfig.groupPrice : 0,
+      groupConfig,
+      canCreateGroup,
+      joinableGroups
     })
     if (goods) {
       wx.setNavigationBarTitle({ title: goods.title })
@@ -198,6 +222,48 @@ Page({
     const now = favorite.toggleFavorite(this.data.goods.id)
     this.setData({ isFav: now })
     wx.showToast({ title: now ? '已收藏' : '已取消收藏', icon: 'none' })
+  },
+
+  onCreateGroup() {
+    const userInfo = user.getUserInfo()
+    if (!userInfo) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        success: res => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/user-info/user-info' })
+          }
+        }
+      })
+      return
+    }
+
+    if (!this.data.canCreateGroup) {
+      wx.showToast({ title: '已达拼团次数上限', icon: 'none' })
+      return
+    }
+
+    const result = groupBuy.createGroup(
+      this.data.goods.id,
+      userInfo.id,
+      userInfo.nickname,
+      userInfo.avatar
+    )
+
+    if (result.ok) {
+      wx.showToast({ title: '拼团已创建', icon: 'success' })
+      setTimeout(() => {
+        wx.navigateTo({ url: '/pages/group-detail/group-detail?id=' + result.group.id })
+      }, 1500)
+    } else {
+      wx.showToast({ title: result.msg, icon: 'none' })
+    }
+  },
+
+  onJoinableGroupTap(e) {
+    const groupId = e.currentTarget.dataset.id
+    wx.navigateTo({ url: '/pages/group-detail/group-detail?id=' + groupId })
   },
 
   onShareAppMessage() {

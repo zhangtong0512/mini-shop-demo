@@ -1,0 +1,172 @@
+.store-detail-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 140rpx;
+}
+
+/* 轮播图 */
+.store-swiper {
+  height: 400rpx;
+}
+
+.swiper-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 门店信息卡片 */
+.store-info-card {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.store-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.store-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.store-status {
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #fff;
+}
+
+.store-status.open {
+  background: #4CAF50;
+}
+
+.store-status.closed {
+  background: #999;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.info-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.info-text {
+  font-size: 28rpx;
+  color: #666;
+  flex: 1;
+}
+
+/* 服务卡片 */
+.services-card {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.services-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-icon {
+  color: #4CAF50;
+  margin-right: 8rpx;
+  font-size: 28rpx;
+}
+
+.service-name {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: #fff;
+  padding: 20rpx;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  margin: 0 10rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+}
+
+.btn-icon {
+  margin-right: 8rpx;
+  font-size: 32rpx;
+}
+
+.btn-call {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn-navigate {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn-select {
+  background: #ff5000;
+  color: #fff;
+}
+
+.btn-select.selected {
+  background: #4CAF50;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #999;
+}

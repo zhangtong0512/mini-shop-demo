@@ -1,0 +1,72 @@
+<view class="store-detail-page" wx:if="{{store}}">
+  <!-- 门店图片轮播 -->
+  <swiper class="store-swiper" indicator-dots autoplay circular>
+    <swiper-item wx:for="{{store.images}}" wx:key="*this">
+      <image 
+        class="swiper-image" 
+        src="{{item}}" 
+        mode="aspectFill"
+        bindtap="onPreviewImage"
+        data-url="{{item}}"
+      />
+    </swiper-item>
+  </swiper>
+
+  <!-- 门店信息 -->
+  <view class="store-info-card">
+    <view class="store-header">
+      <view class="store-name">{{store.name}}</view>
+      <view class="store-status {{store.status === 1 ? 'open' : 'closed'}}">
+        {{store.status === 1 ? '营业中' : '已打烊'}}
+      </view>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-icon">📍</text>
+      <text class="info-text">{{store.address}}</text>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-icon">📞</text>
+      <text class="info-text">{{store.phone}}</text>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-icon">🕐</text>
+      <text class="info-text">{{store.businessHours}}</text>
+    </view>
+  </view>
+
+  <!-- 服务标签 -->
+  <view class="services-card">
+    <view class="card-title">门店服务</view>
+    <view class="services-list">
+      <view class="service-item" wx:for="{{store.services}}" wx:key="*this">
+        <text class="service-icon">✓</text>
+        <text class="service-name">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <view class="btn btn-call" bindtap="onCallTap">
+      <text class="btn-icon">📞</text>
+      <text class="btn-text">电话咨询</text>
+    </view>
+    <view class="btn btn-navigate" bindtap="onNavigateTap">
+      <text class="btn-icon">🗺️</text>
+      <text class="btn-text">导航前往</text>
+    </view>
+    <view class="btn btn-select {{isCurrentStore ? 'selected' : ''}}" bindtap="onSelectStore">
+      <text class="btn-icon">{{isCurrentStore ? '✓' : '📍'}}</text>
+      <text class="btn-text">{{isCurrentStore ? '已选择' : '选择门店'}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 空状态 -->
+<view class="empty-state" wx:else>
+  <text class="empty-icon">🏪</text>
+  <text class="empty-text">门店不存在</text>
+</view>

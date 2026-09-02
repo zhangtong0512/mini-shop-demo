@@ -1,0 +1,56 @@
+<view class="notification-page">
+  <!-- 头部操作栏 -->
+  <view class="header-bar">
+    <view class="unread-info">
+      <text class="unread-text">未读消息</text>
+      <text class="unread-count">{{unreadCount}}</text>
+    </view>
+    <view class="header-actions">
+      <text class="action-btn" bindtap="onMarkAllRead">全部已读</text>
+      <text class="action-btn" bindtap="onClearAll">清空</text>
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="key"
+      bindtap="onTabTap"
+      data-tab="{{item.key}}"
+    >
+      <text>{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 通知列表 -->
+  <scroll-view scroll-y class="notification-list" wx:if="{{notifications.length > 0}}">
+    <view 
+      class="notification-item {{item.isRead ? 'read' : ''}}" 
+      wx:for="{{notifications}}" 
+      wx:key="id"
+      bindtap="onNotificationTap"
+      data-id="{{item.id}}"
+    >
+      <view class="item-left">
+        <view class="item-icon">{{item.icon}}</view>
+        <view class="item-dot" wx:if="{{!item.isRead}}"></view>
+      </view>
+      <view class="item-content">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-desc">{{item.content}}</view>
+        <view class="item-time">{{item.createTime}}</view>
+      </view>
+      <view class="item-right">
+        <view class="delete-btn" catchtap="onDeleteTap" data-id="{{item.id}}">删除</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无消息</text>
+  </view>
+</view>

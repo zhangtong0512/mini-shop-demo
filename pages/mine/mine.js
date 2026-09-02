@@ -4,6 +4,8 @@ const user = require('../../utils/user')
 const favorite = require('../../utils/favorite')
 const coupon = require('../../utils/coupon')
 const points = require('../../utils/points')
+const member = require('../../utils/member')
+const notification = require('../../utils/notification')
 
 Page({
   data: {
@@ -15,7 +17,9 @@ Page({
     favCount: 0,
     couponCount: 0,
     cartCount: 0,
-    pointsBalance: 0
+    pointsBalance: 0,
+    memberInfo: null,
+    unreadCount: 0
   },
 
   onShow() {
@@ -23,6 +27,8 @@ Page({
     const u = user.getUserInfo()
     const orders = mock.getOrders()
     const now = Date.now()
+    const memberInfo = member.getMemberInfo()
+    const unreadCount = notification.getUnreadCount()
     this.setData({
       isLoggedIn: !!u,
       user: u,
@@ -34,7 +40,9 @@ Page({
       // 可用券：未使用且未过期
       couponCount: coupon.getCoupons().filter(c => c.status === 0 && c.expireTime > now).length,
       cartCount: cart.getCart().reduce((sum, i) => sum + i.count, 0),
-      pointsBalance: points.getBalance()
+      pointsBalance: points.getBalance(),
+      memberInfo,
+      unreadCount
     })
     cart.updateBadge()
   },
@@ -71,6 +79,14 @@ Page({
 
   onCheckinTap() {
     wx.navigateTo({ url: '/pages/checkin/checkin' })
+  },
+
+  onMemberTap() {
+    wx.navigateTo({ url: '/pages/member/member' })
+  },
+
+  onNotificationTap() {
+    wx.navigateTo({ url: '/pages/notification/notification' })
   },
 
   onHelpTap() {

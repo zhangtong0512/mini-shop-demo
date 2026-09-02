@@ -5,6 +5,10 @@ const coupon = require('./utils/coupon')
 const review = require('./utils/review')
 const points = require('./utils/points')
 const afterSale = require('./utils/after-sale')
+const member = require('./utils/member')
+const notification = require('./utils/notification')
+const store = require('./utils/store')
+const groupBuy = require('./utils/group-buy')
 
 App({
   // 跨页面传递的临时状态（如「我的 → 订单中心」指定 tab，switchTab 无法带参）
@@ -13,7 +17,7 @@ App({
   },
 
   onLaunch() {
-    // 初始化本地数据：购物车 + 收货地址 + 示例订单 + 示例优惠券 + 示例评价 + 积分 + 售后列表
+    // 初始化本地数据
     cart.init()
     address.ensureSeed()
     mock.ensureSeedOrders()
@@ -21,5 +25,9 @@ App({
     review.ensureSeed()
     points.ensureSeed()
     afterSale.ensureSeed()
+    member.ensureSeed()
+    notification.ensureSeed()
+    store.ensureSeed()
+    groupBuy.ensureSeed()
   }
 })

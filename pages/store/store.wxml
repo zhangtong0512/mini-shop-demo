@@ -1,0 +1,65 @@
+<view class="store-page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索门店" 
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <text class="clear-btn" wx:if="{{keyword}}" bindtap="onClearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 门店列表 -->
+  <scroll-view scroll-y class="store-list" wx:if="{{stores.length > 0}}">
+    <view 
+      class="store-card" 
+      wx:for="{{stores}}" 
+      wx:key="id"
+      bindtap="onStoreTap"
+      data-id="{{item.id}}"
+    >
+      <view class="store-image">
+        <image src="{{item.images[0]}}" mode="aspectFill" />
+        <view class="store-status {{item.status === 1 ? 'open' : 'closed'}}">
+          {{item.status === 1 ? '营业中' : '已打烊'}}
+        </view>
+      </view>
+      <view class="store-info">
+        <view class="store-name">{{item.name}}</view>
+        <view class="store-address">
+          <text class="address-icon">📍</text>
+          <text>{{item.address}}</text>
+        </view>
+        <view class="store-distance" wx:if="{{item.distance !== undefined}}">
+          <text class="distance-icon">📏</text>
+          <text>{{item.distanceText}}</text>
+        </view>
+        <view class="store-services">
+          <text class="service-tag" wx:for="{{item.services}}" wx:for-item="service" wx:key="*this">{{service}}</text>
+        </view>
+      </view>
+      <view class="store-actions">
+        <view class="action-btn call" catchtap="onCallTap" data-phone="{{item.phone}}">
+          <text class="action-icon">📞</text>
+          <text class="action-text">电话</text>
+        </view>
+        <view class="action-btn navigate" catchtap="onNavigateTap" data-location="{{item.location}}">
+          <text class="action-icon">🗺️</text>
+          <text class="action-text">导航</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">🏪</text>
+    <text class="empty-text">暂无门店</text>
+    <text class="empty-sub" wx:if="{{keyword}}">未找到"{{keyword}}"相关门店</text>
+  </view>
+</view>

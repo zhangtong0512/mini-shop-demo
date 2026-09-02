@@ -1,0 +1,43 @@
+.member-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 80, 0, 0.1);
+}
+
+.member-badge.small {
+  padding: 2rpx 8rpx;
+}
+
+.member-badge.large {
+  padding: 8rpx 20rpx;
+}
+
+.badge-icon {
+  font-size: 24rpx;
+  margin-right: 4rpx;
+}
+
+.member-badge.small .badge-icon {
+  font-size: 20rpx;
+  margin-right: 2rpx;
+}
+
+.member-badge.large .badge-icon {
+  font-size: 32rpx;
+  margin-right: 8rpx;
+}
+
+.badge-name {
+  font-size: 20rpx;
+  color: #ff5000;
+}
+
+.member-badge.small .badge-name {
+  font-size: 18rpx;
+}
+
+.member-badge.large .badge-name {
+  font-size: 24rpx;
+}

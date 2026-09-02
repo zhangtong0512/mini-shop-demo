@@ -251,6 +251,30 @@
   background: #e8f9f0;
 }
 
+.menu-ico.member {
+  background: linear-gradient(135deg, #ff5000, #ff7b3a);
+  color: #fff;
+}
+
+.menu-ico.notification {
+  background: #fff4e0;
+}
+
+.notification-badge {
+  margin-left: auto;
+  background: #ff5000;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  min-width: 32rpx;
+  text-align: center;
+}
+
+.notification-badge + .arrow {
+  margin-left: 8rpx;
+}
+
 /* 积分签到行右侧余额 */
 .menu-value {
   margin-left: auto;

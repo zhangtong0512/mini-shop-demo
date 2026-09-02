@@ -1,0 +1,27 @@
+<view class="store-select-page">
+  <view class="header">
+    <text class="header-title">选择门店</text>
+    <text class="header-sub">选择后可享受门店自提服务</text>
+  </view>
+
+  <scroll-view scroll-y class="store-list">
+    <view 
+      class="store-item {{currentStore && currentStore.id === item.id ? 'selected' : ''}}" 
+      wx:for="{{stores}}" 
+      wx:key="id"
+      bindtap="onSelectStore"
+      data-id="{{item.id}}"
+    >
+      <view class="store-main" bindtap="onStoreDetail" data-id="{{item.id}}">
+        <view class="store-name">{{item.name}}</view>
+        <view class="store-address">{{item.address}}</view>
+        <view class="store-distance" wx:if="{{item.distance !== undefined}}">
+          <text>距离 {{item.distanceText}}</text>
+        </view>
+      </view>
+      <view class="store-check">
+        <view class="check-icon" wx:if="{{currentStore && currentStore.id === item.id}}">✓</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,182 @@
+.store-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 搜索栏 */
+.search-bar {
+  padding: 20rpx;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 32rpx;
+  padding: 16rpx 24rpx;
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.clear-btn {
+  font-size: 28rpx;
+  color: #999;
+  padding: 8rpx;
+}
+
+/* 门店列表 */
+.store-list {
+  height: calc(100vh - 110rpx);
+  padding: 20rpx;
+}
+
+.store-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.store-image {
+  position: relative;
+  height: 240rpx;
+}
+
+.store-image image {
+  width: 100%;
+  height: 100%;
+}
+
+.store-status {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #fff;
+}
+
+.store-status.open {
+  background: #4CAF50;
+}
+
+.store-status.closed {
+  background: #999;
+}
+
+.store-info {
+  padding: 20rpx;
+}
+
+.store-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.store-address {
+  display: flex;
+  align-items: flex-start;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.address-icon {
+  margin-right: 8rpx;
+}
+
+.store-distance {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #ff5000;
+  margin-bottom: 12rpx;
+}
+
+.distance-icon {
+  margin-right: 8rpx;
+}
+
+.store-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.service-tag {
+  font-size: 22rpx;
+  color: #ff5000;
+  background: #fff5f0;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.store-actions {
+  display: flex;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.action-btn.call {
+  border-right: 1rpx solid #f0f0f0;
+  color: #4CAF50;
+}
+
+.action-btn.navigate {
+  color: #2196F3;
+}
+
+.action-icon {
+  margin-right: 8rpx;
+  font-size: 32rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #999;
+}
+
+.empty-sub {
+  font-size: 24rpx;
+  color: #ccc;
+  margin-top: 12rpx;
+}

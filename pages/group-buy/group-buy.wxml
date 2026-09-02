@@ -1,0 +1,75 @@
+<view class="group-buy-page">
+  <!-- 头部Banner -->
+  <view class="header-banner">
+    <view class="banner-title">拼团专区</view>
+    <view class="banner-sub">人多更优惠，邀请好友一起买</view>
+  </view>
+
+  <!-- 拼团商品列表 -->
+  <view class="section">
+    <view class="section-title">拼团商品</view>
+    <scroll-view scroll-x class="goods-scroll">
+      <view class="goods-list">
+        <view 
+          class="goods-card" 
+          wx:for="{{groupGoods}}" 
+          wx:key="id"
+          bindtap="onGroupGoodsTap"
+          data-id="{{item.id}}"
+        >
+          <view class="goods-image">
+            <text class="goods-emoji">{{item.emoji}}</text>
+            <view class="group-badge">{{item.groupSize}}人团</view>
+          </view>
+          <view class="goods-info">
+            <view class="goods-title">{{item.title}}</view>
+            <view class="goods-price">
+              <text class="group-price">¥{{item.groupPrice}}</text>
+              <text class="original-price">¥{{item.originalPrice}}</text>
+            </view>
+            <view class="group-count">已有{{item.groupCount}}个拼团</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 进行中的拼团 -->
+  <view class="section" wx:if="{{activeGroups.length > 0}}">
+    <view class="section-title">正在进行的拼团</view>
+    <view class="group-list">
+      <view 
+        class="group-card" 
+        wx:for="{{activeGroups}}" 
+        wx:key="id"
+        bindtap="onGroupTap"
+        data-id="{{item.id}}"
+      >
+        <view class="group-header">
+          <view class="group-avatar">
+            <text>{{item.ownerNickname[0]}}</text>
+          </view>
+          <view class="group-info">
+            <view class="group-name">{{item.ownerNickname}} 发起的拼团</view>
+            <view class="group-time">还差{{item.requiredCount - item.currentCount}}人 · {{item.remainText}}</view>
+          </view>
+          <view class="join-btn">去拼团</view>
+        </view>
+        <view class="group-members">
+          <view class="member-avatar" wx:for="{{item.members}}" wx:for-item="member" wx:key="userId">
+            <text>{{member.nickname[0]}}</text>
+          </view>
+          <view class="member-avatar empty" wx:for="{{item.requiredCount - item.currentCount}}" wx:key="*this">
+            <text>?</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{groupGoods.length === 0}}">
+    <text class="empty-icon">👥</text>
+    <text class="empty-text">暂无拼团商品</text>
+  </view>
+</view>

@@ -28,12 +28,20 @@ const mock = require('./utils/mock')
 const cart = require('./utils/cart')
 const points = require('./utils/points')
 const coupon = require('./utils/coupon')
+const member = require('./utils/member')
+const notification = require('./utils/notification')
+const storeModule = require('./utils/store')
+const groupBuy = require('./utils/group-buy')
 
 test.beforeEach(() => {
   resetStore()
   mock.ensureSeedOrders()
   coupon.ensureSeed()
   points.ensureSeed()
+  member.ensureSeed()
+  notification.ensureSeed()
+  storeModule.ensureSeed()
+  groupBuy.ensureSeed()
 })
 
 // 便捷：生成单商品订单 items 片段（有规格商品自动带首个 SKU）
@@ -294,4 +302,264 @@ test('物流：确定性 + 状态4含签收、状态3不含', () => {
 
 test('物流：不存在订单返回空', () => {
   assert.deepStrictEqual(mock.getLogistics(999999), [])
+})
+
+// ---------- 会员等级 ----------
+test('会员：初始等级为普通会员', () => {
+  const info = member.getMemberInfo()
+  assert.strictEqual(info.level, 1)
+  assert.strictEqual(info.levelName, '普通会员')
+  assert.strictEqual(info.discount, 1)
+  assert.strictEqual(info.growth, 100)
+})
+
+test('会员：成长值增加与升级', () => {
+  // 初始100成长值，再加400达到500升级银卡
+  const result = member.addGrowth(400, '测试增加')
+  assert.strictEqual(result.upgraded, true)
+  assert.strictEqual(result.newLevel, 2)
+  const info = member.getMemberInfo()
+  assert.strictEqual(info.levelName, '银卡会员')
+  assert.strictEqual(info.discount, 0.98)
+})
+
+test('会员：消费金额增加成长值', () => {
+  const before = member.getMemberInfo().growth
+  member.addConsumption(100)
+  const after = member.getMemberInfo().growth
+  assert.strictEqual(after, before + 100)
+  assert.strictEqual(member.getMemberInfo().totalConsumed, 100)
+})
+
+test('会员：折扣价计算', () => {
+  // 普通会员无折扣
+  assert.strictEqual(member.calcMemberPrice(100), 100)
+  // 升级到银卡(0.98折)
+  member.addGrowth(400, '升级')
+  assert.strictEqual(member.calcMemberPrice(100), 98)
+  assert.strictEqual(member.calcMemberPrice(199), 195.02) // 199 * 0.98 = 195.02
+})
+
+test('会员：等级配置正确', () => {
+  const levels = member.getAllLevels()
+  assert.strictEqual(levels.length, 4)
+  assert.strictEqual(levels[0].level, 1)
+  assert.strictEqual(levels[3].level, 4)
+  assert.strictEqual(levels[3].discount, 0.92)
+})
+
+test('会员：成长值进度计算', () => {
+  // 初始100成长值，普通会员(0)到银卡(500)的进度
+  const progress = member.getGrowthProgress()
+  assert.strictEqual(progress, 20) // 100/500 = 20%
+})
+
+// ---------- 消息通知 ----------
+test('通知：初始预置2条通知', () => {
+  const notifications = notification.getNotifications()
+  assert.strictEqual(notifications.length, 2)
+  assert.strictEqual(notification.getUnreadCount(), 2)
+})
+
+test('通知：添加通知', () => {
+  notification.addNotification('order', '订单发货', '您的订单已发货', { orderId: 10001 })
+  const notifications = notification.getNotifications()
+  assert.strictEqual(notifications.length, 3)
+  assert.strictEqual(notifications[0].type, 'order')
+  assert.strictEqual(notifications[0].title, '订单发货')
+  assert.strictEqual(notification.getUnreadCount(), 3)
+})
+
+test('通知：标记已读', () => {
+  const notifications = notification.getNotifications()
+  const id = notifications[0].id
+  notification.markAsRead(id)
+  assert.strictEqual(notification.getUnreadCount(), 1)
+  const updated = notification.getNotifications().find(n => n.id === id)
+  assert.strictEqual(updated.isRead, true)
+})
+
+test('通知：全部已读', () => {
+  notification.markAllRead()
+  assert.strictEqual(notification.getUnreadCount(), 0)
+  const notifications = notification.getNotifications()
+  assert.ok(notifications.every(n => n.isRead))
+})
+
+test('通知：删除通知', () => {
+  const notifications = notification.getNotifications()
+  const id = notifications[0].id
+  notification.deleteNotification(id)
+  const remaining = notification.getNotifications()
+  assert.strictEqual(remaining.length, 1)
+  assert.strictEqual(remaining[0].id !== id, true)
+})
+
+test('通知：清空所有', () => {
+  notification.clearAll()
+  assert.strictEqual(notification.getNotifications().length, 0)
+  assert.strictEqual(notification.getUnreadCount(), 0)
+})
+
+test('通知：按类型筛选', () => {
+  notification.addNotification('system', '系统消息', '测试')
+  const systemNotifs = notification.getNotifications('system')
+  assert.ok(systemNotifs.every(n => n.type === 'system'))
+  const orderNotifs = notification.getNotifications('order')
+  assert.ok(orderNotifs.every(n => n.type === 'order'))
+})
+
+test('通知：设置管理', () => {
+  const settings = notification.getSettings()
+  assert.strictEqual(settings.orderNotify, true)
+  notification.updateSettings({ orderNotify: false })
+  const updated = notification.getSettings()
+  assert.strictEqual(updated.orderNotify, false)
+})
+
+// ---------- 多门店系统 ----------
+test('门店：初始预置5个门店', () => {
+  const stores = storeModule.getStores()
+  assert.strictEqual(stores.length, 5)
+})
+
+test('门店：获取门店详情', () => {
+  const store = storeModule.getStoreById(1)
+  assert.ok(store)
+  assert.strictEqual(store.name, '精选商城·上海旗舰店')
+  assert.strictEqual(store.status, 1)
+})
+
+test('门店：设置和获取当前门店', () => {
+  const store = storeModule.getStoreById(1)
+  storeModule.setCurrentStore(store)
+  const current = storeModule.getCurrentStore()
+  assert.strictEqual(current.id, 1)
+})
+
+test('门店：清除当前门店', () => {
+  const store = storeModule.getStoreById(1)
+  storeModule.setCurrentStore(store)
+  storeModule.clearCurrentStore()
+  assert.strictEqual(storeModule.getCurrentStore(), null)
+})
+
+test('门店：距离计算', () => {
+  const distance = storeModule.calculateDistance(31.2304, 121.4737, 39.9042, 116.4074)
+  assert.ok(distance > 0)
+  assert.ok(distance < 2000) // 上海到北京约1000km
+})
+
+test('门店：格式化距离', () => {
+  assert.strictEqual(storeModule.formatDistance(0.5), '500m')
+  assert.strictEqual(storeModule.formatDistance(1.5), '1.5km')
+  assert.strictEqual(storeModule.formatDistance(null), '未知')
+})
+
+test('门店：搜索门店', () => {
+  const results = storeModule.searchStores('上海')
+  assert.strictEqual(results.length, 1)
+  assert.strictEqual(results[0].name, '精选商城·上海旗舰店')
+  
+  const allResults = storeModule.searchStores('精选')
+  assert.strictEqual(allResults.length, 5)
+})
+
+test('门店：配送方式管理', () => {
+  storeModule.setDeliveryMode('selfPickup')
+  assert.strictEqual(storeModule.getDeliveryMode(), 'selfPickup')
+  
+  storeModule.setDeliveryMode('express')
+  assert.strictEqual(storeModule.getDeliveryMode(), 'express')
+})
+
+test('门店：获取营业中的门店', () => {
+  const openStores = storeModule.getOpenStores()
+  assert.ok(openStores.length > 0)
+  assert.ok(openStores.every(s => s.status === 1))
+})
+
+// ---------- 拼团功能 ----------
+test('拼团：初始预置1个进行中的拼团', () => {
+  const groups = groupBuy.getActiveGroups()
+  assert.strictEqual(groups.length, 1)
+  assert.strictEqual(groups[0].status, 0)
+})
+
+test('拼团：获取拼团商品配置', () => {
+  const config = groupBuy.getGroupGoodsConfig()
+  assert.strictEqual(config.length, 4)
+  assert.ok(config[0].groupPrice < config[0].originalPrice)
+})
+
+test('拼团：获取拼团商品信息', () => {
+  const goods = groupBuy.getGroupGoods(mock)
+  assert.ok(goods.length > 0)
+  assert.ok(goods[0].groupPrice)
+  assert.ok(goods[0].groupSize)
+})
+
+test('拼团：发起拼团', () => {
+  const result = groupBuy.createGroup(1002, 'user_test', '测试用户', '')
+  assert.strictEqual(result.ok, true)
+  assert.strictEqual(result.group.goodsId, 1002)
+  assert.strictEqual(result.group.currentCount, 1)
+  assert.strictEqual(result.group.status, 0)
+})
+
+test('拼团：参与拼团', () => {
+  const groups = groupBuy.getActiveGroups()
+  const groupId = groups[0].id
+  const result = groupBuy.joinGroup(groupId, 'user_joiner', '参团用户', '')
+  assert.strictEqual(result.ok, true)
+  assert.strictEqual(result.group.currentCount, 2)
+  assert.strictEqual(result.group.status, 1) // 成团
+})
+
+test('拼团：重复参团失败', () => {
+  const groups = groupBuy.getActiveGroups()
+  const groupId = groups[0].id
+  const userId = groups[0].ownerId
+  const result = groupBuy.joinGroup(groupId, userId, '团长', '')
+  assert.strictEqual(result.ok, false)
+  assert.strictEqual(result.msg, '您已参与该拼团')
+})
+
+test('拼团：检查用户拼团次数', () => {
+  groupBuy.createGroup(1002, 'user_test', '测试用户', '')
+  const count = groupBuy.getUserGroupCount(1002, 'user_test')
+  assert.strictEqual(count, 1)
+})
+
+test('拼团：检查是否可以发起新拼团', () => {
+  // 初始可以发起
+  assert.strictEqual(groupBuy.canCreateGroup(1002, 'user_new'), true)
+  
+  // 发起后，达到限制（limitPerUser=2）
+  groupBuy.createGroup(1002, 'user_new', '用户1', '')
+  groupBuy.createGroup(1002, 'user_new', '用户2', '')
+  assert.strictEqual(groupBuy.canCreateGroup(1002, 'user_new'), false)
+})
+
+test('拼团：获取可参与的拼团', () => {
+  const groups = groupBuy.getJoinableGroups(1001, 'user_new')
+  assert.ok(groups.length > 0)
+  assert.ok(groups[0].status === 0)
+  assert.ok(!groups[0].members.some(m => m.userId === 'user_new'))
+})
+
+test('拼团：格式化剩余时间', () => {
+  const ms = 3661000 // 1小时1分1秒
+  const text = groupBuy.formatRemainTime(ms)
+  assert.strictEqual(text, '01:01:01')
+  
+  const expired = groupBuy.formatRemainTime(0)
+  assert.strictEqual(expired, '已结束')
+})
+
+test('拼团：拼团详情获取', () => {
+  const groups = groupBuy.getActiveGroups()
+  const group = groupBuy.getGroupById(groups[0].id)
+  assert.ok(group)
+  assert.strictEqual(group.id, groups[0].id)
 })

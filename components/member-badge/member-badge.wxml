@@ -1,0 +1,4 @@
+<view class="member-badge {{size}}" wx:if="{{levelConfig}}">
+  <text class="badge-icon">{{levelConfig.icon}}</text>
+  <text class="badge-name" wx:if="{{showName}}">{{levelConfig.name}}</text>
+</view>

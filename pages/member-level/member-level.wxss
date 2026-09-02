@@ -1,0 +1,156 @@
+.level-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+.level-header {
+  background: #fff;
+  padding: 40rpx 30rpx;
+  text-align: center;
+}
+
+.level-header .title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.level-header .subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.level-list {
+  padding: 20rpx;
+}
+
+.level-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  border: 2rpx solid transparent;
+}
+
+.level-card.current {
+  border-color: #ff5000;
+}
+
+.level-card .level-header {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+}
+
+.level-card .level-icon {
+  font-size: 48rpx;
+  margin-right: 12rpx;
+}
+
+.level-card .level-name {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.level-card .level-badge {
+  font-size: 20rpx;
+  background: #fff;
+  color: #ff5000;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.level-body {
+  padding: 24rpx;
+}
+
+.growth-req,
+.discount-req,
+.benefits-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.benefits-list {
+  flex-direction: column;
+}
+
+.benefits-list .label {
+  margin-bottom: 12rpx;
+}
+
+.growth-req:last-child,
+.discount-req:last-child,
+.benefits-list:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.benefit-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.benefit-tag {
+  font-size: 22rpx;
+  background: #fff5f0;
+  color: #ff5000;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.rules-section {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.rules-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.rule-item:last-child {
+  border-bottom: none;
+}
+
+.rule-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.rule-text {
+  font-size: 26rpx;
+  color: #666;
+}

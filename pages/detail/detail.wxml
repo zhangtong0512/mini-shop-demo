@@ -34,12 +34,14 @@
     <view class="price-row">
       <view class="price">
         <text class="symbol">¥</text>
-        <text class="num">{{isFlash ? goods.flashPrice : skuPrice}}</text>
+        <text class="num">{{isGroupMode ? groupPrice : (isFlash ? goods.flashPrice : skuPrice)}}</text>
         <text class="origin">¥{{goods.originalPrice}}</text>
         <view class="flash-badge" wx:if="{{isFlash}}">限时</view>
+        <view class="group-badge" wx:if="{{isGroupMode}}">拼团</view>
       </view>
-      <view class="sales" wx:if="{{!isFlash}}">已售 {{goods.sales}} 件</view>
-      <view class="sales flash-sales" wx:else>限时价 · 距结束 {{flashRemain}}</view>
+      <view class="sales" wx:if="{{!isFlash && !isGroupMode}}">已售 {{goods.sales}} 件</view>
+      <view class="sales flash-sales" wx:elif="{{isFlash}}">限时价 · 距结束 {{flashRemain}}</view>
+      <view class="sales group-sales" wx:elif="{{isGroupMode}}">{{groupConfig.groupSize}}人拼团 · 享更优价格</view>
     </view>
     <view class="title">{{goods.title}}</view>
     <view class="desc">{{goods.desc}}</view>
@@ -108,12 +110,44 @@
     </view>
   </view>
 
+  <!-- 拼团入口 -->
+  <view class="group-section" wx:if="{{groupConfig && !isGroupMode}}">
+    <view class="group-header">
+      <text class="group-title">拼团更优惠</text>
+      <text class="group-price">¥{{groupConfig.groupPrice}}</text>
+    </view>
+    <view class="joinable-groups" wx:if="{{joinableGroups.length > 0}}">
+      <view class="joinable-title">正在拼团，快来参与</view>
+      <scroll-view scroll-x class="joinable-list">
+        <view 
+          class="joinable-item" 
+          wx:for="{{joinableGroups}}" 
+          wx:key="id"
+          bindtap="onJoinableGroupTap"
+          data-id="{{item.id}}"
+        >
+          <view class="joinable-avatar">
+            <text>{{item.ownerNickname[0]}}</text>
+          </view>
+          <view class="joinable-info">
+            <text class="joinable-name">{{item.ownerNickname}}</text>
+            <text class="joinable-remain">还差{{item.requiredCount - item.currentCount}}人</text>
+          </view>
+          <view class="joinable-btn">去拼团</view>
+        </view>
+      </scroll-view>
+    </view>
+    <view class="create-group-btn" bindtap="onCreateGroup" wx:if="{{canCreateGroup}}">
+      <text>发起拼团</text>
+    </view>
+  </view>
+
   <view class="footer">
     <view class="footer-icon" bindtap="onGoHome"><text class="icon">🏠</text><text class="ft-text">首页</text></view>
     <view class="footer-icon" bindtap="onGoCart"><text class="icon">🛒</text><text class="ft-text">购物车</text></view>
     <view class="footer-icon {{isFav ? 'fav-on' : ''}}" bindtap="onToggleFav"><text class="icon">{{isFav ? '♥' : '♡'}}</text><text class="ft-text">{{isFav ? '已收藏' : '收藏'}}</text></view>
-    <view class="footer-btn add" bindtap="onAddCart">加入购物车</view>
-    <view class="footer-btn buy" bindtap="onBuyNow">立即购买</view>
+    <view class="footer-btn add" bindtap="onAddCart" wx:if="{{!isGroupMode}}">加入购物车</view>
+    <view class="footer-btn buy" bindtap="onBuyNow">{{isGroupMode ? '拼团购买' : '立即购买'}}</view>
   </view>
 
   <sku-sheet id="skuSheet" />

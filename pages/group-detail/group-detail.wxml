@@ -1,0 +1,67 @@
+<view class="group-detail-page" wx:if="{{group}}">
+  <!-- 拼团状态头部 -->
+  <view class="status-header {{group.status === 1 ? 'success' : (group.status === 2 ? 'fail' : '')}}">
+    <view class="status-icon" wx:if="{{group.status === 0}}">👥</view>
+    <view class="status-icon" wx:elif="{{group.status === 1}}">🎉</view>
+    <view class="status-icon" wx:else>😢</view>
+    <view class="status-title" wx:if="{{group.status === 0}}">拼团中</view>
+    <view class="status-title" wx:elif="{{group.status === 1}}">拼团成功</view>
+    <view class="status-title" wx:else>拼团失败</view>
+    <view class="status-sub" wx:if="{{group.status === 0}}">还差{{group.requiredCount - group.currentCount}}人，{{remainText}}后结束</view>
+    <view class="status-sub" wx:elif="{{group.status === 1}}">恭喜，拼团已成功！</view>
+    <view class="status-sub" wx:else>很遗憾，拼团未在规定时间内完成</view>
+  </view>
+
+  <!-- 商品信息 -->
+  <view class="goods-card" wx:if="{{goods}}">
+    <view class="goods-image">
+      <text class="goods-emoji">{{goods.emoji}}</text>
+    </view>
+    <view class="goods-info">
+      <view class="goods-title">{{goods.title}}</view>
+      <view class="goods-price">
+        <text class="group-price">拼团价 ¥{{group.groupPrice}}</text>
+        <text class="original-price">原价 ¥{{group.originalPrice}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 参团成员 -->
+  <view class="members-card">
+    <view class="card-title">参团成员（{{group.currentCount}}/{{group.requiredCount}}）</view>
+    <view class="members-list">
+      <view class="member-item" wx:for="{{group.members}}" wx:key="userId">
+        <view class="member-avatar">
+          <text>{{item.nickname[0]}}</text>
+        </view>
+        <view class="member-name">
+          {{item.nickname}}
+          <text class="owner-tag" wx:if="{{item.userId === group.ownerId}}">团长</text>
+        </view>
+        <view class="member-time">{{item.joinTime}}</view>
+      </view>
+      <view class="member-item empty" wx:for="{{group.requiredCount - group.currentCount}}" wx:key="*this">
+        <view class="member-avatar">
+          <text>?</text>
+        </view>
+        <view class="member-name">等待加入</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-bar" wx:if="{{group.status === 0}}">
+    <view class="btn-share" bindtap="onShareAppMessage">
+      <text>分享给好友</text>
+    </view>
+    <view class="btn-join {{canJoin ? '' : 'disabled'}}" bindtap="onJoinTap">
+      <text>{{isOwner ? '等待好友加入' : (canJoin ? '立即参团' : '无法参团')}}</text>
+    </view>
+  </view>
+
+  <view class="action-bar" wx:elif="{{group.status === 1}}">
+    <view class="btn-buy" bindtap="onBuyNow">
+      <text>去购买</text>
+    </view>
+  </view>
+</view>

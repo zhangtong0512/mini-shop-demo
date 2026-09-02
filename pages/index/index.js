@@ -76,6 +76,11 @@ Page({
     wx.navigateTo({ url: '/pages/flash/flash' })
   },
 
+  // 拼团专区入口
+  onGroupBuyTap() {
+    wx.navigateTo({ url: '/pages/group-buy/group-buy' })
+  },
+
   // 点击秒杀商品 → 详情（闪购价展示在详情页）
   onTapFlash(e) {
     wx.navigateTo({ url: '/pages/detail/detail?id=' + e.currentTarget.dataset.id })

@@ -410,3 +410,77 @@
   font-size: 20rpx;
   color: #999;
 }
+
+/* 拼团专区入口 */
+.group-entry {
+  display: flex;
+  align-items: center;
+  margin: 20rpx 20rpx 8rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #f3e8ff, #ede0ff);
+  border-radius: 20rpx;
+}
+
+.group-entry-icon {
+  font-size: 60rpx;
+  margin-right: 20rpx;
+}
+
+.group-entry-info {
+  flex: 1;
+}
+
+.group-entry-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #9C27B0;
+  margin-bottom: 8rpx;
+}
+
+.group-entry-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.group-entry-btn {
+  font-size: 26rpx;
+  color: #9C27B0;
+  padding: 12rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  padding: 20rpx 20rpx 12rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+}
+
+.empty-text {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.clamp2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

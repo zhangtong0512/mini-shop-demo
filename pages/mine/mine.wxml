@@ -83,6 +83,18 @@
       <text>分享给好友</text>
       <text class="arrow">›</text>
     </button>
+    <view class="menu-item" hover-class="hv" bindtap="onMemberTap">
+      <view class="menu-ico member">{{memberInfo.levelIcon}}</view>
+      <text>会员中心</text>
+      <text class="menu-value">{{memberInfo.levelName}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" hover-class="hv" bindtap="onNotificationTap">
+      <view class="menu-ico notification">🔔</view>
+      <text>消息中心</text>
+      <view class="notification-badge" wx:if="{{unreadCount > 0}}">{{unreadCount}}</view>
+      <text class="arrow">›</text>
+    </view>
     <view class="menu-item" hover-class="hv" bindtap="onAddressTap"><view class="menu-ico address">📍</view><text>收货地址</text><text class="arrow">›</text></view>
     <view class="menu-item" hover-class="hv" bindtap="onCouponTap"><view class="menu-ico coupon">🎫</view><text>优惠券</text><text class="arrow">›</text></view>
     <view class="menu-item" hover-class="hv" bindtap="onCheckinTap"><view class="menu-ico points">🎁</view><text>积分签到</text><text class="menu-value">{{pointsBalance}} 积分</text><text class="arrow">›</text></view>

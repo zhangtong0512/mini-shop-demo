@@ -91,6 +91,16 @@
     </scroll-view>
   </view>
 
+  <!-- 拼团专区入口 -->
+  <view class="group-entry card" hover-class="hv" bindtap="onGroupBuyTap">
+    <view class="group-entry-icon">👥</view>
+    <view class="group-entry-info">
+      <view class="group-entry-title">拼团专区</view>
+      <view class="group-entry-desc">人多更优惠，邀请好友一起买</view>
+    </view>
+    <view class="group-entry-btn">立即查看 ›</view>
+  </view>
+
   <!-- 为你推荐 -->
   <view class="section-title">为你推荐</view>
 

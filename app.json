@@ -21,7 +21,15 @@
     "pages/settings/settings",
     "pages/flash/flash",
     "pages/checkin/checkin",
-    "pages/logistics/logistics"
+    "pages/logistics/logistics",
+    "pages/member/member",
+    "pages/member-level/member-level",
+    "pages/notification/notification",
+    "pages/store/store",
+    "pages/store-detail/store-detail",
+    "pages/store-select/store-select",
+    "pages/group-buy/group-buy",
+    "pages/group-detail/group-detail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ff5000",
