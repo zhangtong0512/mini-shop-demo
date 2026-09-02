@@ -1,4 +1,5 @@
 const mock = require('../../utils/mock')
+const live = require('../../utils/live')
 
 Page({
   data: {
@@ -13,7 +14,10 @@ Page({
     flashRemain: '',
     sortMode: 'default',
     priceMin: 0,
-    priceMax: Infinity
+    priceMax: Infinity,
+    hasLivingLive: false,
+    livingLiveTitle: '',
+    livingLiveId: 0
   },
 
   onLoad() {
@@ -32,13 +36,22 @@ Page({
   loadData() {
     const allGoods = mock.getGoodsList()
     const flash = mock.getFlashSale()
+    // 获取直播中状态
+    const livingRooms = live.getLiveRooms(1)
+    const hasLivingLive = livingRooms.length > 0
+    const livingLiveTitle = hasLivingLive ? livingRooms[0].title : ''
+    const livingLiveId = hasLivingLive ? livingRooms[0].roomId : 0
+    
     this.setData({
       banners: mock.getBanners(),
       categories: mock.getCategories(),
       allGoods,
       flash: flash.list,
       flashEndsAt: flash.endsAt,
-      flashRemain: mock.flashRemainText(flash.endsAt)
+      flashRemain: mock.flashRemainText(flash.endsAt),
+      hasLivingLive,
+      livingLiveTitle,
+      livingLiveId
     })
     this.applyFilters() // 分类/价格/排序 正交叠加
     this.syncFlashTimer()
@@ -79,6 +92,15 @@ Page({
   // 拼团专区入口
   onGroupBuyTap() {
     wx.navigateTo({ url: '/pages/group-buy/group-buy' })
+  },
+
+  // 直播入口
+  onLiveTap() {
+    if (this.data.livingLiveId) {
+      wx.navigateTo({ url: '/pages/live-detail/live-detail?id=' + this.data.livingLiveId })
+    } else {
+      wx.navigateTo({ url: '/pages/live/live' })
+    }
   },
 
   // 点击秒杀商品 → 详情（闪购价展示在详情页）

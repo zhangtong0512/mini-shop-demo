@@ -1,0 +1,233 @@
+.live-detail-page {
+  min-height: 100vh;
+  background: #000;
+  padding-bottom: 120rpx;
+}
+
+/* 直播区域 */
+.live-area {
+  position: relative;
+  height: 560rpx;
+  background: #1a1a1a;
+}
+
+.live-area.living {
+  background: #000;
+}
+
+.live-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.placeholder-icon {
+  font-size: 120rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.placeholder-text {
+  color: #fff;
+  font-size: 28rpx;
+}
+
+/* 直播信息浮层 */
+.live-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+}
+
+.overlay-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.room-info {
+  flex: 1;
+}
+
+.room-title {
+  display: block;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.room-anchor {
+  color: rgba(255,255,255,0.8);
+  font-size: 24rpx;
+}
+
+.live-stats {
+  display: flex;
+  gap: 16rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.5);
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  color: #fff;
+  font-size: 22rpx;
+}
+
+.stat-icon {
+  margin-right: 6rpx;
+}
+
+/* 点赞按钮 */
+.like-btn {
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.like-icon {
+  font-size: 48rpx;
+  margin-bottom: 8rpx;
+}
+
+.like-count {
+  color: #fff;
+  font-size: 20rpx;
+}
+
+/* 商品区域 */
+.goods-section {
+  background: #fff;
+  margin-top: 20rpx;
+  border-radius: 20rpx 20rpx 0 0;
+}
+
+.goods-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.goods-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.toggle-icon {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.goods-list {
+  padding: 0 24rpx;
+}
+
+.goods-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.goods-item:last-child {
+  border-bottom: none;
+}
+
+.goods-image {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #fde2d9, #fff0ea);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.goods-emoji {
+  font-size: 60rpx;
+}
+
+.goods-info {
+  flex: 1;
+}
+
+.goods-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.goods-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.live-price {
+  color: #ff4757;
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+.original-price {
+  color: #999;
+  font-size: 22rpx;
+  text-decoration: line-through;
+  margin-left: 12rpx;
+}
+
+.buy-btn {
+  background: #ff4757;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+}
+
+/* 底部操作栏 */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.input-wrap {
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.chat-input {
+  background: #f5f5f5;
+  padding: 16rpx 24rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+}
+
+.action-btns {
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-icon {
+  font-size: 40rpx;
+}

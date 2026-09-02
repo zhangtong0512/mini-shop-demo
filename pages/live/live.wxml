@@ -1,0 +1,73 @@
+<view class="live-page">
+  <!-- 头部Banner -->
+  <view class="header-banner">
+    <view class="banner-title">直播中心</view>
+    <view class="banner-sub">精彩直播，不容错过</view>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="key"
+      bindtap="onTabTap"
+      data-tab="{{item.key}}"
+    >
+      <text>{{item.name}}</text>
+      <view class="live-dot" wx:if="{{item.key === '1'}}"></view>
+    </view>
+  </view>
+
+  <!-- 直播列表 -->
+  <scroll-view scroll-y class="live-list" wx:if="{{getFilteredRooms().length > 0}}">
+    <view 
+      class="live-card {{item.statusClass}}" 
+      wx:for="{{getFilteredRooms()}}" 
+      wx:key="roomId"
+      bindtap="onLiveRoomTap"
+      data-id="{{item.roomId}}"
+    >
+      <view class="live-cover">
+        <image src="{{item.cover}}" mode="aspectFill" />
+        <view class="live-status-badge {{item.statusClass}}">{{item.statusText}}</view>
+        <view class="live-viewers" wx:if="{{item.status === 1}}">
+          <text class="viewers-icon">👁️</text>
+          <text>{{item.viewerText}}</text>
+        </view>
+      </view>
+      <view class="live-info">
+        <view class="live-title">{{item.title}}</view>
+        <view class="live-anchor">
+          <text class="anchor-icon">👤</text>
+          <text>{{item.anchorName}}</text>
+        </view>
+        <view class="live-meta">
+          <text class="meta-item" wx:if="{{item.status === 1}}">
+            <text class="meta-icon">❤️</text>
+            {{item.likeText}}
+          </text>
+          <text class="meta-item" wx:if="{{item.status === 0}}">
+            <text class="meta-icon">⏰</text>
+            {{item.startTimeText}}
+          </text>
+          <text class="meta-item" wx:if="{{item.status === 2}}">
+            <text class="meta-icon">⏱️</text>
+            {{item.durationText}}
+          </text>
+        </view>
+      </view>
+      <view class="live-action">
+        <view class="action-btn" wx:if="{{item.status === 1}}">进入直播</view>
+        <view class="action-btn" wx:elif="{{item.status === 0}}">预约提醒</view>
+        <view class="action-btn" wx:else>观看回放</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📺</text>
+    <text class="empty-text">暂无直播</text>
+  </view>
+</view>

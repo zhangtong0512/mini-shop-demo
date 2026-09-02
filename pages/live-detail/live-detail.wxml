@@ -1,0 +1,86 @@
+<view class="live-detail-page" wx:if="{{room}}">
+  <!-- 直播区域 -->
+  <view class="live-area {{isLiving ? 'living' : ''}}">
+    <view class="live-placeholder">
+      <text class="placeholder-icon" wx:if="{{isLiving}}">📺</text>
+      <text class="placeholder-icon" wx:elif="{{room.status === 0}}">⏰</text>
+      <text class="placeholder-icon" wx:else>📹</text>
+      <text class="placeholder-text" wx:if="{{isLiving}}">直播中</text>
+      <text class="placeholder-text" wx:elif="{{room.status === 0}}">即将开始</text>
+      <text class="placeholder-text" wx:else>直播已结束</text>
+    </view>
+    
+    <!-- 直播信息浮层 -->
+    <view class="live-overlay">
+      <view class="overlay-top">
+        <view class="room-info">
+          <text class="room-title">{{room.title}}</text>
+          <text class="room-anchor">{{room.anchorName}}</text>
+        </view>
+        <view class="live-stats">
+          <view class="stat-item">
+            <text class="stat-icon">👁️</text>
+            <text>{{viewerText}}</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-icon">⏱️</text>
+            <text>{{duration}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 点赞按钮 -->
+    <view class="like-btn" bindtap="onLikeTap">
+      <text class="like-icon">❤️</text>
+      <text class="like-count">{{likeText}}</text>
+    </view>
+  </view>
+
+  <!-- 直播间商品 -->
+  <view class="goods-section" wx:if="{{goods.length > 0}}">
+    <view class="goods-header" bindtap="onToggleGoods">
+      <text class="goods-title">直播间好物 ({{goods.length}})</text>
+      <text class="toggle-icon">{{showGoods ? '收起' : '展开'}}</text>
+    </view>
+    <view class="goods-list" wx:if="{{showGoods}}">
+      <view 
+        class="goods-item" 
+        wx:for="{{goods}}" 
+        wx:key="id"
+        bindtap="onGoodsTap"
+        data-id="{{item.id}}"
+      >
+        <view class="goods-image">
+          <text class="goods-emoji">{{item.emoji}}</text>
+        </view>
+        <view class="goods-info">
+          <text class="goods-name">{{item.title}}</text>
+          <view class="goods-price">
+            <text class="live-price">直播价 ¥{{item.price}}</text>
+            <text class="original-price">¥{{item.originalPrice}}</text>
+          </view>
+        </view>
+        <view class="buy-btn">购买</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="input-wrap">
+      <input class="chat-input" placeholder="说点什么..." disabled />
+    </view>
+    <view class="action-btns">
+      <view class="action-icon" bindtap="onLikeTap">
+        <text>❤️</text>
+      </view>
+      <view class="action-icon" bindtap="onToggleGoods" wx:if="{{goods.length > 0}}">
+        <text>🛍️</text>
+      </view>
+      <view class="action-icon">
+        <text>📤</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -4,6 +4,7 @@ const favorite = require('../../utils/favorite')
 const review = require('../../utils/review')
 const groupBuy = require('../../utils/group-buy')
 const user = require('../../utils/user')
+const ar = require('../../utils/ar')
 
 Page({
   data: {
@@ -25,7 +26,8 @@ Page({
     groupPrice: 0,
     groupConfig: null,
     canCreateGroup: true,
-    joinableGroups: []
+    joinableGroups: [],
+    hasAr: false
   },
 
   onLoad(options) {
@@ -38,6 +40,9 @@ Page({
     // 拼团模式
     const isGroupMode = options.mode === 'group'
     const groupConfig = groupBuy.getGroupGoodsConfig().find(c => c.goodsId === Number(options.id))
+    
+    // AR支持检查
+    const hasAr = ar.isArSupported(Number(options.id))
     
     // 默认选中首个 SKU（有规格商品）
     let skuKey = ''
@@ -74,7 +79,8 @@ Page({
       groupPrice: groupConfig ? groupConfig.groupPrice : 0,
       groupConfig,
       canCreateGroup,
-      joinableGroups
+      joinableGroups,
+      hasAr
     })
     if (goods) {
       wx.setNavigationBarTitle({ title: goods.title })
@@ -111,6 +117,12 @@ Page({
   onReviewTap() {
     if (!this.data.goods) return
     wx.navigateTo({ url: '/pages/review-list/review-list?id=' + this.data.goods.id })
+  },
+
+  // AR预览
+  onArTap() {
+    if (!this.data.goods) return
+    wx.navigateTo({ url: '/pages/ar-preview/ar-preview?id=' + this.data.goods.id })
   },
 
   // 顶部轮播切换时同步页码角标

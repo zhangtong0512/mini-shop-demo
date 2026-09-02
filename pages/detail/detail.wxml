@@ -71,6 +71,16 @@
     <view class="service-item">↩️ 7天无理由退货</view>
   </view>
 
+  <!-- AR预览入口 -->
+  <view class="ar-entry" wx:if="{{hasAr}}" hover-class="hv" bindtap="onArTap">
+    <view class="ar-icon">📱</view>
+    <view class="ar-info">
+      <text class="ar-title">AR试穿/试用</text>
+      <text class="ar-desc">支持摄像头实时预览</text>
+    </view>
+    <view class="ar-btn">立即体验 ›</view>
+  </view>
+
   <!-- 商品评价预览 -->
   <view class="review-block" wx:if="{{reviewCount > 0}}" hover-class="hv" bindtap="onReviewTap">
     <view class="review-head">

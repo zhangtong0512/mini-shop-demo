@@ -256,6 +256,47 @@
   color: #666666;
 }
 
+/* AR预览入口 */
+.ar-entry {
+  margin: 20rpx 24rpx 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.3);
+}
+
+.ar-icon {
+  font-size: 56rpx;
+  margin-right: 20rpx;
+}
+
+.ar-info {
+  flex: 1;
+}
+
+.ar-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #fff;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.ar-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ar-btn {
+  font-size: 26rpx;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+}
+
 /* 商品评价预览 */
 .review-block {
   margin: 20rpx 24rpx 0;

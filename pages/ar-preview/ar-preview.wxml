@@ -1,0 +1,80 @@
+<view class="ar-page">
+  <!-- 相机区域 -->
+  <view class="camera-area">
+    <camera 
+      class="camera" 
+      device-position="front"
+      flash="off"
+      binderror="onCameraError"
+      bindready="onCameraReady"
+    >
+      <view class="camera-overlay" wx:if="{{cameraReady}}">
+        <!-- 模型占位区域 -->
+        <view class="model-area {{screenshot ? 'flash' : ''}}">
+          <view class="model-placeholder" wx:if="{{arConfig}}">
+            <text class="model-icon">👕</text>
+            <text class="model-text">{{arConfig.description}}</text>
+          </view>
+        </view>
+        
+        <!-- 热点标记 -->
+        <view 
+          class="hotspot" 
+          wx:if="{{arConfig}}"
+          wx:for="{{arConfig.hotspots}}" 
+          wx:key="label"
+          style="left:{{item.x * 100}}%;top:{{item.y * 100}}%"
+        >
+          <view class="hotspot-dot"></view>
+          <text class="hotspot-label">{{item.label}}</text>
+        </view>
+      </view>
+      
+      <!-- 未就绪占位 -->
+      <view class="camera-placeholder" wx:else>
+        <text class="placeholder-icon">📷</text>
+        <text class="placeholder-text">正在启动摄像头...</text>
+      </view>
+    </camera>
+  </view>
+  
+  <!-- 商品海报遮罩 -->
+  <view class="poster-mask" wx:if="{{showPoster && arConfig}}" bindtap="onTogglePoster">
+    <view class="poster-card" catchtap="">
+      <image class="poster-image" src="{{arConfig.posterUrl}}" mode="aspectFill" />
+      <view class="poster-info">
+        <text class="poster-title">{{arConfig.name}}</text>
+        <text class="poster-desc">{{goods.title}}</text>
+        <view class="poster-price">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{goods.price}}</text>
+        </view>
+      </view>
+      <view class="poster-close">点击屏幕开始AR预览</view>
+    </view>
+  </view>
+  
+  <!-- 底部工具栏 -->
+  <view class="toolbar">
+    <view class="tool-item" bindtap="onToggleFavorite">
+      <text class="tool-icon {{isFavorited ? 'active' : ''}}">{{isFavorited ? '❤️' : '🤍'}}</text>
+      <text class="tool-text">收藏</text>
+    </view>
+    <view class="tool-item capture-btn" bindtap="onCapture">
+      <view class="capture-ring"></view>
+    </view>
+    <view class="tool-item" bindtap="onSaveImage">
+      <text class="tool-icon">💾</text>
+      <text class="tool-text">保存</text>
+    </view>
+  </view>
+  
+  <!-- 购买按钮 -->
+  <view class="buy-bar" wx:if="{{goods}}">
+    <view class="buy-price">
+      <text class="buy-price-label">AR预览价</text>
+      <text class="buy-price-value">¥{{goods.price}}</text>
+    </view>
+    <view class="buy-btn" bindtap="onBuyNow">立即购买</view>
+  </view>
+</view>

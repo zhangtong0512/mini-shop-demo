@@ -9,6 +9,8 @@ const member = require('./utils/member')
 const notification = require('./utils/notification')
 const store = require('./utils/store')
 const groupBuy = require('./utils/group-buy')
+const live = require('./utils/live')
+const ar = require('./utils/ar')
 
 App({
   // 跨页面传递的临时状态（如「我的 → 订单中心」指定 tab，switchTab 无法带参）
@@ -29,5 +31,7 @@ App({
     notification.ensureSeed()
     store.ensureSeed()
     groupBuy.ensureSeed()
+    live.ensureSeed()
+    ar.ensureSeed()
   }
 })

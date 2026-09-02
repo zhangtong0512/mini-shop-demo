@@ -32,6 +32,8 @@ const member = require('./utils/member')
 const notification = require('./utils/notification')
 const storeModule = require('./utils/store')
 const groupBuy = require('./utils/group-buy')
+const live = require('./utils/live')
+const ar = require('./utils/ar')
 
 test.beforeEach(() => {
   resetStore()
@@ -42,6 +44,8 @@ test.beforeEach(() => {
   notification.ensureSeed()
   storeModule.ensureSeed()
   groupBuy.ensureSeed()
+  live.ensureSeed()
+  ar.ensureSeed()
 })
 
 // 便捷：生成单商品订单 items 片段（有规格商品自动带首个 SKU）
@@ -562,4 +566,174 @@ test('拼团：拼团详情获取', () => {
   const group = groupBuy.getGroupById(groups[0].id)
   assert.ok(group)
   assert.strictEqual(group.id, groups[0].id)
+})
+
+// ========== 直播功能 ==========
+
+test('直播：初始化种子数据', () => {
+  live.ensureSeed()
+  const rooms = live.getLiveRooms()
+  assert.ok(rooms.length > 0)
+})
+
+test('直播：获取所有直播间', () => {
+  const rooms = live.getLiveRooms()
+  assert.ok(Array.isArray(rooms))
+  assert.ok(rooms.length >= 3)
+})
+
+test('直播：按状态筛选直播间', () => {
+  const living = live.getLiveRooms(1)
+  assert.ok(Array.isArray(living))
+  living.forEach(r => assert.strictEqual(r.status, 1))
+  
+  const upcoming = live.getLiveRooms(0)
+  upcoming.forEach(r => assert.strictEqual(r.status, 0))
+})
+
+test('直播：获取直播间详情', () => {
+  const rooms = live.getLiveRooms()
+  const room = live.getLiveRoomById(rooms[0].roomId)
+  assert.ok(room)
+  assert.strictEqual(room.roomId, rooms[0].roomId)
+})
+
+test('直播：获取不存在的直播间', () => {
+  const room = live.getLiveRoomById(9999)
+  assert.strictEqual(room, null)
+})
+
+test('直播：获取直播间商品', () => {
+  const rooms = live.getLiveRooms()
+  const goods = live.getLiveGoods(rooms[0].roomId, mock)
+  assert.ok(Array.isArray(goods))
+  assert.ok(goods.length > 0)
+})
+
+test('直播：更新观看人数', () => {
+  const rooms = live.getLiveRooms()
+  const roomId = rooms[0].roomId
+  const originalCount = rooms[0].viewerCount
+  live.updateViewerCount(roomId, 9999)
+  const updated = live.getLiveRoomById(roomId)
+  assert.strictEqual(updated.viewerCount, 9999)
+})
+
+test('直播：更新点赞数', () => {
+  const rooms = live.getLiveRooms()
+  const roomId = rooms[0].roomId
+  live.updateLikeCount(roomId, 88888)
+  const updated = live.getLiveRoomById(roomId)
+  assert.strictEqual(updated.likeCount, 88888)
+})
+
+test('直播：检查是否直播中', () => {
+  const rooms = live.getLiveRooms(1)
+  if (rooms.length > 0) {
+    assert.strictEqual(live.isLiveRoomLive(rooms[0].roomId), true)
+  }
+  assert.strictEqual(live.isLiveRoomLive(9999), false)
+})
+
+test('直播：状态文本', () => {
+  assert.strictEqual(live.getLiveStatusText(0), '即将开始')
+  assert.strictEqual(live.getLiveStatusText(1), '直播中')
+  assert.strictEqual(live.getLiveStatusText(2), '已结束')
+  assert.strictEqual(live.getLiveStatusText(9), '未知')
+})
+
+test('直播：状态样式类', () => {
+  assert.strictEqual(live.getLiveStatusClass(0), 'upcoming')
+  assert.strictEqual(live.getLiveStatusClass(1), 'living')
+  assert.strictEqual(live.getLiveStatusClass(2), 'ended')
+})
+
+test('直播：格式化数字', () => {
+  assert.strictEqual(live.formatNumber(999), '999')
+  assert.strictEqual(live.formatNumber(1500), '1.5k')
+  assert.strictEqual(live.formatNumber(25000), '2.5万')
+})
+
+test('直播：计算直播时长', () => {
+  const start = new Date(Date.now() - 3600000).toISOString() // 1小时前
+  const end = new Date().toISOString()
+  const duration = live.getLiveDuration(start, end)
+  assert.ok(duration.includes('小时'))
+})
+
+// ========== AR试穿/试用功能 ==========
+
+test('AR：初始化种子数据', () => {
+  ar.ensureSeed()
+  const data = ar.getArData()
+  assert.ok(data.arGoods.length > 0)
+})
+
+test('AR：获取AR商品配置列表', () => {
+  const config = ar.getArGoodsConfig()
+  assert.ok(Array.isArray(config))
+  assert.ok(config.length >= 3)
+})
+
+test('AR：获取AR商品配置（按商品ID）', () => {
+  const config = ar.getArConfigByGoodsId(1004)
+  assert.ok(config)
+  assert.strictEqual(config.goodsId, 1004)
+  assert.strictEqual(config.type, 'wear')
+})
+
+test('AR：获取不存在的AR配置', () => {
+  const config = ar.getArConfigByGoodsId(9999)
+  assert.strictEqual(config, null)
+})
+
+test('AR：检查商品是否支持AR', () => {
+  assert.strictEqual(ar.isArSupported(1004), true)
+  assert.strictEqual(ar.isArSupported(9999), false)
+})
+
+test('AR：获取AR商品详情', () => {
+  const detail = ar.getArGoodsDetail(1004, mock)
+  assert.ok(detail)
+  assert.ok(detail.goods)
+  assert.strictEqual(detail.goodsId, 1004)
+})
+
+test('AR：添加收藏', () => {
+  ar.addFavorite(1004)
+  assert.strictEqual(ar.isFavorite(1004), true)
+})
+
+test('AR：移除收藏', () => {
+  ar.addFavorite(1004)
+  ar.removeFavorite(1004)
+  assert.strictEqual(ar.isFavorite(1004), false)
+})
+
+test('AR：添加浏览历史', () => {
+  ar.addHistory(1004)
+  ar.addHistory(1005)
+  const history = ar.getHistory()
+  assert.ok(history.includes(1004))
+  assert.ok(history.includes(1005))
+})
+
+test('AR：浏览历史去重', () => {
+  ar.addHistory(1004)
+  ar.addHistory(1004)
+  const history = ar.getHistory()
+  const count = history.filter(id => id === 1004).length
+  assert.strictEqual(count, 1)
+})
+
+test('AR：清空浏览历史', () => {
+  ar.addHistory(1004)
+  ar.clearHistory()
+  const history = ar.getHistory()
+  assert.strictEqual(history.length, 0)
+})
+
+test('AR：AR_GOODS_CONFIG导出', () => {
+  assert.ok(Array.isArray(ar.AR_GOODS_CONFIG))
+  assert.ok(ar.AR_GOODS_CONFIG.length >= 3)
 })

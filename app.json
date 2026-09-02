@@ -29,7 +29,10 @@
     "pages/store-detail/store-detail",
     "pages/store-select/store-select",
     "pages/group-buy/group-buy",
-    "pages/group-detail/group-detail"
+    "pages/group-detail/group-detail",
+    "pages/live/live",
+    "pages/live-detail/live-detail",
+    "pages/ar-preview/ar-preview"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ff5000",

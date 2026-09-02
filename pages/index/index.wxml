@@ -30,6 +30,17 @@
     </view>
   </view>
 
+  <!-- 直播入口 -->
+  <view class="live-entry card" hover-class="hv" bindtap="onLiveTap" wx:if="{{hasLivingLive}}">
+    <view class="live-pulse"></view>
+    <view class="live-entry-icon">📺</view>
+    <view class="live-entry-info">
+      <view class="live-entry-title">直播中</view>
+      <view class="live-entry-desc">{{livingLiveTitle}}</view>
+    </view>
+    <view class="live-entry-btn">进入直播间 ›</view>
+  </view>
+
   <!-- 图标分类导航 + 排序栏（吸顶） -->
   <view class="category-sticky">
   <scroll-view class="category-nav" scroll-x>
