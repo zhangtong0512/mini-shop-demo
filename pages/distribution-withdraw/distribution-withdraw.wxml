@@ -14,10 +14,10 @@
       </view>
     </view>
     <view class="quick-amounts">
-      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: agent.availableCommission}}}">全部提现</view>
-      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: 100}}}">100</view>
-      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: 200}}}">200</view>
-      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: 500}}}">500</view>
+      <view class="quick-btn" bindtap="onQuickAmount" data-amount="{{agent.availableCommission}}">全部提现</view>
+      <view class="quick-btn" bindtap="onQuickAmount" data-amount="{{100}}">100</view>
+      <view class="quick-btn" bindtap="onQuickAmount" data-amount="{{200}}">200</view>
+      <view class="quick-btn" bindtap="onQuickAmount" data-amount="{{500}}">500</view>
     </view>
   </view>
 

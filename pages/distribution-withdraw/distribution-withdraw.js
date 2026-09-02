@@ -39,6 +39,11 @@ Page({
     this.setData({ withdrawAmount: e.detail.value })
   },
 
+  onQuickAmount(e) {
+    const amount = e.currentTarget.dataset.amount
+    this.setData({ withdrawAmount: String(amount) })
+  },
+
   onBankSelect(e) {
     const { id } = e.currentTarget.dataset
     const bank = this.data.banks.find(b => b.id === id)
