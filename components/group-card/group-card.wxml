@@ -1,0 +1,24 @@
+<view class="group-card" bindtap="onTap">
+  <view class="goods-image-wrap">
+    <image class="goods-image" src="{{goods.image}}" mode="aspectFill"></image>
+    <view class="group-badge" wx:if="{{groupCount > 0}}">{{groupCount}}人团</view>
+  </view>
+  
+  <view class="goods-info">
+    <text class="goods-title">{{goods.title}}</text>
+    
+    <view class="price-row">
+      <text class="group-price">¥{{goods.groupPrice}}</text>
+      <text class="original-price">¥{{goods.originalPrice}}</text>
+    </view>
+    
+    <view class="group-meta">
+      <text class="group-size">{{goods.groupSize}}人团</text>
+      <text class="limit-text">限购{{goods.limitPerUser}}件</text>
+    </view>
+
+    <view class="group-btn" catchtap="onGroupTap">
+      <text class="btn-text">去拼团</text>
+    </view>
+  </view>
+</view>

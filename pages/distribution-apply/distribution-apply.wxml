@@ -1,0 +1,44 @@
+<view class="apply-page">
+  <view class="header">
+    <view class="header-icon">💼</view>
+    <view class="header-title">申请成为分销员</view>
+    <view class="header-desc">分享商品，赚取佣金</view>
+  </view>
+
+  <view class="rules-card">
+    <view class="rules-title">分销规则</view>
+    <view class="rules-item">佣金比例：一级 <text class="highlight">{{rules.commissionRate * 100}}%</text></view>
+    <view class="rules-item">二级佣金：<text class="highlight">{{rules.secondLevelRate * 100}}%</text></view>
+    <view class="rules-item">最低提现：<text class="highlight">{{rules.minWithdraw}}元</text></view>
+  </view>
+
+  <view class="form-card">
+    <view class="form-item">
+      <text class="form-label required">真实姓名</text>
+      <input class="form-input" placeholder="请输入真实姓名" value="{{formData.name}}" bindinput="onInputChange" data-field="name" />
+    </view>
+    <view class="form-item">
+      <text class="form-label required">手机号</text>
+      <input class="form-input" type="number" placeholder="请输入手机号" value="{{formData.phone}}" bindinput="onInputChange" data-field="phone" maxlength="11" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">身份证号</text>
+      <input class="form-input" placeholder="选填，用于实名认证" value="{{formData.idCard}}" bindinput="onInputChange" data-field="idCard" />
+    </view>
+    <view class="form-item textarea-item">
+      <text class="form-label">申请理由</text>
+      <textarea class="form-textarea" placeholder="选填，介绍您的推广渠道" value="{{formData.reason}}" bindinput="onInputChange" data-field="reason" maxlength="200" />
+    </view>
+  </view>
+
+  <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">
+    {{submitting ? '提交中...' : '立即申请'}}
+  </view>
+
+  <view class="tips">
+    <view class="tips-title">申请须知</view>
+    <view class="tips-item">1. 申请提交后将在1-3个工作日内审核</view>
+    <view class="tips-item">2. 审核通过后即可开始分享商品赚佣金</view>
+    <view class="tips-item">3. 佣金满{{rules.minWithdraw}}元即可申请提现</view>
+  </view>
+</view>

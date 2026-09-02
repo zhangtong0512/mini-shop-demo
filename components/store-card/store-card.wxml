@@ -1,0 +1,34 @@
+<view class="store-card" bindtap="onTap">
+  <view class="store-header">
+    <text class="store-name">{{store.name}}</text>
+    <text class="store-status {{store.status === 1 ? 'open' : 'closed'}}">
+      {{store.status === 1 ? '营业中' : '休息中'}}
+    </text>
+  </view>
+  
+  <view class="store-info">
+    <view class="info-item">
+      <text class="info-icon">📍</text>
+      <text class="info-text">{{store.address}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-icon">⏰</text>
+      <text class="info-text">{{store.businessHours}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-icon">📞</text>
+      <text class="info-text">{{store.phone}}</text>
+    </view>
+  </view>
+
+  <view class="store-footer" wx:if="{{showDistance && store.distance}}">
+    <text class="distance-text">{{store.distance}}km</text>
+    <view class="store-services">
+      <text class="service-tag" wx:for="{{store.services}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="store-services" wx:elif="{{store.services && store.services.length > 0}}">
+    <text class="service-tag" wx:for="{{store.services}}" wx:key="*this">{{item}}</text>
+  </view>
+</view>

@@ -1,0 +1,163 @@
+.order-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.stats-bar {
+  display: flex;
+  background: linear-gradient(135deg, #ff5000, #ff8533);
+  padding: 30rpx 20rpx;
+}
+
+.stats-item {
+  flex: 1;
+  text-align: center;
+  color: #fff;
+}
+
+.stats-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.stats-label {
+  display: block;
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-top: 8rpx;
+}
+
+.tabs {
+  display: flex;
+  background: #fff;
+  padding: 0 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #ff5000;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #ff5000;
+  border-radius: 2rpx;
+}
+
+.record-list {
+  padding: 20rpx;
+}
+
+.record-item {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.record-order {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.record-status {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.status-0 {
+  color: #ff9500;
+  background: #fff5e6;
+}
+
+.status-1 {
+  color: #34c759;
+  background: #e6f9ed;
+}
+
+.status-2 {
+  color: #999;
+  background: #f5f5f5;
+}
+
+.record-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.record-info {
+  flex: 1;
+}
+
+.record-amount {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.record-level {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.record-commission {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff5000;
+}
+
+.record-footer {
+  margin-top: 12rpx;
+}
+
+.record-time {
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}

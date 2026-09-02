@@ -1,0 +1,30 @@
+.dot-wrap {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  z-index: 10;
+}
+
+.dot {
+  min-width: 32rpx;
+  height: 32rpx;
+  background: #ff3b30;
+  border-radius: 16rpx;
+  padding: 0 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 2rpx solid #fff;
+}
+
+.dot-long {
+  min-width: 48rpx;
+}
+
+.dot-text {
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: bold;
+  line-height: 1;
+}

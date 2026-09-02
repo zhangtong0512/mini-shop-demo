@@ -1,0 +1,5 @@
+<view class="dot-wrap" wx:if="{{show && count > 0}}">
+  <view class="dot {{count > 99 ? 'dot-long' : ''}}">
+    <text class="dot-text">{{count > 99 ? '99+' : count}}</text>
+  </view>
+</view>

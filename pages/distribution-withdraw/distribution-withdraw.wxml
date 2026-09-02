@@ -1,0 +1,59 @@
+<view class="withdraw-page">
+  <view class="balance-card">
+    <view class="balance-label">可提现金额（元）</view>
+    <view class="balance-value">{{agent.availableCommission || '0.00'}}</view>
+    <view class="balance-frozen">冻结金额: ¥{{agent.frozenCommission || '0.00'}}</view>
+  </view>
+
+  <view class="form-section">
+    <view class="form-item">
+      <text class="form-label">提现金额</text>
+      <view class="form-input-wrap">
+        <text class="form-prefix">¥</text>
+        <input class="form-input" type="digit" placeholder="请输入提现金额" value="{{withdrawAmount}}" bindinput="onAmountInput" />
+      </view>
+    </view>
+    <view class="quick-amounts">
+      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: agent.availableCommission}}}">全部提现</view>
+      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: 100}}}">100</view>
+      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: 200}}}">200</view>
+      <view class="quick-btn" bindtap="onAmountInput" data-detail="{{detail = {value: 500}}}">500</view>
+    </view>
+  </view>
+
+  <view class="bank-section">
+    <view class="section-title">提现账户</view>
+    <view class="bank-list">
+      <view class="bank-item {{selectedBank.id === item.id ? 'selected' : ''}}" 
+            wx:for="{{banks}}" wx:key="id" 
+            bindtap="onBankSelect" data-id="{{item.id}}">
+        <view class="bank-icon">🏦</view>
+        <view class="bank-info">
+          <text class="bank-name">{{item.name}}</text>
+          <text class="bank-card">{{item.card}}</text>
+        </view>
+        <view class="bank-check" wx:if="{{selectedBank.id === item.id}}">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-btn" bindtap="onWithdraw">申请提现</view>
+
+  <view class="record-section" wx:if="{{records.length > 0}}">
+    <view class="section-title">提现记录</view>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-info">
+          <text class="record-bank">{{item.bankName}} {{item.bankCard}}</text>
+          <text class="record-time">{{item.applyTime}}</text>
+        </view>
+        <view class="record-right">
+          <text class="record-amount">-¥{{item.amount}}</text>
+          <text class="record-status status-{{item.status}}">
+            {{item.status === 0 ? '处理中' : item.status === 1 ? '已到账' : '已拒绝'}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

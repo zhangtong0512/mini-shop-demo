@@ -1,0 +1,13 @@
+<view class="compare-bar {{show && compareCount > 0 ? 'show' : ''}}">
+  <view class="bar-content">
+    <view class="compare-icon">
+      <text class="icon-text">📊</text>
+      <text class="compare-count">{{compareCount}}/{{maxCount}}</text>
+    </view>
+    <view class="compare-text">对比</view>
+    <view class="bar-btns">
+      <view class="compare-btn" bindtap="onCompareTap">开始对比</view>
+      <view class="clear-btn" bindtap="onClearTap">清空</view>
+    </view>
+  </view>
+</view>

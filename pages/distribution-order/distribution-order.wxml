@@ -1,0 +1,54 @@
+<view class="order-page">
+  <view class="stats-bar">
+    <view class="stats-item">
+      <text class="stats-value">{{stats.total}}</text>
+      <text class="stats-label">累计佣金</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.settled}}</text>
+      <text class="stats-label">已结算</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.pending}}</text>
+      <text class="stats-label">待结算</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.count}}</text>
+      <text class="stats-label">订单数</text>
+    </view>
+  </view>
+
+  <view class="tabs">
+    <view class="tab-item {{currentTab === item.key ? 'active' : ''}}" 
+          wx:for="{{tabs}}" wx:key="key" 
+          bindtap="onTabChange" data-key="{{item.key}}">
+      {{item.name}}
+    </view>
+  </view>
+
+  <view class="record-list">
+    <view class="record-item" wx:for="{{records}}" wx:key="id" bindtap="onRecordTap" data-id="{{item.id}}">
+      <view class="record-header">
+        <text class="record-order">订单 {{item.orderId}}</text>
+        <text class="record-status status-{{item.status}}">
+          {{item.status === 0 ? '待结算' : item.status === 1 ? '已结算' : '已失效'}}
+        </text>
+      </view>
+      <view class="record-body">
+        <view class="record-info">
+          <text class="record-amount">订单金额 ¥{{item.orderAmount}}</text>
+          <text class="record-level">{{item.level === 1 ? '一级佣金' : '二级佣金'}}</text>
+        </view>
+        <text class="record-commission">+¥{{item.commission}}</text>
+      </view>
+      <view class="record-footer">
+        <text class="record-time">{{item.createTime}}</text>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{records.length === 0}}">
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">暂无佣金记录</text>
+    </view>
+  </view>
+</view>

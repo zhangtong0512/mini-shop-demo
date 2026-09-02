@@ -1,0 +1,52 @@
+<view class="team-page">
+  <view class="header">
+    <view class="header-bg"></view>
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.teamCount}}</text>
+        <text class="stat-label">团队总人数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.todayCount}}</text>
+        <text class="stat-label">今日新增</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.monthCount}}</text>
+        <text class="stat-label">本月新增</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="invite-bar" bindtap="onInviteTap">
+    <text class="invite-icon">📢</text>
+    <text class="invite-text">邀请好友加入团队，赚取更多佣金</text>
+    <text class="invite-btn">去邀请</text>
+  </view>
+
+  <view class="section">
+    <view class="section-title">团队成员</view>
+    
+    <view class="member-list" wx:if="{{teamMembers.length > 0}}">
+      <view class="member-item" wx:for="{{teamMembers}}" wx:key="agentId" bindtap="onMemberTap" data-id="{{item.agentId}}">
+        <view class="member-avatar">👤</view>
+        <view class="member-info">
+          <view class="member-name">{{item.name}}</view>
+          <view class="member-meta">
+            <text class="member-level">{{item.levelText}}</text>
+            <text class="member-time">加入 {{item.applyTime}}</text>
+          </view>
+        </view>
+        <view class="member-stats">
+          <text class="member-orders">{{item.orderCount}}单</text>
+          <text class="member-amount">¥{{item.totalCommission}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:else>
+      <text class="empty-icon">👥</text>
+      <text class="empty-text">暂无团队成员</text>
+      <text class="empty-desc">分享邀请链接，邀请好友加入</text>
+    </view>
+  </view>
+</view>

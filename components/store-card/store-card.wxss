@@ -1,0 +1,88 @@
+.store-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.store-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.store-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.store-status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 4rpx;
+}
+
+.store-status.open {
+  color: #34c759;
+  background: #e6f9ed;
+}
+
+.store-status.closed {
+  color: #999;
+  background: #f5f5f5;
+}
+
+.store-info {
+  margin-bottom: 16rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12rpx;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.info-text {
+  font-size: 26rpx;
+  color: #666;
+  flex: 1;
+}
+
+.store-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.distance-text {
+  font-size: 24rpx;
+  color: #ff5000;
+}
+
+.store-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.service-tag {
+  font-size: 22rpx;
+  color: #666;
+  background: #f5f5f5;
+  padding: 6rpx 12rpx;
+  border-radius: 4rpx;
+}

@@ -1,0 +1,19 @@
+<view class="live-entry {{size}}" bindtap="onTap">
+  <view class="live-badge {{room.status === 1 ? 'live' : ''}}">
+    <text class="badge-text">{{room.status === 0 ? '预告' : room.status === 1 ? '直播中' : '回放'}}</text>
+  </view>
+  <view class="live-cover" wx:if="{{room.cover}}">
+    <image class="cover-image" src="{{room.cover}}" mode="aspectFill"></image>
+  </view>
+  <view class="live-cover placeholder" wx:else>
+    <text class="placeholder-icon">📺</text>
+  </view>
+  <view class="live-info">
+    <text class="live-title">{{room.title}}</text>
+    <view class="live-meta">
+      <text class="anchor-name" wx:if="{{room.anchorName}}">{{room.anchorName}}</text>
+      <text class="viewer-count" wx:if="{{room.viewerCount > 0}}">{{room.viewerCount}}人观看</text>
+    </view>
+  </view>
+  <view class="live-pulse" wx:if="{{room.status === 1}}"></view>
+</view>

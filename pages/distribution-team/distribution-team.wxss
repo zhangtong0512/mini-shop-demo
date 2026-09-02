@@ -1,0 +1,185 @@
+.team-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.header {
+  position: relative;
+  padding: 40rpx 30rpx;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200rpx;
+  background: linear-gradient(135deg, #ff5000, #ff8533);
+}
+
+.stats-row {
+  position: relative;
+  display: flex;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #ff5000;
+}
+
+.stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.invite-bar {
+  display: flex;
+  align-items: center;
+  background: #fff8f0;
+  margin: 20rpx 30rpx;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #ffe5cc;
+}
+
+.invite-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.invite-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #ff5000;
+}
+
+.invite-btn {
+  font-size: 26rpx;
+  color: #fff;
+  background: #ff5000;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+}
+
+.section {
+  background: #fff;
+  margin: 20rpx 30rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.member-list {
+  margin-top: 16rpx;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  background: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-name {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.member-meta {
+  display: flex;
+  align-items: center;
+}
+
+.member-level {
+  font-size: 22rpx;
+  color: #ff5000;
+  background: #fff5f0;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  margin-right: 12rpx;
+}
+
+.member-time {
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+.member-stats {
+  text-align: right;
+}
+
+.member-orders {
+  display: block;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.member-amount {
+  display: block;
+  font-size: 24rpx;
+  color: #ff5000;
+  margin-top: 8rpx;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #999;
+}
