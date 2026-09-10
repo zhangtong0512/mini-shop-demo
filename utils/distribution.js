@@ -141,8 +141,16 @@ const DEFAULT = {
   applyRecords: []
 }
 
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+// 读取分销数据：storage 缺失或字段不全时用 DEFAULT 补齐。
+// 注意必须深拷贝，否则调用方对返回值的修改会污染模块级 DEFAULT（写回 storage 后跨用例串数据）
 function getDistData() {
-  return Object.assign({}, DEFAULT, wx.getStorageSync(DIST_KEY) || {})
+  const stored = wx.getStorageSync(DIST_KEY)
+  if (!stored) return clone(DEFAULT)
+  return Object.assign(clone(DEFAULT), stored)
 }
 
 function saveDistData(data) {
@@ -152,7 +160,7 @@ function saveDistData(data) {
 // 首次启动预置分销数据
 function ensureSeed() {
   if (wx.getStorageSync(DIST_KEY)) return
-  saveDistData(DEFAULT)
+  saveDistData(clone(DEFAULT))
 }
 
 // 获取分销配置
@@ -184,20 +192,22 @@ function isAgent(userId) {
   return getDistData().agents.some(a => a.userId === userId && a.status === 1)
 }
 
-// 申请成为分销员
+// 申请成为分销员（同一用户申请中不可重复提交；被拒绝后可重新申请）
 function applyAgent(userId, name, phone) {
-  const data = getDistData()
-  // 检查是否已申请
-  const existing = data.agents.find(a => a.userId === userId)
-  if (existing) {
-    return { ok: false, msg: '您已提交过申请' }
+  if (!userId) {
+    return { ok: false, msg: '请先登录后再申请' }
   }
-  // 检查申请记录
-  const applied = data.applyRecords.some(r => r.userId === userId)
-  if (applied) {
+  const data = getDistData()
+  // 已是正式分销员则无需再申请
+  const existing = data.agents.find(a => a.userId === userId)
+  if (existing && existing.status === 1) {
+    return { ok: false, msg: '您已经是分销员' }
+  }
+  // 审核中的申请不允许重复提交
+  if (data.applyRecords.some(r => r.userId === userId && r.status === 0)) {
     return { ok: false, msg: '申请审核中，请勿重复提交' }
   }
-  
+
   const applyRecord = {
     id: 'apply_' + Date.now(),
     userId,
@@ -208,24 +218,90 @@ function applyAgent(userId, name, phone) {
   }
   data.applyRecords.push(applyRecord)
   saveDistData(data)
-  return { ok: true, msg: '申请已提交，等待审核' }
+  return { ok: true, msg: '申请已提交，等待审核', apply: applyRecord }
 }
 
 // 审核分销员申请
-function auditAgent(agentId, status, parentId = '') {
+// id 可以是已存在的 agentId，也可以是 applyRecords 里的申请 id
+// status: 1 通过 / 2 拒绝；通过申请时会把申请记录转成正式分销员
+function auditAgent(id, status, parentId = '') {
   const data = getDistData()
-  const agent = data.agents.find(a => a.agentId === agentId)
-  if (!agent) {
-    return { ok: false, msg: '分销员不存在' }
+  const agent = data.agents.find(a => a.agentId === id)
+  if (agent) {
+    agent.status = status
+    agent.auditTime = new Date().toISOString()
+    if (parentId) {
+      agent.parentId = parentId
+      agent.level = 2
+    }
+    saveDistData(data)
+    return { ok: true, msg: status === 1 ? '审核通过' : '已拒绝', agent }
   }
-  agent.status = status
-  agent.auditTime = new Date().toISOString()
-  if (parentId) {
-    agent.parentId = parentId
-    agent.level = 2
+
+  // 申请记录审核：通过则落成正式分销员，闭环「申请 → 审核 → 分销中心」
+  const apply = data.applyRecords.find(r => r.id === id)
+  if (!apply) {
+    return { ok: false, msg: '申请记录不存在' }
   }
+  if (apply.status === 1) {
+    return { ok: false, msg: '该申请已通过' }
+  }
+
+  apply.status = status
+  apply.auditTime = new Date().toISOString()
+
+  if (status !== 1) {
+    saveDistData(data)
+    return { ok: true, msg: '已拒绝该申请', apply }
+  }
+
+  const newAgent = {
+    agentId: 'agent_' + Date.now(),
+    userId: apply.userId,
+    name: apply.name,
+    phone: apply.phone,
+    status: 1,
+    level: parentId ? 2 : 1,
+    parentId: parentId || '',
+    totalCommission: 0,
+    availableCommission: 0,
+    frozenCommission: 0,
+    withdrawnCommission: 0,
+    teamCount: 0,
+    orderCount: 0,
+    applyTime: apply.createTime,
+    auditTime: new Date().toISOString()
+  }
+  data.agents.push(newAgent)
   saveDistData(data)
-  return { ok: true, msg: status === 1 ? '审核通过' : '已拒绝' }
+  return { ok: true, msg: '审核通过，已开通分销中心', agent: newAgent, apply }
+}
+
+// 按用户 id 取申请记录（最新的在前）
+function getApplyRecordsByUserId(userId) {
+  const data = getDistData()
+  return data.applyRecords
+    .filter(r => r.userId === userId)
+    .sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
+}
+
+// 分销中心统一入口：一次拿到「我是不是分销员 / 申请状态 / 佣金统计」
+// status: 'agent' 已是分销员 | 'pending' 申请待审核 | 'rejected' 申请被拒 | 'none' 从未申请
+function getMyDistribution(userId) {
+  if (!userId) return { status: 'none', agent: null, apply: null, stats: null }
+  const agent = getAgentByUserId(userId)
+  if (agent && agent.status === 1) {
+    return {
+      status: 'agent',
+      agent,
+      apply: null,
+      stats: getCommissionStats(agent.agentId)
+    }
+  }
+  const apply = getApplyRecordsByUserId(userId)[0] || null
+  if (apply && apply.status === 0) return { status: 'pending', agent: null, apply, stats: null }
+  if (apply && apply.status === 2) return { status: 'rejected', agent: null, apply, stats: null }
+  return { status: 'none', agent: null, apply: null, stats: null }
 }
 
 // 计算佣金
@@ -249,35 +325,83 @@ function isGoodsPromotable(goodsId) {
 }
 
 // 添加佣金记录
-function addCommissionRecord(agentId, orderId, orderAmount, level) {
+// opts.rate     直接指定佣金比例（按商品逐项计算后汇总时用）
+// opts.goodsId  指定商品，取其推广佣金比例
+// 不传 opts 时退回按 level 取全局比例（兼容旧调用）
+function addCommissionRecord(agentId, orderId, orderAmount, level = 1, opts = {}) {
   const data = getDistData()
-  const rate = getGoodsCommissionRate(orderId.replace('ORD', '').slice(0, 4)) || getConfig().commissionRate
+  const config = data.config
+  let rate
+  if (typeof opts.rate === 'number') {
+    rate = opts.rate
+  } else if (opts.goodsId) {
+    rate = getGoodsCommissionRate(opts.goodsId)
+  } else {
+    rate = level === 1 ? config.commissionRate : config.secondLevelRate
+  }
   const commission = Math.floor(orderAmount * rate * 100) / 100
-  
+
   const record = {
-    id: 'comm_' + Date.now(),
+    id: 'comm_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
     agentId,
     orderId,
     orderAmount,
     commission,
+    rate,
+    goodsId: opts.goodsId || 0,
     level,
-    status: 1, // 直接结算（简化逻辑）
+    status: typeof opts.status === 'number' ? opts.status : 1, // 默认直接结算（简化逻辑）
     createTime: new Date().toISOString(),
     settleTime: new Date().toISOString()
   }
-  
+
   data.commissionRecords.push(record)
-  
+
   // 更新分销员佣金
   const agent = data.agents.find(a => a.agentId === agentId)
   if (agent) {
-    agent.totalCommission += commission
-    agent.availableCommission += commission
+    agent.totalCommission = Math.round((agent.totalCommission + commission) * 100) / 100
+    agent.availableCommission = Math.round((agent.availableCommission + commission) * 100) / 100
     agent.orderCount += 1
   }
-  
+
   saveDistData(data)
   return record
+}
+
+// 按订单商品逐项计算佣金（只计可分销商品，各商品可按自己的推广比例）
+function calcOrderCommission(order) {
+  if (!order || !Array.isArray(order.items)) return 0
+  let total = 0
+  order.items.forEach(it => {
+    if (!isGoodsPromotable(it.id)) return
+    const rate = getGoodsCommissionRate(it.id)
+    total += (it.price || 0) * (it.count || 0) * rate
+  })
+  return Math.floor(total * 100) / 100
+}
+
+// 订单支付成功后结算佣金（幂等：同一分销员 + 同一订单只结算一次）
+function settleOrderCommission(order, agentId, level = 1) {
+  if (!order) return { ok: false, msg: '订单不存在' }
+  if (!agentId) return { ok: false, msg: '缺少分销员' }
+  const agent = getAgentById(agentId)
+  if (!agent) return { ok: false, msg: '分销员不存在' }
+  if (agent.status !== 1) return { ok: false, msg: '分销员未通过审核' }
+
+  const data = getDistData()
+  if (data.commissionRecords.some(r => r.orderId === order.orderNo && r.agentId === agentId)) {
+    return { ok: false, msg: '该订单佣金已结算' }
+  }
+
+  const commission = calcOrderCommission(order)
+  if (commission <= 0) return { ok: false, msg: '该订单无可结算佣金' }
+
+  const orderAmount = order.items.reduce((s, it) => s + (it.price || 0) * (it.count || 0), 0)
+  const record = addCommissionRecord(agentId, order.orderNo, orderAmount, level, {
+    rate: orderAmount > 0 ? commission / orderAmount : 0
+  })
+  return { ok: true, commission, record, msg: '佣金已入账' }
 }
 
 // 获取佣金记录
@@ -332,6 +456,38 @@ function getWithdrawRecords(agentId) {
   return getDistData().withdrawRecords.filter(r => r.agentId === agentId)
 }
 
+// 按 id 取单条提现记录
+function getWithdrawById(recordId) {
+  return getDistData().withdrawRecords.find(r => r.id === recordId) || null
+}
+
+// 审核提现（demo 打款动作）：status 1 已到账 / 2 已拒绝
+// 已到账：冻结金额扣减 → 累计提现增加
+// 已拒绝：冻结金额退回可提现余额
+function auditWithdraw(recordId, status) {
+  const data = getDistData()
+  const record = data.withdrawRecords.find(r => r.id === recordId)
+  if (!record) return { ok: false, msg: '提现记录不存在' }
+  if (record.status !== 0) return { ok: false, msg: '该提现已处理' }
+  if (status !== 1 && status !== 2) return { ok: false, msg: '非法状态' }
+
+  record.status = status
+  record.completeTime = new Date().toISOString()
+
+  const agent = data.agents.find(a => a.agentId === record.agentId)
+  if (agent) {
+    agent.frozenCommission = Math.max(0, Math.round((agent.frozenCommission - record.amount) * 100) / 100)
+    if (status === 1) {
+      agent.withdrawnCommission = Math.round((agent.withdrawnCommission + record.amount) * 100) / 100
+    } else {
+      agent.availableCommission = Math.round((agent.availableCommission + record.amount) * 100) / 100
+    }
+  }
+
+  saveDistData(data)
+  return { ok: true, msg: status === 1 ? '提现已到账' : '提现被拒绝，金额已退回', record }
+}
+
 // 获取下级分销员
 function getSubAgents(agentId) {
   return getDistData().agents.filter(a => a.parentId === agentId)
@@ -340,6 +496,28 @@ function getSubAgents(agentId) {
 // 生成分享链接（含分销员ID）
 function getShareLink(goodsId, agentId) {
   return `/pages/detail/detail?id=${goodsId}&agentId=${agentId}`
+}
+
+// ---------- 推广位（pending agent） ----------
+// 用户从分销员的分享链接进入小程序时，链接上的 agentId 需要一路带到下单：
+// 首页/详情页 onLoad 存下，结算页创建订单时取出写入订单，支付成功后据此结算佣金。
+const PENDING_AGENT_KEY = 'distributionPendingAgent'
+
+// 记录推广位（只接受已通过审核的分销员，避免无效 id 一路带到订单）
+function setPendingAgent(agentId) {
+  if (!agentId) return false
+  const agent = getAgentById(agentId)
+  if (!agent || agent.status !== 1) return false
+  wx.setStorageSync(PENDING_AGENT_KEY, agentId)
+  return true
+}
+
+function getPendingAgent() {
+  return wx.getStorageSync(PENDING_AGENT_KEY) || ''
+}
+
+function clearPendingAgent() {
+  wx.removeStorageSync(PENDING_AGENT_KEY)
 }
 
 // 生成分销海报数据
@@ -372,15 +550,24 @@ module.exports = {
   isAgent,
   applyAgent,
   auditAgent,
+  getApplyRecordsByUserId,
+  getMyDistribution,
   calculateCommission,
   getGoodsCommissionRate,
   isGoodsPromotable,
   addCommissionRecord,
+  calcOrderCommission,
+  settleOrderCommission,
   getCommissionRecords,
   getCommissionStats,
   applyWithdraw,
+  auditWithdraw,
   getWithdrawRecords,
+  getWithdrawById,
   getSubAgents,
   getShareLink,
+  setPendingAgent,
+  getPendingAgent,
+  clearPendingAgent,
   getAgentPosterData
 }

@@ -1,7 +1,9 @@
 const distribution = require('../../utils/distribution')
+const user = require('../../utils/user')
 
 Page({
   data: {
+    isAgent: false,
     agent: null,
     withdrawAmount: '',
     records: [],
@@ -9,7 +11,8 @@ Page({
       { id: 1, name: '工商银行', card: '**** **** **** 1234' },
       { id: 2, name: '支付宝', card: '138****8001' }
     ],
-    selectedBank: null
+    selectedBank: null,
+    minWithdraw: 10
   },
 
   onLoad() {
@@ -21,17 +24,23 @@ Page({
   },
 
   loadData() {
-    const userId = 'user_001'
-    const agent = distribution.getAgentByUserId(userId)
-    if (!agent) return
+    // 当前登录用户的分销员身份
+    const agent = distribution.getAgentByUserId(user.getUserId())
+    const config = distribution.getConfig()
+    if (!agent || agent.status !== 1) {
+      this.setData({ isAgent: false, agent: null, records: [], minWithdraw: config.minWithdraw })
+      return
+    }
 
     const records = distribution.getWithdrawRecords(agent.agentId)
     records.sort((a, b) => new Date(b.applyTime) - new Date(a.applyTime))
 
     this.setData({
+      isAgent: true,
       agent,
       records,
-      selectedBank: this.data.banks[0]
+      minWithdraw: config.minWithdraw,
+      selectedBank: this.data.selectedBank || this.data.banks[0]
     })
   },
 
@@ -41,7 +50,8 @@ Page({
 
   onQuickAmount(e) {
     const amount = e.currentTarget.dataset.amount
-    this.setData({ withdrawAmount: String(amount) })
+    // 「全部提现」时取当前可提现余额
+    this.setData({ withdrawAmount: String(amount === 'all' ? this.data.agent.availableCommission : amount) })
   },
 
   onBankSelect(e) {
@@ -95,6 +105,23 @@ Page({
             wx.showToast({ title: result.msg, icon: 'none' })
           }
         }
+      }
+    })
+  },
+
+  // 演示用：模拟平台打款结果，让提现有终态（处理中 → 已到账 / 已拒绝退回余额）
+  onAuditTap(e) {
+    const { id } = e.currentTarget.dataset
+    const record = this.data.records.find(r => r.id === id)
+    if (!record || record.status !== 0) return
+
+    wx.showActionSheet({
+      itemList: ['模拟打款成功（已到账）', '模拟打款失败（退回余额）'],
+      success: res => {
+        const status = res.tapIndex === 0 ? 1 : 2
+        const result = distribution.auditWithdraw(id, status)
+        wx.showToast({ title: result.msg, icon: result.ok ? 'success' : 'none' })
+        this.loadData()
       }
     })
   }

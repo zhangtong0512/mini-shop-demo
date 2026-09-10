@@ -180,3 +180,35 @@
   color: #ccc;
   margin-top: 12rpx;
 }
+
+/* 当前自提门店标记 */
+.pickup-tag {
+  margin-left: 12rpx;
+  font-size: 20rpx;
+  color: #ff5000;
+  background: #fff1e6;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-weight: normal;
+}
+
+/* 自提按钮 */
+.action-btn.pickup.active .action-icon,
+.action-btn.pickup.active .action-text {
+  color: #ff5000;
+}
+
+/* 定位失败提示 */
+.location-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.relocate-btn {
+  margin-left: 16rpx;
+  color: #ff5000;
+}

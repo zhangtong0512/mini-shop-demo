@@ -30,12 +30,15 @@
         </view>
       </view>
       <view class="store-info">
-        <view class="store-name">{{item.name}}</view>
+        <view class="store-name">
+          {{item.name}}
+          <text class="pickup-tag" wx:if="{{currentStore && currentStore.id === item.id}}">自提门店</text>
+        </view>
         <view class="store-address">
           <text class="address-icon">📍</text>
           <text>{{item.address}}</text>
         </view>
-        <view class="store-distance" wx:if="{{item.distance !== undefined}}">
+        <view class="store-distance" wx:if="{{item.distance > 0}}">
           <text class="distance-icon">📏</text>
           <text>{{item.distanceText}}</text>
         </view>
@@ -52,9 +55,23 @@
           <text class="action-icon">🗺️</text>
           <text class="action-text">导航</text>
         </view>
+        <view
+          class="action-btn pickup {{currentStore && currentStore.id === item.id ? 'active' : ''}}"
+          catchtap="onSetPickupTap"
+          data-id="{{item.id}}"
+        >
+          <text class="action-icon">🏬</text>
+          <text class="action-text">{{currentStore && currentStore.id === item.id ? '已选' : '自提'}}</text>
+        </view>
       </view>
     </view>
   </scroll-view>
+
+  <!-- 定位失败提示 -->
+  <view class="location-tip" wx:if="{{locationDenied}}">
+    <text>未获取到定位，无法按距离排序</text>
+    <text class="relocate-btn" bindtap="onRelocateTap">重新定位</text>
+  </view>
 
   <!-- 空状态 -->
   <view class="empty-state" wx:else>

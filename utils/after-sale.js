@@ -84,9 +84,13 @@ function handleRefund(recordId, action) {
   if (action === 'approve') {
     record.status = 'refunded'
     const order = mock.getOrderById(record.orderId)
-    // 已扣库存的订单退款时回补该商品库存
+    // 已扣库存的订单退款时回补该商品库存：
+    // 自提订单当初扣的是门店分仓库存，必须回补到同一门店，否则会把库存补到总仓
     if (order && order.stockDeducted) {
-      mock.restoreStock([{ id: record.goodsId, skuKey: record.skuKey, count: record.count }])
+      mock.restoreStock(
+        [{ id: record.goodsId, skuKey: record.skuKey, count: record.count }],
+        order.storeId || 0
+      )
     }
   } else {
     record.status = 'rejected'

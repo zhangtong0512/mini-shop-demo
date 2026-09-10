@@ -5,6 +5,30 @@
     <view class="banner-sub">人多更优惠，邀请好友一起买</view>
   </view>
 
+  <!-- 我的拼团 -->
+  <view class="section" wx:if="{{myGroups.length > 0}}">
+    <view class="section-title">我的拼团</view>
+    <view class="my-group-list">
+      <view
+        class="my-group-item"
+        wx:for="{{myGroups}}"
+        wx:key="groupId"
+        bindtap="onMyGroupTap"
+        data-groupid="{{item.groupId}}"
+        data-orderno="{{item.orderNo}}"
+      >
+        <view class="my-thumb">
+          <text>{{item.goodsEmoji}}</text>
+        </view>
+        <view class="my-info">
+          <view class="my-title">{{item.goodsTitle}}</view>
+          <view class="my-meta">{{item.currentCount}}/{{item.requiredCount}} 人 · {{item.joinTime}}</view>
+        </view>
+        <view class="my-status status-{{item.status}}">{{item.statusText}}</view>
+      </view>
+    </view>
+  </view>
+
   <!-- 拼团商品列表 -->
   <view class="section">
     <view class="section-title">拼团商品</view>
@@ -29,6 +53,8 @@
             </view>
             <view class="group-count">已有{{item.groupCount}}个拼团</view>
           </view>
+          <!-- 发起拼团：走拼团订单页下单支付后才真正开团 -->
+          <view class="start-group-btn" catchtap="onStartGroupTap" data-id="{{item.id}}">发起拼团</view>
         </view>
       </view>
     </scroll-view>

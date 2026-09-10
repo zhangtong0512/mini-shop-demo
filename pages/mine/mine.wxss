@@ -260,6 +260,18 @@
   background: #fff4e0;
 }
 
+.menu-ico.distribution {
+  background: #ffece6;
+}
+
+.menu-ico.group {
+  background: #f0e9ff;
+}
+
+.menu-ico.store {
+  background: #e6f2ff;
+}
+
 .notification-badge {
   margin-left: auto;
   background: #ff5000;

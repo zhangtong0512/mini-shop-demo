@@ -945,3 +945,330 @@ test('对比：商品数量不足时分析', () => {
 test('对比：MAX_COMPARE导出', () => {
   assert.strictEqual(compare.MAX_COMPARE, 4)
 })
+
+// ========== 断点打通（分销闭环 / 通知事件化 / 拼团下单 / 门店落地） ==========
+
+// ---------- 通知事件化 ----------
+
+test('通知：订单生命周期自动写入通知', () => {
+  const before = notification.getNotifications().length
+  const order = createSimpleOrder()
+  assert.strictEqual(notification.getNotifications().length, before + 1, '下单应写 1 条通知')
+  mock.payOrder(order.id)
+  mock.shipOrder(order.id)
+  mock.confirmOrder(order.id)
+  const titles = notification.getNotifications('order').map(n => n.title)
+  assert.ok(titles.includes('订单提交成功'))
+  assert.ok(titles.includes('支付成功'))
+  assert.ok(titles.includes('您的订单已发货'))
+  assert.ok(titles.includes('订单已完成'))
+})
+
+test('通知：取消订单写入通知', () => {
+  const order = createSimpleOrder()
+  mock.cancelOrder(order.id)
+  const titles = notification.getNotifications('order').map(n => n.title)
+  assert.ok(titles.includes('订单已取消'))
+})
+
+test('通知：退款流程写入通知', () => {
+  const order = createSimpleOrder()
+  mock.payOrder(order.id)
+  mock.applyRefund(order.id, '不想要了')
+  assert.ok(notification.getNotifications('order').some(n => n.title === '退款申请已提交'))
+  mock.agreeRefund(order.id)
+  assert.ok(notification.getNotifications('order').some(n => n.title === '退款成功'))
+})
+
+test('通知：驳回退款写入通知', () => {
+  const order = createSimpleOrder()
+  mock.payOrder(order.id)
+  mock.applyRefund(order.id, '买错了')
+  mock.rejectRefund(order.id)
+  assert.ok(notification.getNotifications('order').some(n => n.title === '退款申请未通过'))
+})
+
+test('通知：关闭订单通知后不再写入', () => {
+  notification.updateSettings({ orderNotify: false })
+  const before = notification.getNotifications().length
+  const order = createSimpleOrder()
+  mock.payOrder(order.id)
+  assert.strictEqual(notification.getNotifications().length, before, '关闭后不应再写入')
+  assert.strictEqual(notification.isTypeEnabled('order'), false)
+  assert.strictEqual(notification.addNotification('order', 'T', 'C'), null)
+})
+
+// ---------- 分销闭环 ----------
+
+test('分销：申请 → 审核通过 → 成为分销员', () => {
+  const applied = distribution.applyAgent('u_test', '测试用户', '13800000000')
+  assert.strictEqual(applied.ok, true)
+  assert.strictEqual(applied.apply.status, 0)
+  assert.strictEqual(distribution.getMyDistribution('u_test').status, 'pending')
+
+  // 审核中不允许重复提交
+  assert.strictEqual(distribution.applyAgent('u_test', '测试用户', '13800000000').ok, false)
+
+  const audit = distribution.auditAgent(applied.apply.id, 1)
+  assert.strictEqual(audit.ok, true)
+  const mine = distribution.getMyDistribution('u_test')
+  assert.strictEqual(mine.status, 'agent')
+  assert.strictEqual(mine.agent.userId, 'u_test')
+  assert.strictEqual(distribution.isAgent('u_test'), true)
+})
+
+test('分销：申请被拒后可重新申请并显示 rejected', () => {
+  const applied = distribution.applyAgent('u_rej', '被拒用户', '13800000009')
+  distribution.auditAgent(applied.apply.id, 2)
+  assert.strictEqual(distribution.getMyDistribution('u_rej').status, 'rejected')
+  assert.strictEqual(distribution.applyAgent('u_rej', '被拒用户', '13800000009').ok, true)
+})
+
+test('分销：未登录不可申请', () => {
+  const r = distribution.applyAgent('', '匿名', '13800000000')
+  assert.strictEqual(r.ok, false)
+})
+
+test('分销：按商品佣金比例逐项计算', () => {
+  const r = distribution.applyAgent('u_calc', 'C', '13800000010')
+  const agent = distribution.auditAgent(r.apply.id, 1).agent
+  // 1002 的推广比例为 12%
+  const order = mock.createOrder({
+    items: itemsOf(1002),
+    goodsAmount: 499,
+    totalPrice: 499,
+    totalCount: 1
+  })
+  const res = distribution.settleOrderCommission(order, agent.agentId)
+  assert.strictEqual(res.ok, true)
+  assert.strictEqual(res.commission, Math.floor(499 * 0.12 * 100) / 100)
+})
+
+test('分销：同一订单佣金只结算一次（幂等）', () => {
+  const r = distribution.applyAgent('u_idem', 'I', '13800000011')
+  const agent = distribution.auditAgent(r.apply.id, 1).agent
+  const order = mock.createOrder({ items: itemsOf(1002), goodsAmount: 499, totalPrice: 499, totalCount: 1 })
+  assert.strictEqual(distribution.settleOrderCommission(order, agent.agentId).ok, true)
+  const again = distribution.settleOrderCommission(order, agent.agentId)
+  assert.strictEqual(again.ok, false)
+  assert.strictEqual(distribution.getCommissionRecords(agent.agentId).length, 1)
+})
+
+test('分销：不可分销商品无佣金可结', () => {
+  const r = distribution.applyAgent('u_np', 'N', '13800000012')
+  const agent = distribution.auditAgent(r.apply.id, 1).agent
+  // 1009 不在 promoteGoods 里
+  const order = mock.createOrder({ items: itemsOf(1009), goodsAmount: 249, totalPrice: 249, totalCount: 1 })
+  const res = distribution.settleOrderCommission(order, agent.agentId)
+  assert.strictEqual(res.ok, false)
+})
+
+test('分销：推广位下单支付后自动结算佣金并发通知', () => {
+  const r = distribution.applyAgent('u_pend', 'P', '13800000013')
+  const agent = distribution.auditAgent(r.apply.id, 1).agent
+
+  assert.strictEqual(distribution.setPendingAgent(agent.agentId), true)
+  assert.strictEqual(distribution.getPendingAgent(), agent.agentId)
+  // 不存在的分销员不能设为推广位
+  assert.strictEqual(distribution.setPendingAgent('agent_not_exist'), false)
+
+  const order = mock.createOrder({
+    items: itemsOf(1002),
+    goodsAmount: 499,
+    totalPrice: 499,
+    totalCount: 1,
+    agentId: agent.agentId
+  })
+  // 下单还没结算，支付后才结算
+  assert.strictEqual(distribution.getCommissionRecords(agent.agentId).length, 0)
+  mock.payOrder(order.id)
+  assert.strictEqual(distribution.getCommissionRecords(agent.agentId).length, 1)
+  assert.ok(notification.getNotifications('distribution').length > 0, '应发佣金通知')
+  distribution.clearPendingAgent()
+  assert.strictEqual(distribution.getPendingAgent(), '')
+})
+
+test('分销：提现审核到账', () => {
+  const r = distribution.applyAgent('u_w1', 'W1', '13800000014')
+  const agent = distribution.auditAgent(r.apply.id, 1).agent
+  distribution.addCommissionRecord(agent.agentId, 'ORD_W1', 1000, 1) // 佣金 100
+
+  const w = distribution.applyWithdraw(agent.agentId, 50, '工商银行', '6222')
+  assert.strictEqual(w.ok, true)
+  let a = distribution.getAgentById(agent.agentId)
+  assert.strictEqual(a.availableCommission, 50, '申请后转冻结')
+  assert.strictEqual(a.frozenCommission, 50)
+
+  const rec = distribution.getWithdrawRecords(agent.agentId).find(x => x.status === 0)
+  assert.ok(rec)
+  assert.strictEqual(distribution.auditWithdraw(rec.id, 1).ok, true)
+  a = distribution.getAgentById(agent.agentId)
+  assert.strictEqual(a.frozenCommission, 0)
+  assert.strictEqual(a.withdrawnCommission, 50)
+  // 已处理的提现不能重复审核
+  assert.strictEqual(distribution.auditWithdraw(rec.id, 1).ok, false)
+})
+
+test('分销：提现被拒金额退回可提现', () => {
+  const r = distribution.applyAgent('u_w2', 'W2', '13800000015')
+  const agent = distribution.auditAgent(r.apply.id, 1).agent
+  distribution.addCommissionRecord(agent.agentId, 'ORD_W2', 500, 1) // 佣金 50
+
+  distribution.applyWithdraw(agent.agentId, 30, '支付宝', '138')
+  const rec = distribution.getWithdrawRecords(agent.agentId).find(x => x.status === 0)
+  assert.strictEqual(distribution.auditWithdraw(rec.id, 2).ok, true)
+  const a = distribution.getAgentById(agent.agentId)
+  assert.strictEqual(a.frozenCommission, 0)
+  assert.strictEqual(a.availableCommission, 50, '拒绝后金额应回到可提现')
+})
+
+// ---------- 拼团接入下单 ----------
+
+test('拼团：拼团订单落库带拼团字段', () => {
+  const item = itemsOf(1002)[0]
+  item.price = 1599
+  const order = mock.createOrder({
+    items: [item],
+    goodsAmount: 1599,
+    totalPrice: 1599,
+    totalCount: 1,
+    isGroupBuy: true,
+    groupBuyId: 'G_TEST',
+    groupPrice: 1599
+  })
+  assert.strictEqual(order.isGroupBuy, true)
+  assert.strictEqual(order.groupBuyId, 'G_TEST')
+  assert.strictEqual(order.groupPrice, 1599)
+  assert.strictEqual(mock.getOrderById(order.id).isGroupBuy, true)
+})
+
+test('拼团：订单号回写拼团并可反查', () => {
+  const created = groupBuy.createGroup(1002, 'u_g1', '团长', '')
+  assert.strictEqual(created.ok, true)
+  const gid = created.group.id
+
+  const attached = groupBuy.attachOrder(gid, 'D20240101000000')
+  assert.strictEqual(attached.ok, true)
+  assert.strictEqual(groupBuy.getGroupById(gid).orderNo, 'D20240101000000')
+  assert.strictEqual(groupBuy.getGroupByOrderNo('D20240101000000').id, gid)
+  // 不存在的拼团
+  assert.strictEqual(groupBuy.attachOrder('G_NONE', 'D1').ok, false)
+})
+
+test('拼团：满员成团并发成团通知', () => {
+  const created = groupBuy.createGroup(1002, 'u_owner', '团长', '')
+  const joined = groupBuy.joinGroup(created.group.id, 'u_join', '团友', '')
+  assert.strictEqual(joined.ok, true)
+  assert.strictEqual(joined.success, true)
+  assert.strictEqual(groupBuy.getGroupById(created.group.id).status, 1)
+  assert.ok(notification.getNotifications('group').some(n => n.title === '拼团成功'))
+})
+
+test('拼团：过期未成团判定失败并发通知', () => {
+  const created = groupBuy.createGroup(1002, 'u_exp', '过期团长', '')
+  const data = groupBuy.getGroupBuyData()
+  data.groups.find(g => g.id === created.group.id).expireTime = new Date(Date.now() - 1000).toISOString()
+  groupBuy.saveGroupBuyData(data)
+
+  const failed = groupBuy.checkGroupStatus(created.group.id)
+  assert.strictEqual(failed.length, 1)
+  assert.strictEqual(groupBuy.getGroupById(created.group.id).status, 2)
+  assert.ok(notification.getNotifications('group').some(n => n.title === '拼团失败'))
+})
+
+test('拼团：我的拼团详情含商品与状态文案', () => {
+  const created = groupBuy.createGroup(1002, 'u_mine', '我的团', '')
+  const list = groupBuy.getMyGroupsDetail(mock)
+  const mine = list.find(m => m.groupId === created.group.id)
+  assert.ok(mine)
+  assert.strictEqual(mine.goodsId, 1002)
+  assert.strictEqual(mine.statusText, '拼团中')
+  assert.ok(mine.goodsTitle.length > 0)
+})
+
+// ---------- 门店落地 ----------
+
+test('门店：分仓库存校验与扣减回补', () => {
+  const capacity = storeModule.getStoreStock(1, 1002)
+  assert.ok(capacity >= 5, '容量应随门店+商品确定性分配')
+  const items = [{ id: 1002, title: '测试商品', count: capacity }]
+  assert.strictEqual(storeModule.checkStoreStock(1, items).ok, true)
+
+  storeModule.deductStoreStock(1, items)
+  assert.strictEqual(storeModule.getStoreStock(1, 1002), 0)
+  assert.strictEqual(storeModule.checkStoreStock(1, [{ id: 1002, count: 1 }]).ok, false)
+
+  storeModule.restoreStoreStock(1, items)
+  assert.strictEqual(storeModule.getStoreStock(1, 1002), capacity)
+})
+
+test('门店：未选门店时校验失败', () => {
+  assert.strictEqual(storeModule.checkStoreStock(0, [{ id: 1002, count: 1 }]).ok, false)
+})
+
+test('门店：自提订单扣门店分仓库存，总仓不变', () => {
+  const totalBefore = mock.getGoodsById(1002).stock
+  const storeBefore = storeModule.getStoreStock(1, 1002)
+
+  const order = mock.createOrder({
+    items: itemsOf(1002),
+    goodsAmount: 499,
+    totalPrice: 499,
+    totalCount: 1,
+    deliveryMode: 'selfPickup',
+    storeId: 1,
+    storeName: '精选商城·上海旗舰店'
+  })
+  assert.ok(order)
+  assert.strictEqual(order.deliveryMode, 'selfPickup')
+  assert.strictEqual(order.storeId, 1)
+  assert.strictEqual(order.storeName, '精选商城·上海旗舰店')
+
+  mock.payOrder(order.id)
+  assert.strictEqual(storeModule.getStoreStock(1, 1002), storeBefore - 1, '扣门店分仓')
+  assert.strictEqual(mock.getGoodsById(1002).stock, totalBefore, '总仓不动')
+})
+
+test('门店：自提订单发货生成提货码并通知可提货', () => {
+  const order = mock.createOrder({
+    items: itemsOf(1002),
+    goodsAmount: 499,
+    totalPrice: 499,
+    totalCount: 1,
+    deliveryMode: 'selfPickup',
+    storeId: 2,
+    storeName: '精选商城·北京国贸店'
+  })
+  mock.payOrder(order.id)
+  mock.shipOrder(order.id)
+
+  const shipped = mock.getOrderById(order.id)
+  assert.strictEqual(shipped.status, 3)
+  assert.ok(shipped.pickupCode, '自提订单应有提货码')
+  assert.ok(notification.getNotifications('order').some(n => n.title === '备货完成，可提货'))
+})
+
+test('门店：快递订单不生成提货码', () => {
+  const order = createSimpleOrder()
+  mock.payOrder(order.id)
+  mock.shipOrder(order.id)
+  const shipped = mock.getOrderById(order.id)
+  assert.ok(!shipped.pickupCode)
+  assert.ok(notification.getNotifications('order').some(n => n.title === '您的订单已发货'))
+})
+
+test('门店：自提取消订单回补门店库存', () => {
+  const storeBefore = storeModule.getStoreStock(3, 1002)
+  const order = mock.createOrder({
+    items: itemsOf(1002),
+    goodsAmount: 499,
+    totalPrice: 499,
+    totalCount: 1,
+    deliveryMode: 'selfPickup',
+    storeId: 3,
+    storeName: '精选商城·广州天河店'
+  })
+  // 未支付即取消：门店库存本来就没扣，应保持不变
+  mock.cancelOrder(order.id)
+  assert.strictEqual(storeModule.getStoreStock(3, 1002), storeBefore)
+})

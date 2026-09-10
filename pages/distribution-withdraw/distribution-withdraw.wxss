@@ -227,3 +227,45 @@
 .status-2 {
   color: #ff3b30;
 }
+
+/* 非分销员空态 */
+.empty-wrap {
+  padding: 160rpx 60rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 96rpx;
+}
+
+.empty-title {
+  margin-top: 24rpx;
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.empty-desc {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.6;
+}
+
+/* 提现记录空态 */
+.empty {
+  padding: 60rpx 0;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 演示提示 */
+.audit-tip {
+  padding: 0 24rpx 24rpx;
+  font-size: 22rpx;
+  color: #bbb;
+}

@@ -7,6 +7,7 @@ const coupon = require('../../utils/coupon')
 const points = require('../../utils/points')
 const member = require('../../utils/member')
 const store = require('../../utils/store')
+const distribution = require('../../utils/distribution')
 
 Page({
   data: {
@@ -180,6 +181,8 @@ Page({
       events: {
         selectStore: data => {
           this.setData({ currentStore: data.store })
+          // 门店变了要重新算：自提免运费 + 门店分仓库存提示
+          this.refresh()
         }
       }
     })
@@ -199,7 +202,11 @@ Page({
       wx.showToast({ title: '请选择自提门店', icon: 'none' })
       return
     }
-    const stockRes = mock.checkStock(this.data.items)
+    // 自提订单校验门店分仓库存，快递订单校验总仓库存
+    const storeId = this.data.deliveryMode === 'selfPickup' && this.data.currentStore
+      ? this.data.currentStore.id
+      : 0
+    const stockRes = mock.checkStock(this.data.items, storeId)
     if (!stockRes.ok) {
       wx.showToast({ title: stockRes.msg, icon: 'none' })
       return
@@ -223,7 +230,10 @@ Page({
         totalPrice: this.data.totalPrice,
         totalCount: this.data.totalCount,
         deliveryMode: this.data.deliveryMode,
-        storeId: this.data.deliveryMode === 'selfPickup' ? this.data.currentStore.id : 0
+        storeId: this.data.deliveryMode === 'selfPickup' ? this.data.currentStore.id : 0,
+        storeName: this.data.deliveryMode === 'selfPickup' ? this.data.currentStore.name : '',
+        // 分销推广位：分销员分享链接带来的订单，支付成功后自动结算佣金
+        agentId: distribution.getPendingAgent()
       })
       if (!order) {
         wx.hideLoading()

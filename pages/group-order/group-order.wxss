@@ -239,3 +239,28 @@
   align-items: center;
   justify-content: center;
 }
+
+/* 规格文案 */
+.goods-sku {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 发起拼团角标配色与「参与拼团」区分 */
+.group-tag.new {
+  background: #fff1e6;
+  color: #ff6a00;
+}
+
+/* 支付提示 */
+.pay-tip {
+  margin: 16rpx 24rpx 0;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.submit-btn.disabled {
+  opacity: 0.6;
+}

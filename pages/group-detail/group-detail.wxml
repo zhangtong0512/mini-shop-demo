@@ -51,17 +51,26 @@
 
   <!-- 操作按钮 -->
   <view class="action-bar" wx:if="{{group.status === 0}}">
-    <view class="btn-share" bindtap="onShareAppMessage">
-      <text>分享给好友</text>
-    </view>
-    <view class="btn-join {{canJoin ? '' : 'disabled'}}" bindtap="onJoinTap">
+    <button class="btn-share" open-type="share" hover-class="hv">
+      <text>邀请好友参团</text>
+    </button>
+    <view class="btn-join {{canJoin ? '' : 'disabled'}}" hover-class="hv" bindtap="onJoinTap">
       <text>{{isOwner ? '等待好友加入' : (canJoin ? '立即参团' : '无法参团')}}</text>
     </view>
   </view>
 
   <view class="action-bar" wx:elif="{{group.status === 1}}">
-    <view class="btn-buy" bindtap="onBuyNow">
-      <text>去购买</text>
+    <button class="btn-share" open-type="share" hover-class="hv">
+      <text>分享给好友</text>
+    </button>
+    <view class="btn-buy" hover-class="hv" bindtap="onBuyNow">
+      <text>查看订单</text>
+    </view>
+  </view>
+
+  <view class="action-bar" wx:else>
+    <view class="btn-buy" hover-class="hv" bindtap="onBackToGroup">
+      <text>返回拼团专区</text>
     </view>
   </view>
 </view>

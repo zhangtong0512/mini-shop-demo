@@ -203,3 +203,17 @@
   background: linear-gradient(135deg, #4CAF50, #66BB6A);
   color: #fff;
 }
+
+/* 「邀请好友参团」改为原生 button（open-type="share"）后需要重置 button 默认样式 */
+button.btn-share {
+  padding: 0;
+  line-height: normal;
+  font-size: 30rpx;
+  background: #fff;
+  color: #ff5000;
+  border: 2rpx solid #ff5000;
+}
+
+button.btn-share::after {
+  border: none;
+}

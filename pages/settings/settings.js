@@ -7,6 +7,14 @@ const coupon = require('../../utils/coupon')
 const review = require('../../utils/review')
 const points = require('../../utils/points')
 const afterSale = require('../../utils/after-sale')
+const member = require('../../utils/member')
+const notification = require('../../utils/notification')
+const store = require('../../utils/store')
+const groupBuy = require('../../utils/group-buy')
+const live = require('../../utils/live')
+const ar = require('../../utils/ar')
+const distribution = require('../../utils/distribution')
+const compare = require('../../utils/compare')
 
 Page({
   data: {
@@ -17,9 +25,16 @@ Page({
     this.setData({ notify: settings.getSettings().notify })
   },
 
+  // 通知开关同时写两处：settings 保留用户偏好，notification 决定哪些通知真的会写进来
   onNotifyChange(e) {
-    settings.setNotify(e.detail.value)
-    wx.showToast({ title: e.detail.value ? '已开启通知' : '已关闭通知', icon: 'none' })
+    const on = e.detail.value
+    settings.setNotify(on)
+    notification.updateSettings({
+      orderNotify: on,
+      systemNotify: on,
+      promotionNotify: on
+    })
+    wx.showToast({ title: on ? '已开启通知' : '已关闭通知', icon: 'none' })
   },
 
   onClearSearch() {
@@ -43,6 +58,7 @@ Page({
       success: res => {
         if (res.confirm) {
           wx.clearStorageSync()
+          // 与 app.js onLaunch 的初始化保持一致，新增模块（会员/通知/门店/拼团/直播/AR/分销/对比）都要补种
           cart.init()
           address.ensureSeed()
           mock.ensureSeedOrders()
@@ -50,6 +66,14 @@ Page({
           review.ensureSeed()
           points.ensureSeed()
           afterSale.ensureSeed()
+          member.ensureSeed()
+          notification.ensureSeed()
+          store.ensureSeed()
+          groupBuy.ensureSeed()
+          live.ensureSeed()
+          ar.ensureSeed()
+          distribution.ensureSeed()
+          compare.ensureSeed()
           this.setData({ notify: settings.getSettings().notify })
           wx.showToast({ title: '已重置', icon: 'success' })
         }

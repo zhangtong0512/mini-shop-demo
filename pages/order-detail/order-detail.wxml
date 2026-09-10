@@ -17,16 +17,30 @@
     <view class="lg-arrow">›</view>
   </view>
 
-  <!-- 收货地址 -->
+  <!-- 收货地址 / 自提门店 -->
   <view class="card addr-card" wx:if="{{order.address}}">
-    <view class="addr-ico">📍</view>
+    <view class="addr-ico">{{order.deliveryMode === 'selfPickup' ? '🏬' : '📍'}}</view>
     <view class="addr-info">
       <view class="addr-line">
         <text class="addr-name">{{order.address.name}}</text>
         <text class="addr-phone">{{order.address.phone}}</text>
+        <text class="pickup-tag" wx:if="{{order.deliveryMode === 'selfPickup'}}">到店自提</text>
       </view>
       <view class="addr-detail">{{order.address.regionText}} {{order.address.detail}}</view>
+      <view class="pickup-code" wx:if="{{order.deliveryMode === 'selfPickup' && order.pickupCode}}">
+        提货码 <text class="code-value">{{order.pickupCode}}</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 拼团信息 -->
+  <view class="card group-card" wx:if="{{order.isGroupBuy}}">
+    <view class="group-ico">👥</view>
+    <view class="group-info">
+      <view class="group-title">拼团订单</view>
+      <view class="group-sub">拼团价 ¥{{order.groupPrice}} · 以拼团优惠价成交</view>
+    </view>
+    <view class="group-arrow" hover-class="hv" bindtap="onGroupTap">查看拼团 ›</view>
   </view>
 
   <!-- 商品清单 -->

@@ -22,9 +22,31 @@ function logout() {
   wx.removeStorageSync(USER_KEY)
 }
 
+// 当前用户 id（未登录返回 ''）。分销、拼团等需要归属到具体用户的功能统一走这里，
+// 避免各页面各自硬编码 'user_001' 之类的假 id 导致数据串不起来。
+function getUserId() {
+  const u = getUserInfo()
+  return (u && u.id) ? u.id : ''
+}
+
+// 当前用户昵称（未登录返回默认昵称），用于拼团成员、评价等展示
+function getDisplayName() {
+  const u = getUserInfo()
+  return (u && u.nickname) ? u.nickname : '微信用户'
+}
+
+// 当前用户头像（未登录返回空串）
+function getAvatar() {
+  const u = getUserInfo()
+  return (u && u.avatar) ? u.avatar : ''
+}
+
 module.exports = {
   getUserInfo,
   saveUserInfo,
   isLoggedIn,
-  logout
+  logout,
+  getUserId,
+  getDisplayName,
+  getAvatar
 }

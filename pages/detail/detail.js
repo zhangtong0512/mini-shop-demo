@@ -6,6 +6,7 @@ const groupBuy = require('../../utils/group-buy')
 const user = require('../../utils/user')
 const ar = require('../../utils/ar')
 const compare = require('../../utils/compare')
+const distribution = require('../../utils/distribution')
 
 Page({
   data: {
@@ -33,6 +34,9 @@ Page({
   },
 
   onLoad(options) {
+    // 分销推广位：分销员的分享链接带 agentId，记住它，下单支付后据此结算佣金
+    if (options && options.agentId) distribution.setPendingAgent(options.agentId)
+
     const goods = mock.getGoodsById(options.id)
     const rating = review.getGoodsRating(options.id)
     const round = Math.round(rating.avg)
@@ -258,9 +262,10 @@ Page({
     wx.showToast({ title: now ? '已收藏' : '已取消收藏', icon: 'none' })
   },
 
+  // 发起拼团：先走拼团订单页下单支付，付款成功才真正开团
+  // （旧实现直接 createGroup，会出现「没下单就成团」的假链路）
   onCreateGroup() {
-    const userInfo = user.getUserInfo()
-    if (!userInfo) {
+    if (!user.isLoggedIn()) {
       wx.showModal({
         title: '提示',
         content: '请先登录',
@@ -278,21 +283,9 @@ Page({
       return
     }
 
-    const result = groupBuy.createGroup(
-      this.data.goods.id,
-      userInfo.id,
-      userInfo.nickname,
-      userInfo.avatar
-    )
-
-    if (result.ok) {
-      wx.showToast({ title: '拼团已创建', icon: 'success' })
-      setTimeout(() => {
-        wx.navigateTo({ url: '/pages/group-detail/group-detail?id=' + result.group.id })
-      }, 1500)
-    } else {
-      wx.showToast({ title: result.msg, icon: 'none' })
-    }
+    wx.navigateTo({
+      url: '/pages/group-order/group-order?goodsId=' + this.data.goods.id + '&isGroup=false'
+    })
   },
 
   onJoinableGroupTap(e) {

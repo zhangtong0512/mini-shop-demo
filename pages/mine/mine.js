@@ -6,6 +6,9 @@ const coupon = require('../../utils/coupon')
 const points = require('../../utils/points')
 const member = require('../../utils/member')
 const notification = require('../../utils/notification')
+const distribution = require('../../utils/distribution')
+const groupBuy = require('../../utils/group-buy')
+const store = require('../../utils/store')
 
 Page({
   data: {
@@ -19,7 +22,10 @@ Page({
     cartCount: 0,
     pointsBalance: 0,
     memberInfo: null,
-    unreadCount: 0
+    unreadCount: 0,
+    distributionText: '',
+    groupCount: 0,
+    storeText: ''
   },
 
   onShow() {
@@ -29,6 +35,9 @@ Page({
     const now = Date.now()
     const memberInfo = member.getMemberInfo()
     const unreadCount = notification.getUnreadCount()
+    // 分销中心状态摘要：已是分销员显示可提现，申请中显示审核中
+    const mine = distribution.getMyDistribution(user.getUserId())
+    const currentStore = store.getCurrentStore()
     this.setData({
       isLoggedIn: !!u,
       user: u,
@@ -42,7 +51,14 @@ Page({
       cartCount: cart.getCart().reduce((sum, i) => sum + i.count, 0),
       pointsBalance: points.getBalance(),
       memberInfo,
-      unreadCount
+      unreadCount,
+      distributionText:
+        mine.status === 'agent' ? '可提现 ¥' + mine.agent.availableCommission
+          : mine.status === 'pending' ? '审核中'
+            : mine.status === 'rejected' ? '未通过'
+              : '赚佣金',
+      groupCount: groupBuy.getMyGroups().length,
+      storeText: currentStore ? currentStore.name : '选择门店'
     })
     cart.updateBadge()
   },
@@ -87,6 +103,21 @@ Page({
 
   onNotificationTap() {
     wx.navigateTo({ url: '/pages/notification/notification' })
+  },
+
+  // 分销中心（申请 / 佣金 / 提现 / 团队）
+  onDistributionTap() {
+    wx.navigateTo({ url: '/pages/distribution/distribution' })
+  },
+
+  // 我的拼团（拼团专区，含「我的拼团」列表）
+  onGroupTap() {
+    wx.navigateTo({ url: '/pages/group-buy/group-buy' })
+  },
+
+  // 门店列表（可设为自提门店）
+  onStoreTap() {
+    wx.navigateTo({ url: '/pages/store/store' })
   },
 
   onHelpTap() {

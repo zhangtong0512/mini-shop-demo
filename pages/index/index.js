@@ -1,5 +1,6 @@
 const mock = require('../../utils/mock')
 const live = require('../../utils/live')
+const distribution = require('../../utils/distribution')
 
 Page({
   data: {
@@ -20,7 +21,11 @@ Page({
     livingLiveId: 0
   },
 
-  onLoad() {
+  onLoad(options) {
+    // 分销推广位：从分销员分享链接进来时记住 agentId，下单支付后据此结算佣金
+    if (options && options.agentId && distribution.setPendingAgent(options.agentId)) {
+      wx.showToast({ title: '已进入好友推荐', icon: 'none' })
+    }
     this.loadData()
   },
 

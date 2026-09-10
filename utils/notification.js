@@ -25,6 +25,16 @@ const TYPE_CONFIG = {
   distribution: { icon: '💰', color: '#FF5722' }
 }
 
+// 类型 → 设置开关的映射：订单/拼团/分销都归「订单通知」，
+// 这样设置页的三个开关能真正决定哪些通知会写进来
+const TYPE_SETTING_KEY = {
+  order: 'orderNotify',
+  group: 'orderNotify',
+  distribution: 'orderNotify',
+  system: 'systemNotify',
+  promotion: 'promotionNotify'
+}
+
 function pad(n) {
   return n < 10 ? '0' + n : '' + n
 }
@@ -77,8 +87,17 @@ function ensureSeed() {
   saveNotificationData(data)
 }
 
-// 添加通知
+// 某类型通知是否被用户开启（未配置的类型默认开启）
+function isTypeEnabled(type) {
+  const key = TYPE_SETTING_KEY[type]
+  if (!key) return true
+  const settings = getNotificationData().settings || {}
+  return settings[key] !== false
+}
+
+// 添加通知（受设置开关约束：该类型被关闭时直接丢弃，不写库）
 function addNotification(type, title, content, extra = {}) {
+  if (!isTypeEnabled(type)) return null
   const data = getNotificationData()
   const config = TYPE_CONFIG[type] || TYPE_CONFIG.system
   const notification = {
@@ -180,6 +199,16 @@ function addPromotionNotification(title, content) {
   return addNotification('promotion', title, content)
 }
 
+// 添加拼团通知（便捷方法）
+function addGroupNotification(title, content, extra = {}) {
+  return addNotification('group', title, content, extra)
+}
+
+// 添加分销/佣金通知（便捷方法）
+function addDistributionNotification(title, content, extra = {}) {
+  return addNotification('distribution', title, content, extra)
+}
+
 module.exports = {
   getNotificationData,
   saveNotificationData,
@@ -193,8 +222,12 @@ module.exports = {
   clearAll,
   getSettings,
   updateSettings,
+  isTypeEnabled,
   addOrderNotification,
   addSystemNotification,
   addPromotionNotification,
-  TYPE_CONFIG
+  addGroupNotification,
+  addDistributionNotification,
+  TYPE_CONFIG,
+  TYPE_SETTING_KEY
 }

@@ -23,6 +23,7 @@
     </view>
     <view class="goods-info">
       <text class="goods-title">{{goods.title}}</text>
+      <text class="goods-sku" wx:if="{{skuText}}">{{skuText}}</text>
       <view class="goods-price-row">
         <text class="goods-price">¥{{groupConfig.groupPrice}}</text>
         <text class="goods-original">¥{{groupConfig.originalPrice}}</text>
@@ -30,9 +31,17 @@
     </view>
   </view>
 
+  <!-- 拼团信息：参与他人拼团时展示团长与进度 -->
   <view class="group-info-card" wx:if="{{isGroup}}">
-    <view class="group-tag">拼团购买</view>
-    <view class="group-tip">参与拼团，享受拼团优惠价</view>
+    <view class="group-tag">参与拼团</view>
+    <view class="group-tip" wx:if="{{group}}">
+      {{group.ownerNickname}} 发起的 {{group.requiredCount}} 人团，还差 {{group.requiredCount - group.currentCount}} 人成团
+    </view>
+    <view class="group-tip" wx:else>拼团信息加载中</view>
+  </view>
+  <view class="group-info-card" wx:else>
+    <view class="group-tag new">发起拼团</view>
+    <view class="group-tip">付款后即开团，分享给好友即可 {{groupConfig.groupSize}} 人成团</view>
   </view>
 
   <view class="count-card">
@@ -47,11 +56,11 @@
   <view class="summary-card">
     <view class="summary-row">
       <text class="summary-label">商品金额</text>
-      <text class="summary-value">¥{{totalPrice}}</text>
+      <text class="summary-value">¥{{goodsAmount}}</text>
     </view>
     <view class="summary-row">
       <text class="summary-label">运费</text>
-      <text class="summary-value">免运费</text>
+      <text class="summary-value">{{freight > 0 ? '¥' + freight : '免运费'}}</text>
     </view>
     <view class="summary-row total">
       <text class="summary-label">合计</text>
@@ -59,11 +68,17 @@
     </view>
   </view>
 
+  <view class="pay-tip">提交后需完成支付，付款成功才计入拼团</view>
+
   <view class="bottom-bar">
     <view class="bottom-price">
       <text class="bottom-label">实付：</text>
       <text class="bottom-amount">¥{{totalPrice}}</text>
     </view>
-    <view class="submit-btn" bindtap="onSubmitOrder">提交订单</view>
+    <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmitOrder">
+      {{submitting ? '提交中…' : '提交订单'}}
+    </view>
   </view>
+
+  <pay-sheet id="paySheet" />
 </view>

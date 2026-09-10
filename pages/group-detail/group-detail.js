@@ -22,6 +22,9 @@ Page({
   },
 
   loadData() {
+    // 进页面先把过期未成团的团判定为失败（并发失败通知）
+    groupBuy.checkGroupStatus(this.groupId)
+
     const group = groupBuy.getGroupById(this.groupId)
     if (!group) {
       wx.showToast({ title: '拼团不存在', icon: 'none' })
@@ -30,8 +33,7 @@ Page({
     }
 
     const goods = mock.getGoodsById(group.goodsId)
-    const userInfo = user.getUserInfo()
-    const userId = userInfo ? userInfo.id : ''
+    const userId = user.getUserId()
     const isOwner = group.ownerId === userId
     const canJoin = !isOwner && 
       group.status === 0 && 
@@ -74,9 +76,12 @@ Page({
     this.stopCountdown()
   },
 
+  // 立即参团：走拼团订单页「下单 + 支付」，付款成功才计入拼团
   onJoinTap() {
-    const userInfo = user.getUserInfo()
-    if (!userInfo) {
+    const { group, goods } = this.data
+    if (!group || !goods) return
+
+    if (!user.isLoggedIn()) {
       wx.showModal({
         title: '提示',
         content: '请先登录',
@@ -88,25 +93,19 @@ Page({
       })
       return
     }
-
-    this.setData({ loading: true })
-    const result = groupBuy.joinGroup(
-      this.groupId,
-      userInfo.id,
-      userInfo.nickname,
-      userInfo.avatar
-    )
-    this.setData({ loading: false })
-
-    if (result.ok) {
-      wx.showToast({ 
-        title: result.success ? '拼团成功！' : '已参与拼团', 
-        icon: 'success' 
-      })
-      this.loadData()
-    } else {
-      wx.showToast({ title: result.msg, icon: 'none' })
+    if (!this.data.canJoin) {
+      wx.showToast({ title: this.data.isOwner ? '您已开团，等待好友加入' : '当前不可参团', icon: 'none' })
+      return
     }
+
+    wx.navigateTo({
+      url: '/pages/group-order/group-order?goodsId=' + goods.id + '&groupId=' + group.id + '&isGroup=true'
+    })
+  },
+
+  // 分享给好友（分享按钮用 open-type="share" 时不会触发本方法，这里用于「分享」浮层入口）
+  onShareTap() {
+    wx.showToast({ title: '请点右上角「···」或下方分享按钮', icon: 'none' })
   },
 
   onShareAppMessage() {
@@ -117,12 +116,30 @@ Page({
     }
   },
 
+  // 拼团成功后查看自己的订单（订单号在下单支付时回写到拼团上）
   onBuyNow() {
-    const { goods, group } = this.data
-    if (!goods) return
-    
-    wx.navigateTo({
-      url: `/pages/checkout/checkout?from=buynow&id=${goods.id}&count=1&sku=&groupPrice=${group.groupPrice}`
+    const { group } = this.data
+    if (!group) return
+    const order = mock.getOrders().find(o => o.orderNo === group.orderNo)
+    if (order) {
+      wx.navigateTo({ url: '/pages/order-detail/order-detail?id=' + order.id })
+      return
+    }
+    // 种子拼团 / 非本人拼团没有关联订单，引导去拼团专区自己开团
+    wx.showModal({
+      title: '查看订单',
+      content: '未找到该拼团关联的订单，需要自己开一个团吗？',
+      confirmText: '去开团',
+      success: r => {
+        if (r.confirm) {
+          wx.redirectTo({ url: '/pages/group-order/group-order?goodsId=' + group.goodsId + '&isGroup=false' })
+        }
+      }
     })
+  },
+
+  // 拼团失败 → 回拼团专区
+  onBackToGroup() {
+    wx.redirectTo({ url: '/pages/group-buy/group-buy' })
   }
 })

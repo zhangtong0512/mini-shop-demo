@@ -88,8 +88,15 @@ const DEFAULT = {
   deliveryMode: 'express' // express快递 / selfPickup自提
 }
 
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+// 读取门店数据：storage 缺失或字段不全时用 DEFAULT 补齐（深拷贝，避免污染模块级 DEFAULT）
 function getStoreData() {
-  return Object.assign({}, DEFAULT, wx.getStorageSync(STORE_KEY) || {})
+  const stored = wx.getStorageSync(STORE_KEY)
+  if (!stored) return clone(DEFAULT)
+  return Object.assign(clone(DEFAULT), stored)
 }
 
 function saveStoreData(data) {
@@ -99,7 +106,7 @@ function saveStoreData(data) {
 // 首次启动预置门店数据
 function ensureSeed() {
   if (wx.getStorageSync(STORE_KEY)) return
-  saveStoreData(DEFAULT)
+  saveStoreData(clone(DEFAULT))
 }
 
 // 获取门店列表
@@ -235,6 +242,71 @@ function getUserCurrentLocation() {
   })
 }
 
+// ---------- 分仓库存 ----------
+// 门店自提走门店自己的库存（storeStock[storeId][goodsId]），与总仓 goods.stock 相互独立：
+// 快递订单扣总仓，自提订单扣门店仓。容量按「门店 + 商品」确定性分配，无需依赖商品模块，
+// 避免 store ←→ mock 循环依赖。
+
+// 门店对某商品的初始容量（确定性：同一门店同一商品永远相同，范围 5~20）
+function getStoreStockCapacity(storeId, goodsId) {
+  const seed = Math.abs(Number(storeId) * 31 + Number(goodsId) * 17)
+  return 5 + (seed % 16)
+}
+
+// 取门店库存表（缺失时按容量惰性初始化）
+function getStoreStockMap() {
+  const data = getStoreData()
+  return data.storeStock || {}
+}
+
+function getStoreStock(storeId, goodsId) {
+  const map = getStoreStockMap()
+  const bucket = map[storeId]
+  if (!bucket || typeof bucket[goodsId] !== 'number') {
+    return getStoreStockCapacity(storeId, goodsId)
+  }
+  return bucket[goodsId]
+}
+
+// 写入门店库存
+function setStoreStock(storeId, goodsId, stock) {
+  const data = getStoreData()
+  if (!data.storeStock) data.storeStock = {}
+  if (!data.storeStock[storeId]) data.storeStock[storeId] = {}
+  data.storeStock[storeId][goodsId] = Math.max(0, stock)
+  saveStoreData(data)
+}
+
+// 校验门店库存，返回 { ok, msg }
+function checkStoreStock(storeId, items) {
+  if (!storeId) return { ok: false, msg: '请先选择自提门店' }
+  for (const it of items || []) {
+    const stock = getStoreStock(storeId, it.id)
+    if (stock < (it.count || 0)) {
+      return { ok: false, msg: (it.title || '商品') + ' 该门店库存不足（剩余 ' + stock + ' 件）' }
+    }
+  }
+  return { ok: true }
+}
+
+// 扣减门店库存
+function deductStoreStock(storeId, items) {
+  if (!storeId) return
+  ;(items || []).forEach(it => {
+    setStoreStock(storeId, it.id, getStoreStock(storeId, it.id) - (it.count || 0))
+  })
+}
+
+// 回补门店库存
+function restoreStoreStock(storeId, items) {
+  if (!storeId) return
+  ;(items || []).forEach(it => {
+    const capacity = getStoreStockCapacity(storeId, it.id)
+    const next = getStoreStock(storeId, it.id) + (it.count || 0)
+    setStoreStock(storeId, it.id, Math.min(capacity, next))
+  })
+}
+
 module.exports = {
   getStoreData,
   saveStoreData,
@@ -254,5 +326,11 @@ module.exports = {
   getOpenStores,
   searchStores,
   formatDistance,
-  getUserCurrentLocation
+  getUserCurrentLocation,
+  getStoreStockCapacity,
+  getStoreStock,
+  setStoreStock,
+  checkStoreStock,
+  deductStoreStock,
+  restoreStoreStock
 }

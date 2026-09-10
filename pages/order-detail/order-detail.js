@@ -3,6 +3,7 @@ const cart = require('../../utils/cart')
 const pay = require('../../utils/pay')
 const review = require('../../utils/review')
 const afterSale = require('../../utils/after-sale')
+const groupBuy = require('../../utils/group-buy')
 
 const STATUS_META = {
   1: { icon: '💰', title: '等待付款', sub: '订单提交成功，请尽快完成支付' },
@@ -241,6 +242,18 @@ Page({
   // 查看物流（待收货 / 已完成）
   onLogistics() {
     wx.navigateTo({ url: '/pages/logistics/logistics?id=' + this.id })
+  },
+
+  // 拼团订单 → 跳到关联拼团看进度
+  onGroupTap() {
+    const order = this.data.order
+    if (!order) return
+    const group = groupBuy.getGroupById(order.groupBuyId) || groupBuy.getGroupByOrderNo(order.orderNo)
+    if (group) {
+      wx.navigateTo({ url: '/pages/group-detail/group-detail?id=' + group.id })
+    } else {
+      wx.showToast({ title: '未找到关联拼团', icon: 'none' })
+    }
   },
 
   onDelete() {

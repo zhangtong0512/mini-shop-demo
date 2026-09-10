@@ -2,6 +2,8 @@
   <!-- 头部统计 -->
   <view class="header">
     <view class="header-bg"></view>
+
+    <!-- 已是分销员 -->
     <view class="header-content" wx:if="{{isAgent}}">
       <view class="agent-info">
         <view class="agent-avatar">👤</view>
@@ -29,17 +31,42 @@
         </view>
       </view>
       <view class="action-row">
-        <view class="withdraw-btn" bindtap="onWithdrawTap">申请提现</view>
-        <view class="share-btn" bindtap="onShareTap">分享赚钱</view>
+        <view class="withdraw-btn" hover-class="hv" bindtap="onWithdrawTap">申请提现</view>
+        <view class="share-btn" hover-class="hv" bindtap="onShareTap">分享赚钱</view>
       </view>
     </view>
-    
-    <!-- 未申请分销员 -->
+
+    <!-- 未登录 -->
+    <view class="header-content not-agent" wx:elif="{{!loggedIn}}">
+      <view class="not-agent-icon">💰</view>
+      <view class="not-agent-title">成为分销员</view>
+      <view class="not-agent-desc">登录后即可申请，分享商品赚取佣金</view>
+      <view class="apply-btn" hover-class="hv" bindtap="onLoginTap">立即登录</view>
+    </view>
+
+    <!-- 审核中 -->
+    <view class="header-content not-agent" wx:elif="{{status === 'pending'}}">
+      <view class="not-agent-icon">⏳</view>
+      <view class="not-agent-title">申请审核中</view>
+      <view class="not-agent-desc">已提交申请，平台将在 1 个工作日内完成审核</view>
+      <view class="apply-btn demo" hover-class="hv" bindtap="onDemoAuditTap">模拟平台审核</view>
+      <view class="demo-tip">演示用：一键模拟审核结果，通过后即可看到佣金面板</view>
+    </view>
+
+    <!-- 被拒绝 -->
+    <view class="header-content not-agent" wx:elif="{{status === 'rejected'}}">
+      <view class="not-agent-icon">😥</view>
+      <view class="not-agent-title">申请未通过</view>
+      <view class="not-agent-desc">很抱歉，本次申请未通过审核，您可以修改资料后重新申请</view>
+      <view class="apply-btn" hover-class="hv" bindtap="onApplyTap">重新申请</view>
+    </view>
+
+    <!-- 未申请 -->
     <view class="header-content not-agent" wx:else>
       <view class="not-agent-icon">💰</view>
       <view class="not-agent-title">成为分销员</view>
       <view class="not-agent-desc">分享商品，赚取佣金</view>
-      <view class="apply-btn" bindtap="onApplyTap">立即申请</view>
+      <view class="apply-btn" hover-class="hv" bindtap="onApplyTap">立即申请</view>
     </view>
   </view>
 
@@ -59,55 +86,36 @@
       </view>
     </view>
     <view class="empty" wx:else>
-      <text class="empty-text">暂无佣金记录</text>
+      <text class="empty-text">暂无佣金记录，分享给好友下单即可获得佣金</text>
     </view>
   </view>
 
   <!-- 功能入口 -->
   <view class="menu-section">
-    <view class="menu-item" wx:if="{{isAgent}}">
+    <view class="menu-item" wx:if="{{isAgent}}" hover-class="hv" bindtap="onRecordTap">
       <text class="menu-icon">📊</text>
-      <text class="menu-text">数据统计</text>
+      <text class="menu-text">佣金明细</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" wx:if="{{isAgent}}">
+    <view class="menu-item" wx:if="{{isAgent}}" hover-class="hv" bindtap="onTeamTap">
       <text class="menu-icon">👥</text>
       <text class="menu-text">我的团队</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" wx:if="{{isAgent}}">
+    <view class="menu-item" wx:if="{{isAgent}}" hover-class="hv" bindtap="onWithdrawRecordTap">
       <text class="menu-icon">💳</text>
       <text class="menu-text">提现记录</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item">
+    <view class="menu-item" hover-class="hv" bindtap="onRuleTap">
       <text class="menu-icon">📝</text>
       <text class="menu-text">分销规则</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item">
+    <view class="menu-item" hover-class="hv" bindtap="onFaqTap">
       <text class="menu-icon">❓</text>
       <text class="menu-text">常见问题</text>
       <text class="menu-arrow">›</text>
-    </view>
-  </view>
-
-  <!-- 申请弹窗 -->
-  <view class="apply-mask" wx:if="{{showApply}}" bindtap="onCloseApply">
-    <view class="apply-popup" catchtap="">
-      <view class="popup-title">申请成为分销员</view>
-      <view class="form-item">
-        <text class="form-label">姓名</text>
-        <input class="form-input" placeholder="请输入真实姓名" value="{{applyForm.name}}" bindinput="onApplyInput" data-field="name" />
-      </view>
-      <view class="form-item">
-        <text class="form-label">手机号</text>
-        <input class="form-input" type="number" placeholder="请输入手机号" value="{{applyForm.phone}}" bindinput="onApplyInput" data-field="phone" />
-      </view>
-      <view class="popup-btns">
-        <view class="popup-btn cancel" bindtap="onCloseApply">取消</view>
-        <view class="popup-btn confirm" bindtap="onSubmitApply">提交申请</view>
-      </view>
     </view>
   </view>
 </view>

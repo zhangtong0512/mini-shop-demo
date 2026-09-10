@@ -439,3 +439,58 @@
   color: #ffffff;
   box-shadow: 0 6rpx 16rpx rgba(255, 80, 0, 0.28);
 }
+
+/* 自提标记与提货码 */
+.pickup-tag {
+  margin-left: 12rpx;
+  font-size: 20rpx;
+  color: #ff5000;
+  background: #fff1e6;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+}
+
+.pickup-code {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.pickup-code .code-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ff5000;
+  letter-spacing: 4rpx;
+}
+
+/* 拼团订单卡片 */
+.group-card {
+  display: flex;
+  align-items: center;
+}
+
+.group-ico {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.group-info {
+  flex: 1;
+}
+
+.group-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.group-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.group-arrow {
+  font-size: 24rpx;
+  color: #ff5000;
+}

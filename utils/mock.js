@@ -16,6 +16,9 @@
 const config = require('./config')
 const coupon = require('./coupon')
 const points = require('./points')
+const notification = require('./notification')
+const distribution = require('./distribution')
+const store = require('./store')
 
 const PAY_TIMEOUT_MS = config.PAY_TIMEOUT_MINUTES * 60 * 1000
 
@@ -397,7 +400,9 @@ function ensureSeedOrders() {
 // ---------- 库存 ----------
 
 // 下单前校验库存：{ ok: true } 或 { ok: false, msg }
-function checkStock(items) {
+// 传入 storeId 时校验「门店分仓库存」（自提），否则校验总仓 SKU 库存
+function checkStock(items, storeId) {
+  if (storeId) return store.checkStoreStock(storeId, items)
   for (const it of items) {
     const g = getGoodsById(it.id)
     if (!g) {
@@ -415,7 +420,9 @@ function checkStock(items) {
 }
 
 // 支付成功后扣减库存（重复扣减由 stockDeducted 防止；按 SKU 维度）
-function deductStock(items) {
+// 自提订单（storeId）扣门店分仓库存，快递订单扣总仓库存
+function deductStock(items, storeId) {
+  if (storeId) return store.deductStoreStock(storeId, items)
   for (const it of items) {
     const g = getGoodsById(it.id)
     if (!g) continue
@@ -428,7 +435,8 @@ function deductStock(items) {
   }
 }
 
-function restoreStock(items) {
+function restoreStock(items, storeId) {
+  if (storeId) return store.restoreStoreStock(storeId, items)
   for (const it of items) {
     const g = getGoodsById(it.id)
     if (!g) continue
@@ -447,7 +455,9 @@ function restoreStock(items) {
 function createOrder(info) {
   const items = info.items || []
   if (!items.length) return null
-  const stockRes = checkStock(items)
+  // 自提订单校验门店分仓库存，快递订单校验总仓库存
+  const storeId = info.storeId || 0
+  const stockRes = checkStock(items, storeId)
   if (!stockRes.ok) return null
 
   const list = getOrders()
@@ -468,6 +478,16 @@ function createOrder(info) {
     totalCount: info.totalCount || 0,
     address: info.address || null,
     remark: info.remark || '',
+    // 配送方式与自提门店（自提订单免运费、扣门店分仓库存、发货语义为「备货完成待提货」）
+    deliveryMode: info.deliveryMode || 'express',
+    storeId,
+    storeName: info.storeName || (info.deliveryMode === 'selfPickup' && info.address ? info.address.name : ''),
+    // 分销来源：由分享链接带 agentId 下单，支付成功后给该分销员结算佣金
+    agentId: info.agentId || '',
+    // 拼团信息（拼团订单在订单列表/详情展示拼团标记，支付后由拼团页完成成团）
+    groupBuyId: info.groupBuyId || '',
+    groupPrice: info.groupPrice || 0,
+    isGroupBuy: !!info.isGroupBuy,
     payDeadline: Date.now() + PAY_TIMEOUT_MS,
     stockDeducted: false
   }
@@ -480,10 +500,13 @@ function createOrder(info) {
   wx.setStorageSync(ORDER_KEY, list)
   // 订单创建即占用优惠券；取消待付款订单时回退（见 cancelOrder / cancelExpiredOrders）
   if (order.couponId) coupon.useCoupon(order.couponId)
+
+  notification.addOrderNotification('订单提交成功', '订单 ' + order.orderNo + ' 已提交，请在 30 分钟内完成支付', order.id)
   return order
 }
 
 function payOrder(id) {
+  let paid = null
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 1) {
       const next = Object.assign({}, o, {
@@ -492,46 +515,93 @@ function payOrder(id) {
         payDeadline: 0,
         stockDeducted: true
       })
-      deductStock(o.items)
+      deductStock(o.items, o.storeId)
+      paid = next
       return next
     }
     return o
   })
   wx.setStorageSync(ORDER_KEY, list)
+  if (!paid) return null
+
+  // 支付成功后：① 分销佣金入账（幂等）② 发通知
+  if (paid.agentId) {
+    const settled = distribution.settleOrderCommission(paid, paid.agentId)
+    if (settled.ok) {
+      notification.addDistributionNotification(
+        '佣金已入账',
+        '订单 ' + paid.orderNo + ' 为您带来佣金 ¥' + settled.commission.toFixed(2),
+        { orderId: paid.id }
+      )
+    }
+  }
+  notification.addOrderNotification('支付成功', '订单 ' + paid.orderNo + ' 支付成功，商家将尽快为您发货', paid.id)
+  return paid
 }
 
 function cancelOrder(id) {
+  let canceled = null
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 1) {
-      if (o.stockDeducted) restoreStock(o.items)
+      if (o.stockDeducted) restoreStock(o.items, o.storeId)
       if (o.couponId) coupon.restoreCoupon(o.couponId)
       if (o.pointsUsed) points.addPoints(o.pointsUsed, '订单 ' + o.orderNo + ' 取消退回')
-      return Object.assign({}, o, { status: 5, cancelTime: formatTime(new Date()) })
+      canceled = Object.assign({}, o, { status: 5, cancelTime: formatTime(new Date()) })
+      return canceled
     }
     return o
   })
   wx.setStorageSync(ORDER_KEY, list)
+  if (canceled) {
+    notification.addOrderNotification('订单已取消', '订单 ' + canceled.orderNo + ' 已取消，优惠券与积分已退回', canceled.id)
+  }
+  return canceled
 }
 
 // 模拟发货（demo：待发货 → 待收货）
+// 自提订单不发快递：生成提货码，通知用户「备货完成，可到店提货」
 function shipOrder(id) {
+  let shipped = null
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 2) {
-      return Object.assign({}, o, { status: 3, shipTime: formatTime(new Date()) })
+      const next = Object.assign({}, o, { status: 3, shipTime: formatTime(new Date()) })
+      if (o.deliveryMode === 'selfPickup') {
+        next.pickupCode = String(1000 + (o.id % 9000))
+      }
+      shipped = next
+      return next
     }
     return o
   })
   wx.setStorageSync(ORDER_KEY, list)
+  if (shipped) {
+    if (shipped.deliveryMode === 'selfPickup') {
+      notification.addOrderNotification(
+        '备货完成，可提货',
+        '订单 ' + shipped.orderNo + ' 已在「' + (shipped.storeName || '自提门店') + '」备货完成，提货码 ' + shipped.pickupCode,
+        shipped.id
+      )
+    } else {
+      notification.addOrderNotification('您的订单已发货', '订单 ' + shipped.orderNo + ' 已发货，点击查看物流', shipped.id)
+    }
+  }
+  return shipped
 }
 
 function confirmOrder(id) {
+  let finished = null
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 3) {
-      return Object.assign({}, o, { status: 4, finishTime: formatTime(new Date()) })
+      finished = Object.assign({}, o, { status: 4, finishTime: formatTime(new Date()) })
+      return finished
     }
     return o
   })
   wx.setStorageSync(ORDER_KEY, list)
+  if (finished) {
+    notification.addOrderNotification('订单已完成', '订单 ' + finished.orderNo + ' 已完成，期待您的评价', finished.id)
+  }
+  return finished
 }
 
 function deleteOrder(id) {
@@ -563,22 +633,28 @@ function cancelExpiredOrders() {
   const now = Date.now()
   let changed = false
   let count = 0
+  const expiredOrders = []
   const list = getOrders().map(o => {
     if (o.status === 1 && o.payDeadline && now > o.payDeadline) {
-      if (o.stockDeducted) restoreStock(o.items)
+      if (o.stockDeducted) restoreStock(o.items, o.storeId)
       if (o.couponId) coupon.restoreCoupon(o.couponId)
       if (o.pointsUsed) points.addPoints(o.pointsUsed, '订单 ' + o.orderNo + ' 超时取消退回')
       changed = true
       count++
-      return Object.assign({}, o, {
+      const next = Object.assign({}, o, {
         status: 5,
         cancelTime: formatTime(new Date()),
         expired: true
       })
+      expiredOrders.push(next)
+      return next
     }
     return o
   })
   if (changed) wx.setStorageSync(ORDER_KEY, list)
+  expiredOrders.forEach(o => {
+    notification.addOrderNotification('订单超时已取消', '订单 ' + o.orderNo + ' 超时未支付已自动取消', o.id)
+  })
   return count
 }
 
@@ -590,6 +666,7 @@ function cancelExpiredOrders() {
 function applyRefund(id, reason) {
   const now = formatTime(new Date())
   let changed = false
+  let applied = null
   const list = getOrders().map(o => {
     if (o.id === id && (o.status === 2 || o.status === 3)) {
       const next = Object.assign({}, o, {
@@ -599,21 +676,26 @@ function applyRefund(id, reason) {
         refundFrom: o.status
       })
       if (next.stockDeducted) {
-        restoreStock(o.items)
+        restoreStock(o.items, o.storeId)
         next.stockDeducted = false
       }
       changed = true
+      applied = next
       return next
     }
     return o
   })
   if (changed) wx.setStorageSync(ORDER_KEY, list)
+  if (applied) {
+    notification.addOrderNotification('退款申请已提交', '订单 ' + applied.orderNo + ' 的退款申请已提交，等待商家处理', applied.id)
+  }
   return changed
 }
 
 // 撤销退款申请（用户）/ 驳回退款（商家）：退款中(6) → 原状态(2/3)
-function revertRefund(id) {
+function revertRefund(id, notifyTitle, notifyContent) {
   let changed = false
+  let reverted = null
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 6 && o.refundFrom) {
       const next = Object.assign({}, o, {
@@ -624,26 +706,32 @@ function revertRefund(id) {
         refundTime: ''
       })
       changed = true
+      reverted = next
       return next
     }
     return o
   })
   if (changed) wx.setStorageSync(ORDER_KEY, list)
+  // 撤销/驳回走同一状态机，但通知文案不同，故由调用方传入
+  if (reverted && notifyTitle) {
+    notification.addOrderNotification(notifyTitle, (notifyContent || '').replace('{no}', reverted.orderNo), reverted.id)
+  }
   return changed
 }
 
 function cancelRefund(id) {
-  return revertRefund(id)
+  return revertRefund(id, '退款申请已撤销', '订单 {no} 的退款申请已撤销')
 }
 
 function rejectRefund(id) {
-  return revertRefund(id)
+  return revertRefund(id, '退款申请未通过', '订单 {no} 的退款申请未通过，如有疑问请联系客服')
 }
 
 // 同意退款（demo 商家动作）：退款中(6) → 已退款(7)，退回积分
 function agreeRefund(id) {
   const now = formatTime(new Date())
   let changed = false
+  let refunded = null
   const list = getOrders().map(o => {
     if (o.id === id && o.status === 6) {
       const next = Object.assign({}, o, {
@@ -652,11 +740,19 @@ function agreeRefund(id) {
       })
       if (next.pointsUsed) points.addPoints(next.pointsUsed, '订单 ' + o.orderNo + ' 退款退回')
       changed = true
+      refunded = next
       return next
     }
     return o
   })
   if (changed) wx.setStorageSync(ORDER_KEY, list)
+  if (refunded) {
+    notification.addOrderNotification(
+      '退款成功',
+      '订单 ' + refunded.orderNo + ' 退款成功' + (refunded.totalPrice ? '，退款金额 ¥' + refunded.totalPrice : ''),
+      refunded.id
+    )
+  }
   return changed
 }
 
