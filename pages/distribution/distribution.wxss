@@ -105,8 +105,9 @@
 }
 
 .share-btn {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
+  background: rgba(255,255,255,0.85);
+  color: #ff5000;
+  border: 2rpx solid #fff;
 }
 
 /* 未申请状态 */
@@ -144,9 +145,9 @@
 
 /* 演示用「模拟平台审核」按钮：描边样式，与主操作按钮区分 */
 .apply-btn.demo {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  border: 2rpx solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.85);
+  color: #ff5000;
+  border: 2rpx solid #fff;
 }
 
 .demo-tip {

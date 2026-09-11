@@ -444,10 +444,11 @@
 
 .group-entry-btn {
   font-size: 26rpx;
-  color: #9C27B0;
+  color: #fff;
   padding: 12rpx 24rpx;
-  background: #fff;
+  background: #9C27B0;
   border-radius: 24rpx;
+  font-weight: 500;
 }
 
 .card {
@@ -547,8 +548,9 @@
 
 .live-entry-btn {
   font-size: 24rpx;
-  color: #ff4757;
+  color: #fff;
   padding: 10rpx 20rpx;
-  background: #fff;
+  background: #ff4757;
   border-radius: 20rpx;
+  font-weight: 500;
 }
